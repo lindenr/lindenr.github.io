@@ -407,7 +407,7 @@ class ProverState {
         var dataFromFilename = new Map(); // filenameInitial -> (contents, requirements that we don't already know, statements to export)
         var loadingFailedDueToLoop = false;
         var fullyVerifiedFiles = new Set();
-        console.log('LOADING FILES...');
+        showMessage('Loading files...', '0 of ' + filenamesInitial.length + ' files loaded');
         filenamesInitial.forEach((f) => loadFileRecursive(f));
 
         // transitively puts all theorems into the above map
@@ -418,6 +418,7 @@ class ProverState {
             if (loadingFailedDueToLoop) return;
             if (ancestors.includes(filename)) {
                 self.currentError = 'Loop detected in loadFileRecursive: ' + filename + ' is needed by chain ' + ancestors;
+                hideMessage();
                 loadingFailedDueToLoop = true;
                 setTimeout(() => callback([false, false], self.currentError));
                 return;
@@ -425,7 +426,7 @@ class ProverState {
             if (self.filesImported.includes(filename) && !filenamesInitialSet.has(filename)) return;
             if (filesToLoad.has(filename)) return;
             filesToLoad.add(filename);
-            getFile('/PA_' + filename + '.js', function() {
+            getFile('PA_' + filename + '.js', function() {
                 if (loadingFailedDueToLoop) return;
                 const proof = window['proof_' + filename];
                 const thmFromSentence = window['exportStatements_' + filename];
@@ -438,7 +439,9 @@ class ProverState {
                     loadFileRecursive(reqFile, ancestors.concat([filename]));
                 }
                 dataFromFilename.set(filename, [proof, reqs, thmFromSentence]);
+                showMessage('Loading files...', dataFromFilename.size + ' of ' + filesToLoad.size + ' files loaded');
                 if (dataFromFilename.size == filesToLoad.size) {
+                    hideMessage();
                     //console.log(dataFromFilename);
                     console.log('VERIFYING FILES...');
                     filenamesInitial.forEach(verifyFileRecursive);
@@ -1311,7 +1314,7 @@ function inspectFile() {
 }
 function getFile(path, callback) {
     var scr = document.createElement('script');
-    scr.src = '/prover/'+path;
+    scr.src = path;
     scr.onload = callback;
     document.head.appendChild(scr);
 }
