@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>&#x1F3B9; Prover</title>
+<style>
+* { line-height: 1.2}
+a {color:black; text-decoration:none;}
+a:hover {font-weight:bold}
+* {
+  box-sizing: border-box;
+}
+
+table {
+    border-collapse:collapse;
+    overflow-x: scroll;
+    width:100%;
+}
+tr:nth-of-type(odd) {
+    background-color: #eee
+}
+tr:nth-of-type(even) {
+    background-color: #ddd
+}
+tr:hover {
+    background-color: #ccf
+}
+#errorLogging { background-color:#ffaaaa; }
+.header {
+border-radius: 10px;
+    background-color: #fe4;
+    padding: 20px;
+    overflow: hidden;
+    margin-bottom: 10px;
+    /*box-shadow: 0px 20px 10px -10px #fe4;*/
+}
+#bodyDisable{
+    display:none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    background: #000;
+    opacity: 0.8;
+    z-index: 998;
+    height: 100%;
+    width: 100%;}
+
+#popup {
+    display:none;
+padding: 10px;
+width: 50%;
+position: absolute;
+z-index: 999;
+left: 50%;
+top: 5%;
+margin-left: -25%;
+background-color:white;
+border-radius: 20px;
+}
+#popup-body {
+margin: 0;
+background-color: #ccc;
+padding: 10px;
+border-radius: 10px;
+}
+</style>
+<script src="userscripts.js"></script>
+<script src="stringManip.js"></script>
+<script src="prover.js"></script>
+</head>
+<body onload='bodyOnLoad()' style="background-color:white;padding:5px;margin:0">
+<div id="bodyDisable" onclick="hideMessage()"></div>
+<div id="popup"><div class="header" style="padding-left:10px;font-weight:bold" id="popup-header">&#x1F3B9;&nbsp;&nbsp;How it works</div><p id="popup-body">HELLO</p></div>
+<div class="header">
+<h2>&#x1F3B9; Peano arithmetic</h2>
+<button onclick="completeReset()">COMPLETE RESET</button>
+<button onclick="doFilterHistory()">FILTER TO HIGHLIGHTED</button>
+<button onclick="importFile()">IMPORT</button>
+<button onclick="inspectFile()">OPEN</button>
+<!--<button onclick="addRelation()">ADD A2 RELATION</button>
+<button onclick="addConnective()">ADD A2 CONNECTIVE</button>-->
+<button onclick="saveModule()">SAVE</button>
+<button onclick="showExplanation()">HOW TO USE</button>
+<button onclick="showExtraFeatures()">EXTRA FEATURES</button>
+<button onclick="showExample1()">EXAMPLE 1</button>
+<button onclick="showExample2()">EXAMPLE 2</button>
+</div>
+<table style="background-color:white;width:100%" id="statementTable"></table>
+<p id="errorLogging"></p>
+<form onsubmit='return later(assumptionFormSubmitted)'>
+  <label>Command: <input type="text" id='assumptionInput' style="width:80%" /></label>
+<input type="submit" hidden />
+</form>
+<button onclick="userReset()">reset</button>
+<div id="userStuff"></div>
+<div id="userTerm"></div>
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+</body>
+</html>
