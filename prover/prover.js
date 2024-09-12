@@ -441,10 +441,10 @@ class ProverState {
                 dataFromFilename.set(filename, [proof, reqs, thmFromSentence]);
                 showMessage('Loading files...', dataFromFilename.size + ' of ' + filesToLoad.size + ' files loaded');
                 if (dataFromFilename.size == filesToLoad.size) {
-                    hideMessage();
+                    showMessage('Verifying files...', '');
                     //console.log(dataFromFilename);
                     console.log('VERIFYING FILES...');
-                    filenamesInitial.forEach(verifyFileRecursive);
+                    setTimeout(() => filenamesInitial.forEach(verifyFileRecursive), 20);
                 }
             });
         }
@@ -458,6 +458,8 @@ class ProverState {
             for (const reqFile of reqs) {
                 if (!verifyFileRecursive(reqFile)) return false;
             }
+            showMessage('Verifying files...', filename);
+            console.log(filename);
             //console.log('Loaded and verified prereqs, now proving', filename);
             var topLevelTheorems = []; // just names; only used if this is the "actual" file we want
             // THEN prove the actual theorem
@@ -480,6 +482,7 @@ class ProverState {
             }
             //console.log('finished verifying "' + filename + '"');
             if (useThis) {
+                hideMessage();
                 setTimeout(()=>callback([[], filesToLoad], undefined));
                 return true;
             }
@@ -492,11 +495,15 @@ class ProverState {
                 };
                 self.knownTheorems.set(filename, sentence);
                 if (filenamesInitialSet.has(filename)) topLevelTheorems.push(filename);
+                hideMessage();
             }
             self.filesImported.push(filename);
             if (filenamesInitialSet.has(filename)) self.filesImportedManually.push(filename);
             filenamesInitialSet.delete(filename);
-            if (filenamesInitialSet.size == 0) setTimeout(()=> {callback([topLevelTheorems, filesToLoad], undefined);});
+            if (filenamesInitialSet.size == 0) {
+                hideMessage();
+                setTimeout(()=> {callback([topLevelTheorems, filesToLoad], undefined);});
+            }
             fullyVerifiedFiles.add(filename);
             return true;
         }
