@@ -425,7 +425,7 @@ class ProverState {
             if (self.filesImported.includes(filename) && !filenamesInitialSet.has(filename)) return;
             if (filesToLoad.has(filename)) return;
             filesToLoad.add(filename);
-            getFile('PA_' + filename + '.js', function() {
+            getFile('/PA_' + filename + '.js', function() {
                 if (loadingFailedDueToLoop) return;
                 const proof = window['proof_' + filename];
                 const thmFromSentence = window['exportStatements_' + filename];
@@ -1311,7 +1311,7 @@ function inspectFile() {
 }
 function getFile(path, callback) {
     var scr = document.createElement('script');
-    scr.src = path;
+    scr.src = '/prover/'+path;
     scr.onload = callback;
     document.head.appendChild(scr);
 }
