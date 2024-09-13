@@ -1341,6 +1341,24 @@ function keyPressEvent(e) {
         hideMessage();
     }
 }
+function showExtraFeatures() {
+    showMessage('Advanced features', `<h4>Buttons</h4>
+    Let's go through the buttons on each line. <ul>
+    <li>The scissors button copies the sentence (the "actual" sentence with standardised brackets, which are different to the printed version). </li><li>
+    The forall button puts a forall in front of the sentence. </li><li>
+    The exists button allows you to rewrite the whole sentence with some copies of some term replaced by a variable (see below for details). </li><li>
+    The implies button will combine two statements of the form P and P&rArr;Q to give a statement Q. This is called modus ponens. </li><li>
+    The D button, if you press it on a statement P then on Q, will produce the statement P&rArr;Q and remove P from the assumption list if it was on it. This is called the deduction theorem. </li><li>
+    The pencil button allows you to rewrite a sentence with a symbol (see below for details). </li><li>
+    The c button adds a comment. </li><li>
+    The # button highlights. </li><li>
+    The x button deletes.</li></ul>
+    <h4>Commands</h4>
+    You can type commands into the command box at the bottom. The examples use this to make assumptions to prove things, but special commands starting with ! can help you prove things.
+    <ul>
+    <li>The command <code>!=</code> will find <b>highlighted</b> statements about equality and chain them, i.e. if you highlight two statements of the form u=v (or v=u) and v=w (or w=v), then the command will produce u=w.</li>
+    <li>The command <code>!sub &lt;id&gt;</code> will look at the sentence with that id (which you can see on the left) and if it's of the form u=v will prompt you for a substitution (such as <code>S(@)</code>). It will then produce another equality, replacing the @ symbol with u and v respectively (so the example would give <code>S(u)=S(v)</code>).</ul>`);
+}
 function showExplanation() {
     showMessage("What is this?", `<h4>Intro</h4>This is a theorem verifier for Peano arithmetic. There are a few added features to make life easier, but all the theorems you can prove are provable by Peano arithmetic.<br>
     Peano arithmetic is a system for proving statements about the natural numbers, which are the numbers 0, 1, 2, and so on. We can say (and prove) things like "for all x there is a prime number bigger than x".<br>
@@ -1391,6 +1409,14 @@ function showExample2() {
 <li>Does the result seem reasonable?</li>
 <li>We can discharge our assumption by using the "deduce" button (with a D on it). Press the D button for the initial assumption and then for the conclusion &forall;y (x=0)</li>
 <li>Now this statement doesn't depend on any assumptions: there should be no numbers to the right showing that it depends on anything. So we can quantify over any variable, even x. Does this give us a sensible statement?</li>
+    </ol>`);
+}
+function showExample3() {
+    showMessage('Example 3: baby\'s first induction', `We want to prove &forall;x (0+x=x+0). We will need to use induction and the base case will be when x is 0.<ol>
+    <li>We can get (0+0)=(0+0) from axiom A4 (click the quantifier and type <code>(0)+(0)</code>).</li>
+    <li>Now for the induction step we assume (0+x)=(x+0) and want to prove (0+Sx)=(Sx+0). So in the assumption box type <code>((0)+(x))=((x)+(0))</code>.</li>
+    <li>The rest is an exercise.</li>
+    <li>You may wish to use the advanced <code>!=</code> and <code>!sub</code> commands.</li>
     </ol>`);
 }
 function bodyOnLoad() {
