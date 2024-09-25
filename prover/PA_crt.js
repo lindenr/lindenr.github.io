@@ -1,6 +1,6 @@
 window.exportStatements_crt = new Map([["'cong[S(0),((#d1)*(y))+((#a)*(x)),(x)*(y)]","bezout with congruences"],["Ax(Ay(('gcd[x,y,S(0)])=>(Aa(Ab(((a)<(x))=>(((b)<(y))=>(En(('mod[n,x,a])&&('mod[n,y,b])))))))))","chinese remainder theorem"]]);
 
-window.requiredModules_crt = ["nonzero_is_successor","addition_commutes","addition","leq","lt","multiplication_associates","multiplication_commutes","and_introduction","multiplication","div","gcd","mod","bezout","cong"];
+window.requiredModules_crt = ["nonzero_is_successor","addition_commutes","addition","leq","lt","multiplication_associates","multiplication_commutes","and_introduction","multiplication","div","gcdrel","mod","bezout","cong"];
 
 window.proof_crt = [
  [

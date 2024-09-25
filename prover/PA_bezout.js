@@ -1,6 +1,6 @@
 window.exportStatements_bezout = new Map([["Ax(Ay(((x)!=(0))=>(Ea(Eb(Eg(('gcd[x,y,g])&&(((a)*(x))=(((b)*(y))+(g)))))))))","bezout"]]);
 
-window.requiredModules_bezout = ["explosion","nonzero_is_successor","addition_commutes","or_implies","excluded_middle_or","S_functional","addition_associates","and_elimination1","and_elimination2","addition_injective","equal_or_unequal","add_to_0","addition","alternative_implication","or_introduction1","logic","leq","lt","strong_induction2","distributivity","multiplication_associates","multiplication_commutes","multiply_to_0","multiply_unchanged","and_introduction","multiplication","div","gcd","mod"];
+window.requiredModules_bezout = ["explosion","nonzero_is_successor","addition_commutes","or_implies","excluded_middle_or","S_functional","addition_associates","and_elimination1","and_elimination2","addition_injective","equal_or_unequal","add_to_0","addition","alternative_implication","or_introduction1","logic","leq","lt","strong_induction2","distributivity","multiplication_associates","multiplication_commutes","multiply_to_0","multiply_unchanged","and_introduction","multiplication","div","gcdrel","mod"];
 
 window.proof_bezout = [
  [

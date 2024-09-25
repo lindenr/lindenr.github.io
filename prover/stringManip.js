@@ -1,20 +1,34 @@
+function escapeRegex(string) {
+    return string.replace(/[/\-\\^$*+?.()|[\]{}]/g, '\\$&');
+}
+function splitCommas(s) {
+    var depth = 0;
+    var splits = [0];
+    for (var i = 0; i < s.length; ++ i) {
+        if (s[i] == ',' && depth == 0) splits.push(i+1);
+        else if (s[i] == '[') depth ++;
+        else if (s[i] == ']') depth --;
+    }
+    splits.push(s.length+1);
+    return splits.slice(0, -1).map((n,i,m) => s.slice(n, splits[i+1]-1));
+}
 function isRenamingInstanceOf(parsed1, parsed2, mustRename=new Map()) {
     // can you rename bound variables of p1 to get p2? (easier version of "substitution instance").
     // also, anything in mustRename must be renamed to what it says, even free variables.
     if (parsed1.error || parsed2.error) return false;
     const p1 = parsed1.parsed, p2 = parsed2.parsed;
-    if (parseVariable(p1[0]) && parseVariable(p2[0])) {
+    if (parseVariable(p1[0], true) && parseVariable(p2[0], true)) {
         if (mustRename.has(p1[0])) return p2[0] == mustRename.get(p1[0]);
         return p2[0] == p1[0];
     }
     if (p1[0] != p2[0]) {
         return false;
     }
-    if (RELATIONS[2].includes(p1[0]) || CONNECTIVES[2].includes(p1[0]) || OPERATORS[2].includes(p1[0])) {
+    if (RELATIONS[2].includes(p1[0]) || CONNECTIVES[2].includes(p1[0]) || FUNCTIONS[2].includes(p1[0])) {
         return isRenamingInstanceOf(p1[1], p2[1], mustRename) && isRenamingInstanceOf(p1[2], p2[2], mustRename);
-    } else if (OPERATORS[1].includes(p1[0])) {
+    } else if (FUNCTIONS[1].includes(p1[0])) {
         return isRenamingInstanceOf(p1[1], p2[1], mustRename);
-    } else if (OPERATORS[1].includes(p1[0])) {
+    } else if (FUNCTIONS[1].includes(p1[0])) {
         return true;
     } else if (isGeneric(p1[0])) {
         const subs1 = p1.slice(1), subs2 = p2.slice(2);
@@ -56,9 +70,9 @@ function replaceGeneric(sentenceOrig, gen, replaceOrig) {
             continue;
         }
         if (sentence[i+gen.length] != '[') throw new Error('no open square bracket!!!');
-        var j = sentence.indexOf(']', i);
+        var j = matchingBracket(sentence, i+gen.length);
         if (j == -1) throw new Error('no close square bracket!!!');
-        var terms = sentence.slice(i+gen.length+1, j).split(',');
+        var terms = splitCommas(sentence.slice(i+gen.length+1, j));
         var replacement = replace;
         for (var k = 0; k < terms.length; ++ k) replacement = replaceVariable(replacement, '@'+(k+1), terms[k]);
         replacement = replaceVariable(replacement, '@', terms[0]);
@@ -67,7 +81,30 @@ function replaceGeneric(sentenceOrig, gen, replaceOrig) {
     }
     return sentence;
 }
+function isVarChar(x) {
+    return x == '#' || x == '@' || (x >= '0' && x <= '9') || (x >= 'a' && x <= 'z');
+}
+function replaceVariable1(sentence, find, replace) {
+    for (var i = 0; i < sentence.length; ++ i) {
+        if (!isVarChar(sentence[i])) continue;
+        if (sentence.slice(i, i + find.length) == find && !isVarChar(sentence[i+find.length])) {
+            sentence = sentence.slice(0,i)+replace+sentence.slice(i+find.length);
+            i += replace.length-1;
+        } else {
+            do i++;
+            while (isVarChar(sentence[i]));
+        }
+    }
+    return sentence;
+}
 function replaceVariable(sentence, find, replace) {
+    //return replaceVariableOld(sentence, find, replace);
+    //const newResult = replaceVariable1(sentence, find, replace);
+    //return newResult;
+    const result = sentence.replace(new RegExp("(?<![#@a-z0-9])"+escapeRegex(find)+"(?![#@a-z0-9])", "g"), replace);
+    return result;
+}
+function replaceVariableOld(sentence, find, replace) {
     return sentence
         .replaceAll('('+find+')', '('+replace+')')
         .replaceAll('['+find+']', '['+replace+']')
@@ -76,7 +113,9 @@ function replaceVariable(sentence, find, replace) {
         .replaceAll('['+find+',', '['+replace+',')
         .replaceAll('A'+find+'(', 'A'+replace+'(')
         .replaceAll('E'+find+'(', 'E'+replace+'(');
-
+}
+function testReplaceVariable() {
+    
 }
 function getSubSentence(sentence, start) {
     var depth = 0;

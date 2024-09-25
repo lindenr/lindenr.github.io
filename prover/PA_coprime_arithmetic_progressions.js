@@ -1,6 +1,6 @@
 window.exportStatements_coprime_arithmetic_progressions = new Map([["An(Ak(Ea(Eb(Ai(Aj(((i)<=(n))=>(((j)<=(n))=>(((i)!=(j))=>(((k)<=(a))&&('gcd[(a)+((b)*(i)),(a)+((b)*(j)),S(0)]))))))))))","large coprime APs"]]);
 
-window.requiredModules_coprime_arithmetic_progressions = ["addition_commutes","nonzero_is_successor","addition_associates","addition","leq","logic","lt","multiplication","div","finite_products","gcd","nearby_multiples"];
+window.requiredModules_coprime_arithmetic_progressions = ["addition_commutes","nonzero_is_successor","addition_associates","addition","leq","logic","lt","multiplication","div","finite_products","gcdrel","nearby_multiples"];
 
 window.proof_coprime_arithmetic_progressions = [
  [

@@ -3,6 +3,9 @@ function later(f, ...args) {
     setTimeout(function(){f(...args);});
     return false;
 }
+function arange(n) {
+    return Array.from(Array(n).keys());
+}
 function someEntry(x, f) {
     for (const [key, value] of x.entries()) {
         if (f(key, value)) return true;
@@ -67,10 +70,10 @@ function matchingBracketReverse(s,i) {
 }
 // operators: we always have =
 // support arity 0, 1, 2; 1-arity always prefix, 2-arity always infix
-const BASEOPERATORS = [['0'], ['S'], ['+', '*']]; // e.g. exponentiation
+const BASEFUNCTIONS = [['0'], ['S'], ['+', '*']]; // e.g. exponentiation
 const BASERELATIONS = [[], [], ['='], []]; // e.g. isPrime, <
 const BASECONNECTIVES = [[], [], ['=>']]; // e.g. not, and, or
-var OPERATORS = [['0'], ['S'], ['+', '*']]; // e.g. exponentiation
+var FUNCTIONS = [['0'], ['S'], ['+', '*']]; // e.g. exponentiation
 var RELATIONS = [[], [], ['='], []]; // e.g. isPrime, <
 var CONNECTIVES = [[], [], ['=>']]; // e.g. not, and, or
 const AXIOMS = [
@@ -124,7 +127,7 @@ function parsedSentence(sentence, parsed, bound, free, generics, error, brackets
 function parseTerm(sentence, permissive=false) {
     var length = sentence.length;
     if (sentence === '') return parseError(sentence, 'empty string');
-    if (OPERATORS[1].includes(sentence[0]))
+    if (FUNCTIONS[1].includes(sentence[0]))
     {
         if (sentence[1] != '(' || sentence[length-1] != ')') return parseError(sentence, 'operand must be bracketed');
         var subResult = parseTerm(sentence.slice(2, length-1), permissive);
@@ -146,15 +149,29 @@ function parseTerm(sentence, permissive=false) {
         var newBound = uniSort(op1.bound.concat(op2.bound));
         var newFree = uniSort(op1.free.concat(op2.free));
         var operator = sentence.slice(i+1, i+1+operator_length);
-        if (!(OPERATORS[2].includes(operator)))
+        if (!(FUNCTIONS[2].includes(operator)))
         {
             return parseError(sentence, 'term operator not recognized: "'+operator+'"');
         }
         return parsedSentence(sentence, [operator, op1, op2], newBound, newFree, [], op1.error || op2.error);
     }
-    if (length == 1 && OPERATORS[0].includes(sentence[0]))
+    if (length == 1 && FUNCTIONS[0].includes(sentence[0]))
     {
         return parsedSentence(sentence, [sentence], [], [], [], undefined, false);
+    }
+    if (sentence[0] == "'") {
+        // prefix function
+        const i = sentence.indexOf('[');
+        if (i == -1) return parseError(sentence, 'function must have square brackets');
+        if (sentence[sentence.length-1] != ']') return parseError(sentence, 'function must end in square brackets')
+        const op = sentence.slice(0, i);
+        var terms = splitCommas(sentence.slice(i+1, -1));
+        const arity = terms.length;
+        if (!(FUNCTIONS[arity]||[]).includes(op)) return parseError(sentence, 'unrecognised function ' + op);
+        var ips = terms.map(t => parseTerm(t, permissive));
+        const frees = uniSort(ips.flatMap(pt => pt.free));
+        const error = ips.filter(pt => pt.error !== undefined).map(x=>x.error)[0];
+        return parsedSentence(sentence, [op, ...ips], [], frees, [], error, false);
     }
     var parsed = parseVariable(sentence, permissive);
     if (parsed) return parsed;
@@ -179,7 +196,7 @@ function parseSentence(sentence, permissive=false) {
         var newFree = subResult.free.slice();
         var i = newFree.indexOf(newVar);
         if (i >= 0) newFree.splice(i, 1);
-        return parsedSentence(sentence, [sentence[0], newVar, subResult], newBound, newFree, subResult.generics, subResult.error);
+        return parsedSentence(sentence, [sentence[0], newVar, subResult], newBound, newFree, subResult.generics, subResult.error, false);
     }
     if (sentence[0] == '(')
     {
@@ -221,7 +238,7 @@ function parseSentence(sentence, permissive=false) {
         const gen = sentence.slice(0, i);
         if (!isGeneric(gen)) return parseError(sentence, 'unrecognised generic');
         var interior = sentence.slice(i+1, -1);
-        var terms = interior.split(',');
+        var terms = splitCommas(interior);
         var ips = terms.map(t => parseTerm(t, permissive));
         const frees = uniSort(ips.flatMap(pt => pt.free));
         const error = ips.filter(pt => pt.error !== undefined).map(x => x.error)[0];
@@ -233,7 +250,7 @@ function parseSentence(sentence, permissive=false) {
         if (i == -1) return parseError(sentence, 'relation must have square brackets');
         if (sentence[sentence.length-1] != ']') return parseError(sentence, 'unrecognised relation')
         const relation = sentence.slice(0, i);
-        var terms = sentence.slice(i+1, -1).split(','); // assumes terms can't have commas...
+        var terms = splitCommas(sentence.slice(i+1, -1));
         const arity = terms.length;
         if (!RELATIONS[arity].includes(relation)) return parseError(sentence, 'unrecognised relation');
         var ips = terms.map(t => parseTerm(t, permissive));
@@ -264,8 +281,8 @@ function renderParsed(parsed, statementId=-1, where=0) {
     if (parsed.parsed == undefined) return '<b style="color:red">' + parsed.sentence + '</b>';
     var p = parsed.parsed;
     if (p[0] == "F") return "&perp;";
-    if (p[0] == "A") return "&forall;" + p[1] + " (" + renderParsed(p[2], statementId, where+1+p[1].length+1) + ")";
-    if (p[0] == "E") return "&exist;" + p[1] + " (" + renderParsed(p[2], statementId, where+1+p[1].length+1) + ")";
+    if (p[0] == "A") return "&forall;" + p[1] + " " + brender(p[2], statementId, where+1+p[1].length+1) + "";
+    if (p[0] == "E") return "&exist;" + p[1] + " " + brender(p[2], statementId, where+1+p[1].length+1) + "";
     if (p[0] >= 'P' && p[0] <= 'R') {
         var starter = (statementId >= 0 ? '<a href="#" onclick="return later(specStatement, ' + statementId + ', \'' + p[0] + '\')">' : '');
         var ender = statementId >= 0 ? '</a>' : '';
@@ -302,9 +319,9 @@ function renderClickable(statement) {
     var parsed = statement.p;
     var result = renderParsed(parsed, statement.id);
     if (parsed.parsed[0] == 'A') {
-        result = '<a href="#" onclick="return later(specialiseForall, globalProver.statements.get('+statement.id+'))">' + result.slice(0, 10+parsed.parsed[1].length) + '</a>' + result.slice(10+parsed.parsed[1].length);
+        result = '<a href="#" onclick="return later(specialiseForall, globalProver.statements.get('+statement.id+'))">' + result.slice(0, 9+parsed.parsed[1].length) + '</a>' + result.slice(9+parsed.parsed[1].length);
     } else if (parsed.parsed[0] == 'E') {
-        result = '<a href="#" onclick="return later(specialiseExists, globalProver.statements.get('+statement.id+'))">' + result.slice(0, 10+parsed.parsed[1].length) + '</a>' + result.slice(10+parsed.parsed[1].length);
+        result = '<a href="#" onclick="return later(specialiseExists, globalProver.statements.get('+statement.id+'))">' + result.slice(0, 8+parsed.parsed[1].length) + '</a>' + result.slice(8+parsed.parsed[1].length);
     }
     if (!statement.proved) {
         result = '<b style="background-color:#fbb">' + result + '</b>';
@@ -337,7 +354,6 @@ class ProverState {
         this.definitions = new Set();
         this.statements = new Map();
         this.statementId = 0;
-        this.operators = OPERATORS.slice();
         this.knownTheorems = new Map();
         this.actions = [];
         this.currentError = '';
@@ -348,7 +364,7 @@ class ProverState {
         this.filesImported = [];
         this.filesImportedManually = [];
         this.variableDefinitions = new Map();
-        for (var [type, typename] of [[BASERELATIONS, 'RELATION'], [BASEOPERATORS, 'OPERATOR'], [BASECONNECTIVES, 'CONNECTIVE']])
+        for (var [type, typename] of [[BASERELATIONS, 'RELATION'], [BASEFUNCTIONS, 'FUNCTION'], [BASECONNECTIVES, 'CONNECTIVE']])
             type.forEach((t, arity) => { t.forEach(rel => this.orcMap.set(rel, [typename, arity, undefined])); });
         this.AddRelation(2, '<=', 'Ex(((@1)+(x))=(@2))');
         this.AddRelation(2, '<', 'Ex(((@1)+(S(x)))=(@2))');
@@ -359,6 +375,7 @@ class ProverState {
         this.AddConnective(2, '&&', '((P)=>((Q)=>(F)))=>(F)');
         this.AddRelation(3, '\'gcd', '(((@3)|(@1))&&((@3)|(@2)))&&(Ah((((h)|(@1))&&((h)|(@2)))=>((h)|(@3))))');
         this.AddRelation(3, '\'mod', '((@3)<(@2))&&(En((@1)=(((n)*(@2))+(@3))))');
+        this.AddRelation(3, '\'zmod', "(((@2)=(0))&&((@3)=(0)))||(((0)<(@2))&&('mod[@1,@2,@3]))");
         this.AddRelation(3, '\'cong', "Ea(('mod[@1,@3,a])&&('mod[@2,@3,a]))");
         this.AddRelation(3, '\'conga', "Ea(Eb(((@1)+((@3)*(a)))=((@2)+((@3)*(b)))))");
         this.AddRelation(2, '\'bezoutable', "((@1)!=(0))=>(((@2)!=(0))=>(Eu(Eg(('cong[(u)*(@1),g,@2])&&('gcd[@1,@2,g])))))");
@@ -444,7 +461,12 @@ class ProverState {
                     showMessage('Verifying files...', '');
                     //console.log(dataFromFilename);
                     console.log('VERIFYING FILES...');
-                    setTimeout(() => filenamesInitial.forEach(verifyFileRecursive), 20);
+                    setTimeout(() => {
+                        const startTime = performance.now();
+                        filenamesInitial.forEach(verifyFileRecursive);
+                        const endTime = performance.now();
+                        console.log('Verification time in ms:', endTime-startTime);
+                    }, 20);
                 }
             });
         }
@@ -466,7 +488,7 @@ class ProverState {
             const useThis = (loadProof && filenamesInitial[0] == filename);
             var prover = useThis ? self : new ProverState();
             prover.knownTheorems = self.knownTheorems;
-            //prover.orcMap = orcMap;
+            prover.orcMap = self.orcMap;
             for (const x of proof) {
                 if (!prover.doAction(x)) {
                     console.log('Theorem verification FAILED:', x);
@@ -508,6 +530,10 @@ class ProverState {
             return true;
         }
     }
+    error(msg) {
+        this.currentError = msg;
+        return 0;
+    }
     SetComment(id, comment) {
         if (!this.statements.has(id)) return 0;
         var s = this.statements.get(id);
@@ -523,10 +549,7 @@ class ProverState {
         return id;
     }
     proveParsed(p, used, comment='', deps=[]) {
-        if (p.error) {
-            this.currentError = 'Failed to add: ' + renderParsed(p) + ' due to ' + p.error;
-            return 0;
-        }
+        if (p.error) return this.error('Failed to add: ' + renderParsed(p) + ' due to ' + p.error);
         //if (someEntry(this.statements, (id,x) => x.p.sentence === p.sentence))
         //    this.currentError = 'Warning: already proved ' + renderParsed(p);
         this.statementId ++;
@@ -542,27 +565,20 @@ class ProverState {
         return this.statementId;
     }
     assumeParsed(p) {
+        if (p.error) return this.error('Failed to add: ' + renderParsed(p) + ' due to ' + p.error);
         this.statementId ++;
         this.statements.set(this.statementId,
             {id: this.statementId, 'p': p, comment: '', deps: [this.statementId], proved: false, highlight: false, used: [], deleted: false});
         return this.statementId;
     }
     Assume(sentence) {
-        var success = 0;
-        var parsed = parseSentence(sentence);
-        if (parsed.error) {
-            this.currentError = 'Failed to add: ' + renderParsed(parsed) + ' due to ' + parsed.error;
-        //} else if (someEntry(this.statements, (id,x) => x.p.sentence === parsed.sentence)) {
-        //    this.currentError = 'Already assuming ' + renderParsed(parsed);
-        } else {
-            var id = this.assumeParsed(parsed);
-            this.recordAction(['Assume', [sentence], id, sentence]);
-            success = id;
-        }
+        const parsed = parseSentence(sentence);
+        const success = this.assumeParsed(parsed);
+        if (success) this.recordAction(['Assume', [sentence], success, sentence]);
         return success;
     }
     Quote(theoremName) {
-        if (!this.knownTheorems.has(theoremName)) return 0;
+        if (!this.knownTheorems.has(theoremName)) return this.error('No known theorem ' + theoremName);
         var sentence = this.knownTheorems.get(theoremName);
         var parsed = parseSentence(sentence);
         var success = this.proveParsed(parsed, [], theoremName, []);
@@ -570,35 +586,24 @@ class ProverState {
         return success;
     }
     Rewrite(id, claim) {
-        if (!this.statements.has(id)) return 0;
+        if (!this.statements.has(id)) return this.error('Unknown id: ' + id);
         const s = this.statements.get(id);
         const parsedClaim = parseSentence(claim);
-        if (parsedClaim.error) {
-            this.currentError = "Invalid claim, due to " + parsedClaim.error;
-            return 0;
-        }
-        if (!this.orcMap.has(parsedClaim.parsed[0])) {
-            this.currentError = 'Must be a user-defined symbol: ' + parsedClaim.parsed[0];
-            return 0;
-        }
+        if (parsedClaim.error) return this.error("Invalid claim, due to " + parsedClaim.error);
+        if (!this.orcMap.has(parsedClaim.parsed[0])) return this.error('Must be a user-defined symbol: ' + parsedClaim.parsed[0]);
         const [typename, arity, defn] = this.orcMap.get(parsedClaim.parsed[0]);
-        if (typename == 'RELATION') {
+        if (typename == 'RELATION' && defn) {
             const mapData = parsedClaim.parsed.slice(1).map((x,i) => ['@'+(i+1), x]);
             //console.log(mapData);
             const [expandedClaim, err] = this.rewriteSentence(parseSentence(defn, true), new Map(mapData));
-            if (err) {
-                this.currentError = err;
-                return 0;
-            }
-            if (!isRenamingInstanceOf(expandedClaim, s.p)) {
-                this.currentError = 'the following sentences are not equivalent: ' + expandedClaim.sentence + ' ' + s.p.sentence;
-                return 0;
-            }
+            if (err) return this.error(err);
+            if (!isRenamingInstanceOf(expandedClaim, s.p))
+                return this.error('the following sentences are not equivalent: ' + expandedClaim.sentence + ' ' + s.p.sentence);
             const parsed = parseSentence(claim);
             const success = this.proveParsed(parsed, [id], '', s.deps);
             if (success) this.recordAction(['Rewrite', [id, claim], success, parsed.sentence]);
             return success;
-        } else if (typename == 'CONNECTIVE') {
+        } else if (typename == 'CONNECTIVE' && defn) {
             const pd = parseSentence(defn);
             const disallowedGenerics = new Set(pd.generics);
             var j = 0;
@@ -608,104 +613,104 @@ class ProverState {
             const temp2 = replaceGeneric(temp1, 'Q', parsedClaim.parsed[2].sentence);
             const temp3 = replaceGeneric(temp2, newGeneric, parsedClaim.parsed[1].sentence);
             const t3p = parseSentence(temp3);
-            if (!isRenamingInstanceOf(t3p, s.p)) {
-                this.currentError = 'the following sentences are not equivalent: ' + t3p.sentence + ' ' + s.p.sentence;
-                return 0;
-            }
+            if (!isRenamingInstanceOf(t3p, s.p))
+                return this.error('the following sentences are not equivalent: ' + t3p.sentence + ' ' + s.p.sentence);
             const parsed = parseSentence(claim);
             const success = this.proveParsed(parsed, [id], '', s.deps);
             if (success) this.recordAction(['Rewrite', [id, claim], success, parsed.sentence]);
             return success;
-        } else return 0;
+        } else if (parsedClaim.parsed[0] == '=') {
+            const [lhs, rhs] = parsedClaim.parsed.slice(1);
+            if (!this.orcMap.has(lhs.parsed[0])) return this.error("You should type something of the form ('Function[x])=(y)");
+            const symbol = lhs.parsed[0];
+            const [typename, arity, defn] = this.orcMap.get(symbol);
+            if (typename != 'FUNCTION' || !defn) return this.error("Cannot expand definition for " + symbol);;
+            const mapData = lhs.parsed.slice(1).map((x,i) => ['@'+(i+1), x]).concat([['@', parseTerm(rhs.sentence)]]);
+            const [expectedClaim, err] = this.rewriteSentence(parseSentence(defn, true), new Map(mapData));
+            //console.log(expandedDefn.sentence, err);
+            console.log(expectedClaim.sentence);
+            if (!isRenamingInstanceOf(expectedClaim, s.p))
+                return this.error('The statement you gave expands to ' + expectedClaim + ' which should be a rewriting of ' + s.p.sentence);
+            const parsed = parseSentence(claim);
+            const success = this.proveParsed(parsed, [id], '', s.deps);
+            if (success) this.recordAction(['Rewrite', [id, claim], success, parsed.sentence]);
+            return success;
+        } else return this.error("Form of claimed sentence must be a relation, connective or function equalling something");
     }
-    AddOperator(arity, symbol, sentence) {
-        if (arity != 2) return 0;
-        if (symbol.length > 2) return 0;
+    AddFunction(arity, symbol, sentence, idExists, idUnique) {
+        if (symbol[0] != "'") {
+            return this.error('Functions must start with an apostrophe: ' + symbol); // TODO
+            //if (arity != 2) return 0;
+            //if (symbol.length > 2) return 0;
+        }
+        if (!((symbol[1] >= 'A' && symbol[1] <= 'Z') && (/^[a-z]*$/.test(symbol.slice(2)))))
+            return this.error('function must start with apostrophe then capital and then be lowercase: ' + symbol);
         if (this.orcMap.has(symbol)) {
             const [curType, curArity, curSentence] = this.orcMap.get(symbol);
-            if (curType == 'OPERATOR' && curArity == 2 && curSentence == sentence) return -1; // success, we already knew it
-            this.currentError = 'already have a different definition for ' + symbol;
-            return 0;
+            if (curType == 'FUNCTION' && curArity == arity && curSentence == sentence) return -1; // success, we already knew it
+            return this.error('already have a different definition for ' + symbol);
         }
-        // P be the "sentence"
-        // f(a,b)=<term>
+        if (!this.statements.has(idExists)) return this.error("Unknown existence statement id " + idExists);
+        if (!this.statements.has(idUnique)) return this.error("Unknown uniqueness statement id " + idUnique);
+        // P is the "sentence"
         // y=func(a,b) means (Ez. P[a,b,z] and y=z)
         // Q[func(a,b)] means (Ez. P[a,b,z] and Q[z])
-        const parsed = parseTerm(sentence, true); // TODO
-        if (parsed.error) {
-            this.currentError = 'invalid formula ' + parsed.error;
-            return 0;
-        }
-        if (parsed.free.length != 0 || !arrayEqual(parsed.generics, ['P','Q'])) {
-            this.currentError = 'invalid formula, expect no free variables and only generics to be P and Q: ' + renderParsed(parsed);
-            return 0;
-        }
-        this.orcMap.set(symbol, ['CONNECTIVE', 2, sentence]); // whatever, verify later lol
-        CONNECTIVES[arity].push(symbol);
-        this.recordAction(['AddConnective', [arity, symbol, sentence], -1, '']);
+        const existsClaim = this.statements.get(idExists).p; // should be of the form A@1(A@2(...(E@(P))...))
+        const existsExpected = parseSentence(arange(arity).map(i => 'A@'+(i+1)+'(').join('')+'E@('+sentence+arange(arity+1).map(i => ')').join(''), true);
+        if (!isRenamingInstanceOf(existsClaim, existsExpected))
+            return this.error('The existence statement ' + existsClaim.sentence + ' should be a renaming of ' + existsExpected.sentence);
+        const uniqueClaim = this.statements.get(idUnique).p; // should be of the form A@1(A@2(...(E@(P))...))
+        const uniqueExpected = parseSentence(arange(arity+2).map(i => 'A@'+(i+1)+'(').join('')+
+            '('+replaceVariable(sentence, '@', '@'+(arity+1))+')=>('+
+            '('+replaceVariable(sentence, '@', '@'+(arity+2))+')=>('+
+            '(@'+(arity+1)+')=(@'+(arity+2)+')))'+
+            arange(arity+2).map(i => ')').join(''), true);
+        if (!isRenamingInstanceOf(uniqueClaim, uniqueExpected))
+            return this.error('The existence statement ' + uniqueClaim.sentence + ' should be a renaming of ' + uniqueExpected.sentence);
+        const parsed = parseSentence(sentence, true); // this sentence means @=f(@1,...,@n)
+        if (parsed.error) return this.error('invalid formula ' + parsed.error);
+        if (parsed.bound.length != 0 || parsed.generics.length != 0) return this.error('invalid formula, expect no bound variables or generics: ' + renderParsed(parsed));
+        if (!arrayEqual(uniSort(parsed.free), ['@'].concat(arange(arity).map(i => '@'+(i+1))))) return this.error('invalid formula, want free variables to be @ and @1 to @'+arity+': ' + renderParsed(parsed));
+        this.orcMap.set(symbol, ['FUNCTION', arity, sentence]); // whatever, verify later lol
+        FUNCTIONS[arity].push(symbol);
+        this.recordAction(['AddFunction', [arity, symbol, sentence, idExists, idUnique], -1, '']);
         return -1;
     }
     AddConnective(arity, symbol, sentence) {
-        if (arity != 2) return 0;
-        if (symbol.length > 2) return 0;
+        if (arity != 2) return this.error('Connectives must have arity 2');
+        if (symbol.length > 2) return this.error('Connectives must have length <= 2');
         if (this.orcMap.has(symbol)) {
             const [curType, curArity, curSentence] = this.orcMap.get(symbol);
             if (curType == 'CONNECTIVE' && curArity == 2 && curSentence == sentence) return -1; // success, we already knew it
-            this.currentError = 'already have a different definition for ' + symbol;
-            return 0;
+            return this.error('already have a different definition for ' + symbol);
         }
         const parsed = parseSentence(sentence);
-        if (parsed.error) {
-            this.currentError = 'invalid formula ' + parsed.error;
-            return 0;
-        }
-        if (parsed.free.length != 0 || !arrayEqual(parsed.generics, ['P','Q'])) {
-            this.currentError = 'invalid formula, expect no free variables and only generics to be P and Q: ' + renderParsed(parsed);
-            return 0;
-        }
+        if (parsed.error) return this.error('invalid formula ' + parsed.error);
+        if (parsed.free.length != 0 || !arrayEqual(parsed.generics, ['P','Q'])) return this.error('invalid formula, expect no free variables and only generics to be P and Q: ' + renderParsed(parsed));
         this.orcMap.set(symbol, ['CONNECTIVE', 2, sentence]); // whatever, verify later lol
         CONNECTIVES[arity].push(symbol);
         this.recordAction(['AddConnective', [arity, symbol, sentence], -1, '']);
         return -1;
     }
     AddRelation(arity, symbol, sentence) {
-        if (arity < 1) return 0;
-        if (symbol.length == 0) return 0;
+        if (arity < 1) return this.error('Relations must have positive arity');
+        if (symbol.length == 0) return this.error('Relation symbol must have positive length');
         const prefix = symbol[0] == "'";
         if (!prefix) {
-            if (arity != 2) {
-                this.currentError = 'arity must be 2 for infix relations (those which don\'t start with "\'")';
-                return 0;
-            }
-            if (symbol.length > 2) {
-                this.currentError = 'infix symbol cannot be too long';
-                return 0;
-            }
+            if (arity != 2) return this.error('arity must be 2 for infix relations (those which don\'t start with "\'")');
+            if (symbol.length > 2) return this.error('infix symbol cannot be too long');
         }
-        if (prefix && /^'[a-z]*$/.test(symbol) == false) {
-            this.currentError = 'symbol must be alphanumeric after apostrophe';
-            return 0;
-        }
+        if (prefix && /^'[a-z]*$/.test(symbol) == false) return this.error('symbol must be alphanumeric after apostrophe');
         if (this.orcMap.has(symbol)) {
             const [curType, curArity, curSentence] = this.orcMap.get(symbol);
             if (curType == 'RELATION' && curArity == arity && curSentence == sentence) return -1; // success, we already knew it
-            this.currentError = 'already have a different definition for ' + symbol + ' ' + curSentence + ' ' + sentence;
-            return 0;
+            return this.error('already have a different definition for ' + symbol + ' ' + curSentence + ' ' + sentence);
         }
         // requires that sentence either has exactly @1 (arity-1) or exactly @1 and @2 (arity-2) as free variables
         const parsed = parseSentence(sentence, true);
-        if (parsed.error) {
-            this.currentError = 'invalid formula ' + parsed.error;
-            return 0;
-        }
-        if (!arrayEqual(uniSort(parsed.free), Array.from(Array(arity).keys()).map(i => '@'+(i+1)))) {
-            this.currentError = 'invalid formula, want free variables to be @1 to @'+arity+': ' + renderParsed(parsed);
-            return 0;
-        }
-        if (parsed.generics.length > 0) {
-            this.currentError = 'invalid formula - cannot have generics: ' + renderParsed(parsed);
-            return 0;
-        }
+        if (parsed.error) return this.error('invalid formula ' + parsed.error);
+        if (!arrayEqual(uniSort(parsed.free), arange(arity).map(i => '@'+(i+1)))) return this.error('invalid formula, want free variables to be @1 to @'+arity+': ' + renderParsed(parsed));
+        if (parsed.generics.length > 0) return this.error('invalid formula - cannot have generics: ' + renderParsed(parsed));
         this.orcMap.set(symbol, ['RELATION', arity, sentence]);
         RELATIONS[arity].push(symbol);
         this.recordAction(['AddRelation', [arity, symbol, sentence], -1, '']);
@@ -730,43 +735,25 @@ class ProverState {
         return [parseSentence(temp), undefined];
     }
     SubConnective(id, symbol, where) {
-        if (!this.statements.has(id)) return 0;
-        if (!this.orcMap.has(symbol)) {
-            this.currentError = 'unknown symbol ' + symbol;
-            return 0;
-        }
+        if (!this.statements.has(id)) return this.error('Unknown statement id: ' + id);
+        if (!this.orcMap.has(symbol)) return this.error('unknown symbol ' + symbol);
         const [symbolType, symbolArity, symbolDefinition] = this.orcMap.get(symbol);
-        if (symbolType != 'CONNECTIVE' || symbolArity != 2 || symbolDefinition == undefined) return 0;
+        if (symbolType != 'CONNECTIVE' || symbolArity != 2 || symbolDefinition == undefined) return this.error('Must be a user-defined connective with arity 2');
         const s = this.statements.get(id);
         const P = s.p;
-        if (!P.sentence.slice(where, where+symbol.length)==symbol) {
-            this.currentError = 'cannot find symbol ' + symbol;
-            return 0;
-        }
+        if (!P.sentence.slice(where, where+symbol.length)==symbol) return this.error('cannot find symbol ' + symbol);
         const t1end = where-1;
         const t1start = matchingBracketReverse(P.sentence, t1end);
-        if (t1start == -1) {
-            this.currentError = 'no matching bracket before the symbol';
-            return 0;
-        }
+        if (t1start == -1) return this.error('no matching bracket before the symbol');
         const term1 = P.sentence.slice(t1start+1, t1end);
         const t1p = parseSentence(term1);
-        if (t1p.error) {
-            this.currentError = 'couldn\'t parse sentence ' + term1 + ' due to ' + t1p.error;
-            return 0;
-        }
+        if (t1p.error) return this.error('couldn\'t parse sentence ' + term1 + ' due to ' + t1p.error);
         const t2start = where + symbol.length;
         const t2end = matchingBracket(P.sentence, t2start);
-        if (t2end == -1) {
-            this.currentError = 'no matching bracket after the symbol';
-            return 0;
-        }
+        if (t2end == -1) return this.error('no matching bracket after the symbol');
         const term2 = P.sentence.slice(t2start+1, t2end);
         const t2p = parseSentence(term2);
-        if (t2p.error) {
-            this.currentError = 'couldn\'t parse sentence ' + term2 + ' due to ' + t2p.error;
-            return 0;
-        }
+        if (t2p.error) return this.error('couldn\'t parse sentence ' + term2 + ' due to ' + t2p.error);
         const pd = parseSentence(symbolDefinition);
         const disallowedGenerics = new Set(pd.generics);
         var i = 0;
@@ -776,49 +763,61 @@ class ProverState {
         const temp2 = replaceGeneric(temp1, 'Q', term2);
         const temp3 = replaceGeneric(temp2, newGeneric, term1);
         const parsedSubbed = parseSentence(temp3);
-        if (parsedSubbed.error) {
-            this.currentError = 'couldn\'t parse statement ' + parsedSubbed.sentence + ' due to ' + parsedSubbed.error;
-            return 0;
-        }
+        if (parsedSubbed.error) return this.error('couldn\'t parse statement ' + parsedSubbed.sentence + ' due to ' + parsedSubbed.error);
         const newSentence = P.sentence.slice(0, t1start) + parsedSubbed.sentence + P.sentence.slice(t2end+1);
         const parsed = parseSentence(newSentence);
         var success = this.proveParsed(parsed, [id], '', s.deps);
         if (success) this.recordAction(['SubConnective', [id, symbol, where], success, parsed.sentence]);
         return success;
     }
-    SubRelation(id, symbol, where) {
-        if (!this.statements.has(id)) return 0;
-        if (!this.orcMap.has(symbol)) {
-            this.currentError = 'unknown symbol ' + symbol;
-            return 0;
-        }
+    SubFunction(id, symbol, where) {
+        if (!this.statements.has(id)) return this.error('Unknown statement id: ' + id);
+        if (!this.orcMap.has(symbol)) return this.error('unknown symbol ' + symbol);
         const [relType, relArity, relDefinition] = this.orcMap.get(symbol);
-        if (relType != 'RELATION' || relDefinition == undefined) return 0;
+        if (relType != 'FUNCTION' || relDefinition == undefined) return this.error('Must be a user-defined function');
         const s = this.statements.get(id);
         const P = s.p;
-        if (!P.sentence.slice(where, where+symbol.length)==symbol) {
-            this.currentError = 'cannot find symbol ' + symbol;
-            return 0;
+        if (P.bound.length > 0) return this.error('Cannot substitute function definitions in a statement with bound variables');
+        if (!P.sentence.slice(where, where+symbol.length)==symbol) return this.error('cannot find symbol ' + symbol);
+        if (symbol[0] != "'") return this.error('Function must start with apostrophe');
+        if (P.sentence[where+symbol.length] != '[') return this.error('function must be followed by square brackets: ' + symbol);
+        const j = matchingBracket(P.sentence, where+symbol.length);
+        if (j == -1) {
+            console.log('aaaah', P.sentence, where);
+            return this.error('could not find close bracket after function ' + symbol + '; this should never happen???');
         }
+        const terms = splitCommas(P.sentence.slice(where+symbol.length+1, j));
+        const parsedDefinition = parseSentence(relDefinition, true);
+        const mapData = terms.map((t, i) => ['@'+(i+1), parseTerm(t)]).concat([['@', parseTerm('z')]]);
+        const [parsedSubbed, err] = this.rewriteSentence(parsedDefinition, new Map(mapData));
+        if (err) return this.error('couldn\'t rewrite statement ' + parsedSubbed.sentence + ' due to ' + err);
+        if (parsedSubbed.error) return this.error('couldn\'t parse statement ' + parsedSubbed.sentence + ' due to ' + parsedSubbed.error);
+        const newSentence = 'Ez((' + parsedSubbed.sentence + ')&&(' + P.sentence.slice(0, where) + 'z' + P.sentence.slice(j+1) + '))';
+        const parsed = parseSentence(newSentence);
+        var success = this.proveParsed(parsed, [id], '', s.deps);
+        if (success) this.recordAction(['SubFunction', [id, symbol, where], success, parsed.sentence]);
+        return success;
+    }
+    SubRelation(id, symbol, where) {
+        if (!this.statements.has(id)) return this.error('Unknown statement id: ' + id);
+        if (!this.orcMap.has(symbol)) return this.error('unknown symbol ' + symbol);
+        const [relType, relArity, relDefinition] = this.orcMap.get(symbol);
+        if (relType != 'RELATION' || relDefinition == undefined) return this.error('Must be a user-defined relation');
+        const s = this.statements.get(id);
+        const P = s.p;
+        if (!P.sentence.slice(where, where+symbol.length)==symbol) return this.error('cannot find symbol ' + symbol);
         if (symbol[0] == "'") {
-            const j = P.sentence.indexOf(']', where);
+            const j = matchingBracket(P.sentence, where+symbol.length);
             if (j == -1) {
-                this.currentError=('could not find close bracket after relation ' + symbol + '; this should never happen???');
                 console.log('aaaah', P.sentence, where);
-                return 0;
+                return this.error('could not find close bracket after relation ' + symbol + '; this should never happen???');
             }
-            const terms = P.sentence.slice(where+symbol.length+1, j).split(',');
+            const terms = splitCommas(P.sentence.slice(where+symbol.length+1, j));
             const parsedDefinition = parseSentence(relDefinition, true);
             const mapData = terms.map((t, i) => ['@'+(i+1), parseTerm(t)]);
             const [parsedSubbed, err] = this.rewriteSentence(parsedDefinition, new Map(mapData));
-            if (err) {
-                this.currentError = 'couldn\'t rewrite statement ' + parsedSubbed.sentence + ' due to ' + err;
-                return 0;
-            }
-            if (parsedSubbed.error) {
-                this.currentError = 'couldn\'t parse statement ' + parsedSubbed.sentence + ' due to ' + parsedSubbed.error;
-                return 0;
-            }
+            if (err) return this.error('couldn\'t rewrite statement ' + parsedSubbed.sentence + ' due to ' + err);
+            if (parsedSubbed.error) return this.error('couldn\'t parse statement ' + parsedSubbed.sentence + ' due to ' + parsedSubbed.error);
             const newSentence = P.sentence.slice(0, where) + parsedSubbed.sentence + P.sentence.slice(j+1);
             const parsed = parseSentence(newSentence);
             var success = this.proveParsed(parsed, [id], '', s.deps);
@@ -827,38 +826,20 @@ class ProverState {
         }
         const t1end = where-1;
         const t1start = matchingBracketReverse(P.sentence, t1end);
-        if (t1start == -1) {
-            this.currentError = 'no matching bracket before the symbol';
-            return 0;
-        }
+        if (t1start == -1) return this.error('no matching bracket before the symbol');
         const term1 = P.sentence.slice(t1start+1, t1end);
         const t1p = parseTerm(term1);
-        if (t1p.error) {
-            this.currentError = 'couldn\'t parse term ' + term1 + ' due to ' + t1p.error;
-            return 0;
-        }
+        if (t1p.error) return this.error('couldn\'t parse term ' + term1 + ' due to ' + t1p.error);
         const t2start = where + symbol.length;
         const t2end = matchingBracket(P.sentence, t2start);
-        if (t2end == -1) {
-            this.currentError = 'no matching bracket after the symbol';
-            return 0;
-        }
+        if (t2end == -1) return this.error('no matching bracket after the symbol');
         const term2 = P.sentence.slice(t2start+1, t2end);
         const t2p = parseTerm(term2);
-        if (t2p.error) {
-            this.currentError = 'couldn\'t parse term ' + term2 + ' due to ' + t2p.error;
-            return 0;
-        }
+        if (t2p.error) return this.error('couldn\'t parse term ' + term2 + ' due to ' + t2p.error);
         const parsedDefinition = parseSentence(relDefinition, true);
         const [parsedSubbed, err] = this.rewriteSentence(parsedDefinition, new Map([['@1', t1p], ['@2', t2p]]));
-        if (err) {
-            this.currentError = 'couldn\'t rewrite statement ' + parsedSubbed.sentence + ' due to ' + err;
-            return 0;
-        }
-        if (parsedSubbed.error) {
-            this.currentError = 'couldn\'t parse statement ' + parsedSubbed.sentence + ' due to ' + parsedSubbed.error;
-            return 0;
-        }
+        if (err) return this.error('couldn\'t rewrite statement ' + parsedSubbed.sentence + ' due to ' + err);
+        if (parsedSubbed.error) return this.error('couldn\'t parse statement ' + parsedSubbed.sentence + ' due to ' + parsedSubbed.error);
         const newSentence = P.sentence.slice(0, t1start) + parsedSubbed.sentence + P.sentence.slice(t2end+1);
         const parsed = parseSentence(newSentence);
         var success = this.proveParsed(parsed, [id], '', s.deps);
@@ -868,31 +849,22 @@ class ProverState {
     asdfChangeBound(id, from, to) { // TODO decide if I keep this
         if (!this.statements.has(id)) return 0;
         var s = this.statements.get(id);
-        if (!s.p.bound.includes(from)) {
-            this.currentError = 'sentence ' + s.sentence + ' does not have ' + from + ' as a bound variable';
-            return 0;
-        }
+        if (!s.p.bound.includes(from)) return this.error('sentence ' + s.sentence + ' does not have ' + from + ' as a bound variable');
         const parsed = parseSentence(replaceVariable(s.p.sentence, from, to));
         var success = this.proveParsed(parsed, [id], '', s.deps);
         if (success) this.recordAction(['ChangeBound', [id, from, to], success, parsed.sentence]);
         return success;
     }
     SV(id, replacement) {
-        if (!this.statements.has(id)) return 0;
+        if (!this.statements.has(id)) return this.error('Unknown statement id: ' + id);
         var s = this.statements.get(id);
         var P = s.p;
-        if (!(P.parsed[0] == 'A' || (P.parsed[0] == 'E' && replacement[0] == '#'))) return 0;
+        if (!(P.parsed[0] == 'A' || (P.parsed[0] == 'E' && replacement[0] == '#'))) return this.error('Must be a forall or exists statement and must start with hash if is exists');
         var variable = P.parsed[1];
         var Q = P.parsed[2];
         var T = parseTerm(replacement);
-        if (T.error) {
-            this.currentError = 'could not parse variable ' + T.sentence + ' due to ' + T.error;
-            return 0;
-        }
-        if (P.parsed[0] == 'E' && this.definitions.has(replacement)) {
-            this.currentError = 'cannot define variable ' + replacement + ' as it is already defined';
-            return 0;
-        }
+        if (T.error) return this.error('could not parse variable ' + T.sentence + ' due to ' + T.error);
+        if (P.parsed[0] == 'E' && this.definitions.has(replacement)) return this.error('cannot define variable ' + replacement + ' as it is already defined');
         const [newQ, renameMapping] = renameDisallowed(Q, new Set(T.free));
         //console.log('SV', newQ.sentence, Q.sentence);
         var newSentence = replaceVariable(newQ.sentence, variable, replacement);
@@ -914,7 +886,7 @@ class ProverState {
         return success;
     }
     DT(i1, i2) {
-        if ((!this.statements.has(i1)) || (!this.statements.has(i2))) return 0;
+        if ((!this.statements.has(i1)) || (!this.statements.has(i2))) return this.error('Unknown statement ids: ' + i1 + ' ' + i2);
         var s1 = this.statements.get(i1);
         var s2 = this.statements.get(i2);
         var sentence = '(' + s1.p.sentence + ')=>(' + s2.p.sentence + ')';
@@ -925,10 +897,7 @@ class ProverState {
         return success;
     }
     MP(i1, i2) {
-        if ((!this.statements.has(i1)) || (!this.statements.has(i2))) {
-            this.currentError = `one of ${i1}, ${i2} not existent`;
-            return 0;
-        }
+        if ((!this.statements.has(i1)) || (!this.statements.has(i2))) return this.error(`one of ${i1}, ${i2} not existent`);
         var s1 = this.statements.get(i1);
         var s2 = this.statements.get(i2);
         var p1 = s1.p;
@@ -945,32 +914,23 @@ class ProverState {
         return 0;
     }
     DEL(id) {
-        if (!this.statements.has(id)) return 0;
+        if (!this.statements.has(id)) return this.error('Unknown statement id: ' + id);
         this.recordAction(['DEL', [id], id, this.statements.get(id).p.sentence]);
         this.statements.get(id).deleted = true;
         return id;
     }
     G(idx, variable) {
-        if (!this.statements.has(idx)) return 0;
-        if (variable[0] == '#') {
-            this.currentError = 'Cannot generalize over definitional variable ' + variable;
-            return 0;
-        }
+        if (!this.statements.has(idx)) return this.error('Unknown statement id: ' + idx);
+        if (variable[0] == '#') return this.error('Cannot generalize over definitional variable ' + variable);
         var s = this.statements.get(idx);
-        /*if (s.p.free.some(v=>v[0]=='#')) {
-            this.currentError = 'Cannot generalize over a sentence that has a free definitional variable';
-            return 0;
-        }*/
+        /*if (s.p.free.some(v=>v[0]=='#')) return this.error('Cannot generalize over a sentence that has a free definitional variable');*/
         const deps = s.deps;
         const defDeps = s.p.free.flatMap(v => v[0]=='#'?this.variableDefinitions.get(v):[]);
         //console.log(defDeps);
         for (const id of s.deps.concat(defDeps)) {
             var s1 = this.statements.get(id);
             //if (s1.proved) continue;
-            if (s1.p.free.includes(variable)) {
-                this.currentError = 'The assumptions or definitions contain <b>' + variable + '</b> as a free variable, so this is invalid.';
-                return 0;
-            }
+            if (s1.p.free.includes(variable)) return this.error('The assumptions or definitions contain <b>' + variable + '</b> as a free variable, so this is invalid.');
         }
         var sentence = `A${variable}(${s.p.sentence})`;
         var parsed = parseSentence(sentence);
@@ -979,17 +939,14 @@ class ProverState {
         return success;
     }
     GE(idx, sentence) {
-        if (!this.statements.has(idx)) return 0;
+        if (!this.statements.has(idx)) return this.error('Unknown statement id: ' + idx);
 
         const s = this.statements.get(idx);
         const sParsed = s.p;
 
         const claimParsed = parseSentence(sentence);
-        if (claimParsed.error) {
-            this.currentError = renderParsed(claimParsed);
-            return 0;
-        }
-        if (claimParsed.parsed[0] != 'E') return 0;
+        if (claimParsed.error) return this.error(renderParsed(claimParsed));
+        if (claimParsed.parsed[0] != 'E') return this.error('Statement must start with exists');
         const variable = claimParsed.parsed[1];
         const subSentence = claimParsed.parsed[2].sentence; // should have `variable` only as free
         const j = searchToken(subSentence, variable);
@@ -1003,24 +960,21 @@ class ProverState {
             targetSentence = replacedSubSentence;
         }
         if (sParsed.sentence != targetSentence) {
-            this.currentError = 'Could not identify ' + renderParsed(sParsed) + ' as an example of ' + renderParsed(claimParsed);
             console.log('Error generalising to exists: want equal', sParsed.sentence, targetSentence);
             const replacement = getSubSentence(sParsed.sentence, j);
             console.log(subSentence, variable, replacement);
-            return 0;
+            return this.error('Could not identify ' + renderParsed(sParsed) + ' as an example of ' + renderParsed(claimParsed));
         }
         var success = this.proveParsed(claimParsed, [idx], '', s.deps);
         if (success) this.recordAction(['GE', [idx, sentence], success, claimParsed.sentence]);
         return success;
     }
     S(idx, gen, target) {
-        if (!this.statements.has(idx)) return 0;
+        if (!this.statements.has(idx)) return this.error('Unknown statemet id: ' + idx);
         var s = this.statements.get(idx);
-        if (s.deps.length > 0) {
-            this.currentError = 'can\'t specialise ' + gen + ' because that statement is, or depends on, unproven assumptions.';
-            return 0;
-        }
+        if (s.deps.length > 0) return this.error('can\'t specialise ' + gen + ' because that statement is, or depends on, unproven assumptions.');
         var sentence = replaceGeneric(s.p.sentence, gen, target);
+        console.log(sentence);
         const parsed = parseSentence(sentence);
         var success = this.proveParsed(parsed, [idx], '', s.deps);
         if (success) this.recordAction(['S', [idx, gen, target], success, parsed.sentence]);
@@ -1136,6 +1090,8 @@ function expandSymbol(i, symbol, where) {
         globalProver.SubRelation(i, symbol, where);
     else if (typeName == 'CONNECTIVE')
         globalProver.SubConnective(i, symbol, where);
+    else if (typeName == 'FUNCTION')
+        globalProver.SubFunction(i, symbol, where);
     updatePage();
 }
 function deleteStatement(i, check=false) {
@@ -1207,7 +1163,7 @@ function updatePage() {
     for (const [i, statement] of globalProver.statements.entries()) {
         if (statement.deleted) continue;
         var style = statement.highlight ? 'background-color:white' : '';
-        output += "<tr style='"+style+"' id='statement"+i+"'><td>"+i+"</td><td style='white-space: nowrap; width: 1px; padding-right: 5px'>" +
+        output += "<tr style='"+style+"' id='statement"+i+"'><td style='white-space:nowrap; width:1px;padding-right:5px'>"+i+"</td><td style='white-space: nowrap; width: 1px; padding-right: 5px'>" +
     //    "<button onclick='saveStatement("+i+")'>&#128190;</button>" +
         "<button title='Copy the underlying statement' onclick='copyStatement("+i+")'>&#9986;</button>" +
         "<button title='Quantify over all of some variable' onclick='generalizeStatement(globalProver.statements.get("+i+"))'>&forall;</button>" +
@@ -1218,7 +1174,7 @@ function updatePage() {
         "<button title='Add a comment' onclick='commentStatement("+i+")'>c</button>"+
         "<button title='Highlight' onclick='proverHighlight("+i+")'>#</button>"+
         "<button title='Delete' onclick='deleteStatement(" + (i) + ",true)' >x</button>"+
-        "</td><td style='width:50%'>" + renderClickable(statement) + "</td><td>" + statement.comment + "</td><td>" + statement.deps + "</td></tr>";
+        "</td><td style='width:50%; word-wrap: break-word;word-break: break-word;'>" + renderClickable(statement) + "</td><td style='width:30%'>" + statement.comment + "</td><td>" + statement.deps + "</td></tr>";
     }
     //var scrollpos = window.scrollY;
     document.getElementById("statementTable").innerHTML = output;
@@ -1307,16 +1263,22 @@ function importFile(filename=undefined, callback=undefined) {
 function inspectFile() {
     const filename = prompt('What file to open? WARNING: will lose progress');
     if (!filename) return;
+    globalProver = new ProverState();
+    globalProver.storage = "globalProver_";
+    globalProver.saveActions(true);
     globalProver.importFiles([filename], function([theorems, allFiles], error) {
         if (error) {
             alert(error);
             console.log(error);
             console.log(globalProver.currentError);
+            globalProver.saveActions(true);
             updatePage();
             return;
         }
         //console.log('succeeded importing:', theorems, allFiles);
         updatePage();
+        globalProver.saveActions(true);
+        if (window.userOnLoad) setTimeout(() => { window.userOnLoad(); });
     }, true);
 }
 function getFile(path, callback) {
@@ -1429,6 +1391,7 @@ function bodyOnLoad() {
             if (error) {
                 alert('FAILED TO LOAD FILES:', error);
                 console.log(globalProver.currentError);
+                globalProver.saveActions(true);
                 updatePage();
                 if (window.userOnLoad) setTimeout(() => { window.userOnLoad(); });
                 return;
@@ -1447,6 +1410,7 @@ function bodyOnLoad() {
             if (!globalProver.doAction(x)) {
                 alert('FAILED TO LOAD at ' + i + ' of ' + actions.length);
                 console.log('FAILED TO LOAD', i, x, actions, globalProver.currentError);
+                globalProver.saveActions(true);
                 updatePage();
                 return false;
             }

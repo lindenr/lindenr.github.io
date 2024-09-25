@@ -1,6 +1,6 @@
 window.exportStatements_nearby_multiples = new Map([["An(Am(('nprod[m,n])=>(Ai(Aj(((i)<(j))=>(((j)<=((i)+(n)))=>('gcd[(S(0))+((m)*(i)),(S(0))+((m)*(j)),S(0)])))))))","nearby multiples plus one are coprime"]]);
 
-window.requiredModules_nearby_multiples = ["addition_commutes","addition_associates","addition","distributivity","and_introduction","multiplication","leq","lt","div_transitive","div","gcd","primes"];
+window.requiredModules_nearby_multiples = ["addition_commutes","addition_associates","addition","distributivity","and_introduction","multiplication","leq","lt","div_transitive","div","gcdrel","primes"];
 
 window.proof_nearby_multiples = [
  [

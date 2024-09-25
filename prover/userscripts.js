@@ -243,6 +243,18 @@ window.userModifyInput = function(s) {
             var temp2 = doTransforms([ae2, 'S', 'P', s1, 'S', 'Q', s2]);
             var final2 = globalProver.MP(temp2, id);
             for (var k of [ae1, ae2, temp1, temp2]) deleteStatement(k);
+        } else if (P[0] == '||') {
+            if (!globalProver.filesImported.includes('logic')) {
+                alert('cannot magic the OR, since logic not imported');
+                return '';
+            }
+            var possibilities = [];
+            for (const [i,s] of globalProver.statements.entries()) {
+                if (s.p.parsed[0] != '=>') continue;
+                if (s.deleted) continue;
+                if (s.p.parsed[1] == P[1]) possibilities.append([i, 1, s.p.parsed[2]]);
+                else if (s.p.parsed[1] == P[2]) possibilities.append([i, 2, s.p.parsed[2]]);
+            }
         }
         updatePage();
         return '';
