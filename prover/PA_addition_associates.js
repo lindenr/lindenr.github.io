@@ -1,5 +1,198 @@
+window.exportStatements_addition_associates = new Map([["Ax(Ay(Az((((x)+(y))+(z))=((x)+((y)+(z))))))","addition_associates"]]);
+
 window.requiredModules_addition_associates = ["S_functional"];
+
 window.proof_addition_associates = [
+ [
+  "AddRelation",
+  [
+   2,
+   "<=",
+   "Ex(((@1)+(x))=(@2))"
+  ],
+  -1,
+  ""
+ ],
+ [
+  "AddRelation",
+  [
+   2,
+   "<",
+   "Ex(((@1)+(S(x)))=(@2))"
+  ],
+  -1,
+  ""
+ ],
+ [
+  "AddRelation",
+  [
+   2,
+   "!<",
+   "((@1)<(@2))=>(F)"
+  ],
+  -1,
+  ""
+ ],
+ [
+  "AddRelation",
+  [
+   2,
+   "!=",
+   "((@1)=(@2))=>(F)"
+  ],
+  -1,
+  ""
+ ],
+ [
+  "AddRelation",
+  [
+   2,
+   "|",
+   "Ex(((@1)*(x))=(@2))"
+  ],
+  -1,
+  ""
+ ],
+ [
+  "AddRelation",
+  [
+   2,
+   "!|",
+   "(Ex(((@1)*(x))=(@2)))=>(F)"
+  ],
+  -1,
+  ""
+ ],
+ [
+  "AddConnective",
+  [
+   2,
+   "||",
+   "((P)=>(F))=>(Q)"
+  ],
+  -1,
+  ""
+ ],
+ [
+  "AddConnective",
+  [
+   2,
+   "&&",
+   "((P)=>((Q)=>(F)))=>(F)"
+  ],
+  -1,
+  ""
+ ],
+ [
+  "AddRelation",
+  [
+   3,
+   "'gcd",
+   "(((@3)|(@1))&&((@3)|(@2)))&&(Ah((((h)|(@1))&&((h)|(@2)))=>((h)|(@3))))"
+  ],
+  -1,
+  ""
+ ],
+ [
+  "AddRelation",
+  [
+   3,
+   "'lcm",
+   "(((@1)|(@3))&&((@2)|(@3)))&&(Az(((@1)|(z))=>(((@2)|(z))=>((@3)|(z)))))"
+  ],
+  -1,
+  ""
+ ],
+ [
+  "AddRelation",
+  [
+   3,
+   "'mod",
+   "((@3)<(@2))&&(En((@1)=(((n)*(@2))+(@3))))"
+  ],
+  -1,
+  ""
+ ],
+ [
+  "AddRelation",
+  [
+   3,
+   "'zmod",
+   "(((@2)=(0))&&((@3)=(0)))||('mod[@1,@2,@3])"
+  ],
+  -1,
+  ""
+ ],
+ [
+  "AddRelation",
+  [
+   3,
+   "'cong",
+   "Ea(('mod[@1,@3,a])&&('mod[@2,@3,a]))"
+  ],
+  -1,
+  ""
+ ],
+ [
+  "AddRelation",
+  [
+   3,
+   "'conga",
+   "Ea(Eb(((@1)+((@3)*(a)))=((@2)+((@3)*(b)))))"
+  ],
+  -1,
+  ""
+ ],
+ [
+  "AddRelation",
+  [
+   2,
+   "'bezoutable",
+   "((@1)!=(0))=>(((@2)!=(0))=>(Eu(Eg(('cong[(u)*(@1),g,@2])&&('gcd[@1,@2,g])))))"
+  ],
+  -1,
+  ""
+ ],
+ [
+  "AddRelation",
+  [
+   2,
+   "'br",
+   "Ea(Eb(Eg(('gcd[@1,@2,g])&&(((a)*(@1))=(((b)*(@2))+(g))))))"
+  ],
+  -1,
+  ""
+ ],
+ [
+  "AddRelation",
+  [
+   2,
+   "'brr",
+   "((@1)!=(0))=>('br[@1,@2])"
+  ],
+  -1,
+  ""
+ ],
+ [
+  "AddRelation",
+  [
+   1,
+   "'prime",
+   "((S(0))<(@1))&&(Aa(((a)<(@1))=>(((a)|(@1))=>((a)=(S(0))))))"
+  ],
+  -1,
+  ""
+ ],
+ [
+  "AddRelation",
+  [
+   2,
+   "'nprod",
+   "((@1)!=(0))&&(Ax(((x)<=(@2))=>(((x)!=(0))=>((x)|(@1)))))"
+  ],
+  -1,
+  ""
+ ],
  [
   "SV",
   [
@@ -96,7 +289,7 @@ window.proof_addition_associates = [
   [
    23
   ],
-  25,
+  23,
   "Ay0((((x)+(y))=(y0))=>((P[(x)+(y)])=>(P[y0])))"
  ],
  [
@@ -106,7 +299,7 @@ window.proof_addition_associates = [
    "P",
    "(((x)+(y))+(0))=(@)"
   ],
-  26,
+  25,
   "(((x)+(y))=((x)+((y)+(0))))=>(((((x)+(y))+(0))=((x)+(y)))=>((((x)+(y))+(0))=((x)+((y)+(0)))))"
  ],
  [
@@ -114,7 +307,7 @@ window.proof_addition_associates = [
   [
    24
   ],
-  27,
+  24,
   "(((x)+(y))=((x)+((y)+(0))))=>((P[(x)+(y)])=>(P[(x)+((y)+(0))]))"
  ],
  [
@@ -123,7 +316,7 @@ window.proof_addition_associates = [
    25,
    22
   ],
-  28,
+  26,
   "((((x)+(y))+(0))=((x)+(y)))=>((((x)+(y))+(0))=((x)+((y)+(0))))"
  ],
  [
@@ -132,7 +325,7 @@ window.proof_addition_associates = [
    26,
    15
   ],
-  29,
+  27,
   "(((x)+(y))+(0))=((x)+((y)+(0)))"
  ],
  [
@@ -140,7 +333,7 @@ window.proof_addition_associates = [
   [
    26
   ],
-  30,
+  26,
   "((((x)+(y))+(0))=((x)+(y)))=>((((x)+(y))+(0))=((x)+((y)+(0))))"
  ],
  [
@@ -148,7 +341,7 @@ window.proof_addition_associates = [
   [
    25
   ],
-  31,
+  25,
   "(((x)+(y))=((x)+((y)+(0))))=>(((((x)+(y))+(0))=((x)+(y)))=>((((x)+(y))+(0))=((x)+((y)+(0)))))"
  ],
  [
@@ -156,7 +349,7 @@ window.proof_addition_associates = [
   [
    "(((x)+(y))+(z))=((x)+((y)+(z)))"
   ],
-  32,
+  28,
   "(((x)+(y))+(z))=((x)+((y)+(z)))"
  ],
  [
@@ -165,7 +358,7 @@ window.proof_addition_associates = [
    11,
    "(x)+(y)"
   ],
-  33,
+  29,
   "Ay0((((x)+(y))+(S(y0)))=(S(((x)+(y))+(y0))))"
  ],
  [
@@ -174,7 +367,7 @@ window.proof_addition_associates = [
    29,
    "z"
   ],
-  34,
+  30,
   "(((x)+(y))+(S(z)))=(S(((x)+(y))+(z)))"
  ],
  [
@@ -182,7 +375,7 @@ window.proof_addition_associates = [
   [
    "S_functional"
   ],
-  35,
+  31,
   "Ax(Ay(((x)=(y))=>((S(x))=(S(y)))))"
  ],
  [
@@ -191,7 +384,7 @@ window.proof_addition_associates = [
    31,
    "((x)+(y))+(z)"
   ],
-  36,
+  32,
   "Ay0(((((x)+(y))+(z))=(y0))=>((S(((x)+(y))+(z)))=(S(y0))))"
  ],
  [
@@ -200,7 +393,7 @@ window.proof_addition_associates = [
    32,
    "(x)+((y)+(z))"
   ],
-  37,
+  33,
   "((((x)+(y))+(z))=((x)+((y)+(z))))=>((S(((x)+(y))+(z)))=(S((x)+((y)+(z)))))"
  ],
  [
@@ -209,7 +402,7 @@ window.proof_addition_associates = [
    33,
    28
   ],
-  38,
+  34,
   "(S(((x)+(y))+(z)))=(S((x)+((y)+(z))))"
  ],
  [
@@ -218,7 +411,7 @@ window.proof_addition_associates = [
    11,
    "x"
   ],
-  39,
+  35,
   "Ay(((x)+(S(y)))=(S((x)+(y))))"
  ],
  [
@@ -227,7 +420,7 @@ window.proof_addition_associates = [
    35,
    "(y)+(z)"
   ],
-  40,
+  36,
   "((x)+(S((y)+(z))))=(S((x)+((y)+(z))))"
  ],
  [
@@ -236,7 +429,7 @@ window.proof_addition_associates = [
    11,
    "y"
   ],
-  41,
+  37,
   "Ay0(((y)+(S(y0)))=(S((y)+(y0))))"
  ],
  [
@@ -245,7 +438,7 @@ window.proof_addition_associates = [
    37,
    "z"
   ],
-  42,
+  38,
   "((y)+(S(z)))=(S((y)+(z)))"
  ],
  [
@@ -254,7 +447,7 @@ window.proof_addition_associates = [
    4,
    "(x)+((y)+(S(z)))"
   ],
-  43,
+  39,
   "((x)+((y)+(S(z))))=((x)+((y)+(S(z))))"
  ],
  [
@@ -263,7 +456,7 @@ window.proof_addition_associates = [
    5,
    "(y)+(S(z))"
   ],
-  44,
+  40,
   "Ay0((((y)+(S(z)))=(y0))=>((P[(y)+(S(z))])=>(P[y0])))"
  ],
  [
@@ -272,7 +465,7 @@ window.proof_addition_associates = [
    40,
    "S((y)+(z))"
   ],
-  45,
+  41,
   "(((y)+(S(z)))=(S((y)+(z))))=>((P[(y)+(S(z))])=>(P[S((y)+(z))]))"
  ],
  [
@@ -281,7 +474,7 @@ window.proof_addition_associates = [
    41,
    38
   ],
-  46,
+  42,
   "(P[(y)+(S(z))])=>(P[S((y)+(z))])"
  ],
  [
@@ -291,7 +484,7 @@ window.proof_addition_associates = [
    "P",
    "((x)+((y)+(S(z))))=((x)+(@))"
   ],
-  47,
+  43,
   "(((x)+((y)+(S(z))))=((x)+((y)+(S(z)))))=>(((x)+((y)+(S(z))))=((x)+(S((y)+(z)))))"
  ],
  [
@@ -300,7 +493,7 @@ window.proof_addition_associates = [
    43,
    39
   ],
-  48,
+  44,
   "((x)+((y)+(S(z))))=((x)+(S((y)+(z))))"
  ],
  [
@@ -309,7 +502,7 @@ window.proof_addition_associates = [
    5,
    "S(((x)+(y))+(z))"
   ],
-  49,
+  45,
   "Ay0(((S(((x)+(y))+(z)))=(y0))=>((P[S(((x)+(y))+(z))])=>(P[y0])))"
  ],
  [
@@ -318,7 +511,7 @@ window.proof_addition_associates = [
    45,
    "S((x)+((y)+(z)))"
   ],
-  50,
+  46,
   "((S(((x)+(y))+(z)))=(S((x)+((y)+(z)))))=>((P[S(((x)+(y))+(z))])=>(P[S((x)+((y)+(z)))]))"
  ],
  [
@@ -326,7 +519,7 @@ window.proof_addition_associates = [
   [
    45
   ],
-  51,
+  45,
   "Ay0(((S(((x)+(y))+(z)))=(y0))=>((P[S(((x)+(y))+(z))])=>(P[y0])))"
  ],
  [
@@ -336,7 +529,7 @@ window.proof_addition_associates = [
    "P",
    "(((x)+(y))+(S(z)))=(@)"
   ],
-  52,
+  47,
   "((S(((x)+(y))+(z)))=(S((x)+((y)+(z)))))=>(((((x)+(y))+(S(z)))=(S(((x)+(y))+(z))))=>((((x)+(y))+(S(z)))=(S((x)+((y)+(z))))))"
  ],
  [
@@ -344,7 +537,7 @@ window.proof_addition_associates = [
   [
    46
   ],
-  53,
+  46,
   "((S(((x)+(y))+(z)))=(S((x)+((y)+(z)))))=>((P[S(((x)+(y))+(z))])=>(P[S((x)+((y)+(z)))]))"
  ],
  [
@@ -353,7 +546,7 @@ window.proof_addition_associates = [
    47,
    34
   ],
-  54,
+  48,
   "((((x)+(y))+(S(z)))=(S(((x)+(y))+(z))))=>((((x)+(y))+(S(z)))=(S((x)+((y)+(z)))))"
  ],
  [
@@ -362,7 +555,7 @@ window.proof_addition_associates = [
    48,
    30
   ],
-  55,
+  49,
   "(((x)+(y))+(S(z)))=(S((x)+((y)+(z))))"
  ],
  [
@@ -370,7 +563,7 @@ window.proof_addition_associates = [
   [
    48
   ],
-  56,
+  48,
   "((((x)+(y))+(S(z)))=(S(((x)+(y))+(z))))=>((((x)+(y))+(S(z)))=(S((x)+((y)+(z)))))"
  ],
  [
@@ -378,7 +571,7 @@ window.proof_addition_associates = [
   [
    47
   ],
-  57,
+  47,
   "((S(((x)+(y))+(z)))=(S((x)+((y)+(z)))))=>(((((x)+(y))+(S(z)))=(S(((x)+(y))+(z))))=>((((x)+(y))+(S(z)))=(S((x)+((y)+(z))))))"
  ],
  [
@@ -387,7 +580,7 @@ window.proof_addition_associates = [
    5,
    "(x)+(S((y)+(z)))"
   ],
-  58,
+  50,
   "Ay0((((x)+(S((y)+(z))))=(y0))=>((P[(x)+(S((y)+(z)))])=>(P[y0])))"
  ],
  [
@@ -396,7 +589,7 @@ window.proof_addition_associates = [
    50,
    "S((x)+((y)+(z)))"
   ],
-  59,
+  51,
   "(((x)+(S((y)+(z))))=(S((x)+((y)+(z)))))=>((P[(x)+(S((y)+(z)))])=>(P[S((x)+((y)+(z)))]))"
  ],
  [
@@ -404,7 +597,7 @@ window.proof_addition_associates = [
   [
    50
   ],
-  60,
+  50,
   "Ay0((((x)+(S((y)+(z))))=(y0))=>((P[(x)+(S((y)+(z)))])=>(P[y0])))"
  ],
  [
@@ -414,7 +607,7 @@ window.proof_addition_associates = [
    "P",
    "((x)+((y)+(S(z))))=(@)"
   ],
-  61,
+  52,
   "(((x)+(S((y)+(z))))=(S((x)+((y)+(z)))))=>((((x)+((y)+(S(z))))=((x)+(S((y)+(z)))))=>(((x)+((y)+(S(z))))=(S((x)+((y)+(z))))))"
  ],
  [
@@ -422,7 +615,7 @@ window.proof_addition_associates = [
   [
    51
   ],
-  62,
+  51,
   "(((x)+(S((y)+(z))))=(S((x)+((y)+(z)))))=>((P[(x)+(S((y)+(z)))])=>(P[S((x)+((y)+(z)))]))"
  ],
  [
@@ -431,7 +624,7 @@ window.proof_addition_associates = [
    52,
    36
   ],
-  63,
+  53,
   "(((x)+((y)+(S(z))))=((x)+(S((y)+(z)))))=>(((x)+((y)+(S(z))))=(S((x)+((y)+(z)))))"
  ],
  [
@@ -440,7 +633,7 @@ window.proof_addition_associates = [
    53,
    44
   ],
-  64,
+  54,
   "((x)+((y)+(S(z))))=(S((x)+((y)+(z))))"
  ],
  [
@@ -448,7 +641,7 @@ window.proof_addition_associates = [
   [
    53
   ],
-  65,
+  53,
   "(((x)+((y)+(S(z))))=((x)+(S((y)+(z)))))=>(((x)+((y)+(S(z))))=(S((x)+((y)+(z)))))"
  ],
  [
@@ -456,7 +649,7 @@ window.proof_addition_associates = [
   [
    52
   ],
-  66,
+  52,
   "(((x)+(S((y)+(z))))=(S((x)+((y)+(z)))))=>((((x)+((y)+(S(z))))=((x)+(S((y)+(z)))))=>(((x)+((y)+(S(z))))=(S((x)+((y)+(z))))))"
  ],
  [
@@ -465,7 +658,7 @@ window.proof_addition_associates = [
    5,
    "(x)+((y)+(S(z)))"
   ],
-  67,
+  55,
   "Ay0((((x)+((y)+(S(z))))=(y0))=>((P[(x)+((y)+(S(z)))])=>(P[y0])))"
  ],
  [
@@ -474,7 +667,7 @@ window.proof_addition_associates = [
    55,
    "S((x)+((y)+(z)))"
   ],
-  68,
+  56,
   "(((x)+((y)+(S(z))))=(S((x)+((y)+(z)))))=>((P[(x)+((y)+(S(z)))])=>(P[S((x)+((y)+(z)))]))"
  ],
  [
@@ -482,7 +675,7 @@ window.proof_addition_associates = [
   [
    55
   ],
-  69,
+  55,
   "Ay0((((x)+((y)+(S(z))))=(y0))=>((P[(x)+((y)+(S(z)))])=>(P[y0])))"
  ],
  [
@@ -492,7 +685,7 @@ window.proof_addition_associates = [
    "P",
    "(@)=((x)+((y)+(S(z))))"
   ],
-  70,
+  57,
   "(((x)+((y)+(S(z))))=(S((x)+((y)+(z)))))=>((((x)+((y)+(S(z))))=((x)+((y)+(S(z)))))=>((S((x)+((y)+(z))))=((x)+((y)+(S(z))))))"
  ],
  [
@@ -500,7 +693,7 @@ window.proof_addition_associates = [
   [
    56
   ],
-  71,
+  56,
   "(((x)+((y)+(S(z))))=(S((x)+((y)+(z)))))=>((P[(x)+((y)+(S(z)))])=>(P[S((x)+((y)+(z)))]))"
  ],
  [
@@ -509,7 +702,7 @@ window.proof_addition_associates = [
    4,
    "(x)+((y)+(S(z)))"
   ],
-  72,
+  58,
   "((x)+((y)+(S(z))))=((x)+((y)+(S(z))))"
  ],
  [
@@ -518,7 +711,7 @@ window.proof_addition_associates = [
    57,
    54
   ],
-  73,
+  59,
   "(((x)+((y)+(S(z))))=((x)+((y)+(S(z)))))=>((S((x)+((y)+(z))))=((x)+((y)+(S(z)))))"
  ],
  [
@@ -527,7 +720,7 @@ window.proof_addition_associates = [
    59,
    58
   ],
-  74,
+  60,
   "(S((x)+((y)+(z))))=((x)+((y)+(S(z))))"
  ],
  [
@@ -536,7 +729,7 @@ window.proof_addition_associates = [
    5,
    "S((x)+((y)+(z)))"
   ],
-  75,
+  61,
   "Ay0(((S((x)+((y)+(z))))=(y0))=>((P[S((x)+((y)+(z)))])=>(P[y0])))"
  ],
  [
@@ -545,7 +738,7 @@ window.proof_addition_associates = [
    61,
    "(x)+((y)+(S(z)))"
   ],
-  76,
+  62,
   "((S((x)+((y)+(z))))=((x)+((y)+(S(z)))))=>((P[S((x)+((y)+(z)))])=>(P[(x)+((y)+(S(z)))]))"
  ],
  [
@@ -553,7 +746,7 @@ window.proof_addition_associates = [
   [
    61
   ],
-  77,
+  61,
   "Ay0(((S((x)+((y)+(z))))=(y0))=>((P[S((x)+((y)+(z)))])=>(P[y0])))"
  ],
  [
@@ -563,7 +756,7 @@ window.proof_addition_associates = [
    "P",
    "(((x)+(y))+(S(z)))=(@)"
   ],
-  78,
+  63,
   "((S((x)+((y)+(z))))=((x)+((y)+(S(z)))))=>(((((x)+(y))+(S(z)))=(S((x)+((y)+(z)))))=>((((x)+(y))+(S(z)))=((x)+((y)+(S(z))))))"
  ],
  [
@@ -571,7 +764,7 @@ window.proof_addition_associates = [
   [
    62
   ],
-  79,
+  62,
   "((S((x)+((y)+(z))))=((x)+((y)+(S(z)))))=>((P[S((x)+((y)+(z)))])=>(P[(x)+((y)+(S(z)))]))"
  ],
  [
@@ -580,7 +773,7 @@ window.proof_addition_associates = [
    63,
    60
   ],
-  80,
+  64,
   "((((x)+(y))+(S(z)))=(S((x)+((y)+(z)))))=>((((x)+(y))+(S(z)))=((x)+((y)+(S(z)))))"
  ],
  [
@@ -589,7 +782,7 @@ window.proof_addition_associates = [
    64,
    49
   ],
-  81,
+  65,
   "(((x)+(y))+(S(z)))=((x)+((y)+(S(z))))"
  ],
  [
@@ -597,7 +790,7 @@ window.proof_addition_associates = [
   [
    57
   ],
-  82,
+  57,
   "(((x)+((y)+(S(z))))=(S((x)+((y)+(z)))))=>((((x)+((y)+(S(z))))=((x)+((y)+(S(z)))))=>((S((x)+((y)+(z))))=((x)+((y)+(S(z))))))"
  ],
  [
@@ -605,7 +798,7 @@ window.proof_addition_associates = [
   [
    58
   ],
-  83,
+  58,
   "((x)+((y)+(S(z))))=((x)+((y)+(S(z))))"
  ],
  [
@@ -613,7 +806,7 @@ window.proof_addition_associates = [
   [
    59
   ],
-  84,
+  59,
   "(((x)+((y)+(S(z))))=((x)+((y)+(S(z)))))=>((S((x)+((y)+(z))))=((x)+((y)+(S(z)))))"
  ],
  [
@@ -621,7 +814,7 @@ window.proof_addition_associates = [
   [
    60
   ],
-  85,
+  60,
   "(S((x)+((y)+(z))))=((x)+((y)+(S(z))))"
  ],
  [
@@ -629,7 +822,7 @@ window.proof_addition_associates = [
   [
    63
   ],
-  86,
+  63,
   "((S((x)+((y)+(z))))=((x)+((y)+(S(z)))))=>(((((x)+(y))+(S(z)))=(S((x)+((y)+(z)))))=>((((x)+(y))+(S(z)))=((x)+((y)+(S(z))))))"
  ],
  [
@@ -637,7 +830,7 @@ window.proof_addition_associates = [
   [
    64
   ],
-  87,
+  64,
   "((((x)+(y))+(S(z)))=(S((x)+((y)+(z)))))=>((((x)+(y))+(S(z)))=((x)+((y)+(S(z)))))"
  ],
  [
@@ -646,7 +839,7 @@ window.proof_addition_associates = [
    28,
    65
   ],
-  88,
+  66,
   "((((x)+(y))+(z))=((x)+((y)+(z))))=>((((x)+(y))+(S(z)))=((x)+((y)+(S(z)))))"
  ],
  [
@@ -655,7 +848,7 @@ window.proof_addition_associates = [
    66,
    "z"
   ],
-  89,
+  67,
   "Az(((((x)+(y))+(z))=((x)+((y)+(z))))=>((((x)+(y))+(S(z)))=((x)+((y)+(S(z))))))"
  ],
  [
@@ -664,7 +857,7 @@ window.proof_addition_associates = [
    67,
    "x"
   ],
-  90,
+  68,
   "Ax(Az(((((x)+(y))+(z))=((x)+((y)+(z))))=>((((x)+(y))+(S(z)))=((x)+((y)+(S(z)))))))"
  ],
  [
@@ -673,7 +866,7 @@ window.proof_addition_associates = [
    68,
    "t"
   ],
-  91,
+  69,
   "Az(((((t)+(y))+(z))=((t)+((y)+(z))))=>((((t)+(y))+(S(z)))=((t)+((y)+(S(z))))))"
  ],
  [
@@ -682,7 +875,7 @@ window.proof_addition_associates = [
    69,
    "x"
   ],
-  92,
+  70,
   "((((t)+(y))+(x))=((t)+((y)+(x))))=>((((t)+(y))+(S(x)))=((t)+((y)+(S(x)))))"
  ],
  [
@@ -691,7 +884,7 @@ window.proof_addition_associates = [
    27,
    "x"
   ],
-  93,
+  71,
   "Ax((((x)+(y))+(0))=((x)+((y)+(0))))"
  ],
  [
@@ -700,7 +893,7 @@ window.proof_addition_associates = [
    71,
    "t"
   ],
-  94,
+  72,
   "(((t)+(y))+(0))=((t)+((y)+(0)))"
  ],
  [
@@ -709,7 +902,7 @@ window.proof_addition_associates = [
    70,
    "x"
   ],
-  95,
+  73,
   "Ax(((((t)+(y))+(x))=((t)+((y)+(x))))=>((((t)+(y))+(S(x)))=((t)+((y)+(S(x))))))"
  ],
  [
@@ -719,7 +912,7 @@ window.proof_addition_associates = [
    "P",
    "(((t)+(y))+(@))=((t)+((y)+(@)))"
   ],
-  96,
+  74,
   "((((t)+(y))+(0))=((t)+((y)+(0))))=>((Ax(((((t)+(y))+(x))=((t)+((y)+(x))))=>((((t)+(y))+(S(x)))=((t)+((y)+(S(x)))))))=>(Ax((((t)+(y))+(x))=((t)+((y)+(x))))))"
  ],
  [
@@ -728,7 +921,7 @@ window.proof_addition_associates = [
    74,
    72
   ],
-  97,
+  75,
   "(Ax(((((t)+(y))+(x))=((t)+((y)+(x))))=>((((t)+(y))+(S(x)))=((t)+((y)+(S(x)))))))=>(Ax((((t)+(y))+(x))=((t)+((y)+(x)))))"
  ],
  [
@@ -737,7 +930,7 @@ window.proof_addition_associates = [
    75,
    73
   ],
-  98,
+  76,
   "Ax((((t)+(y))+(x))=((t)+((y)+(x))))"
  ],
  [
@@ -746,7 +939,7 @@ window.proof_addition_associates = [
    76,
    "z"
   ],
-  99,
+  77,
   "(((t)+(y))+(z))=((t)+((y)+(z)))"
  ],
  [
@@ -755,7 +948,7 @@ window.proof_addition_associates = [
    77,
    "z"
   ],
-  100,
+  78,
   "Az((((t)+(y))+(z))=((t)+((y)+(z))))"
  ],
  [
@@ -764,7 +957,7 @@ window.proof_addition_associates = [
    78,
    "y"
   ],
-  101,
+  79,
   "Ay(Az((((t)+(y))+(z))=((t)+((y)+(z)))))"
  ],
  [
@@ -773,7 +966,7 @@ window.proof_addition_associates = [
    79,
    "t"
   ],
-  102,
+  80,
   "At(Ay(Az((((t)+(y))+(z))=((t)+((y)+(z))))))"
  ],
  [
@@ -782,7 +975,7 @@ window.proof_addition_associates = [
    80,
    "x"
   ],
-  103,
+  81,
   "Ay(Az((((x)+(y))+(z))=((x)+((y)+(z)))))"
  ],
  [
@@ -791,7 +984,24 @@ window.proof_addition_associates = [
    81,
    "x"
   ],
-  104,
+  82,
+  "Ax(Ay(Az((((x)+(y))+(z))=((x)+((y)+(z))))))"
+ ],
+ [
+  "Highlight",
+  [
+   82
+  ],
+  82,
+  "Ax(Ay(Az((((x)+(y))+(z))=((x)+((y)+(z))))))"
+ ],
+ [
+  "SetComment",
+  [
+   82,
+   "addition_associates"
+  ],
+  82,
   "Ax(Ay(Az((((x)+(y))+(z))=((x)+((y)+(z))))))"
  ]
 ];

@@ -1,4 +1,7 @@
 "use strict";
+
+const OPTION_ASSUMPTIONS_SEPARATE = true;
+
 function later(f, ...args) {
     setTimeout(function(){f(...args);});
     return false;
@@ -74,7 +77,7 @@ const BASEFUNCTIONS = [['0'], ['S'], ['+', '*']]; // e.g. exponentiation
 const BASERELATIONS = [[], [], ['='], []]; // e.g. isPrime, <
 const BASECONNECTIVES = [[], [], ['=>']]; // e.g. not, and, or
 var FUNCTIONS = [['0'], ['S'], ['+', '*']]; // e.g. exponentiation
-var RELATIONS = [[], [], ['='], []]; // e.g. isPrime, <
+var RELATIONS = [[], [], ['='], [], [], [], []]; // e.g. isPrime, <
 var CONNECTIVES = [[], [], ['=>']]; // e.g. not, and, or
 const AXIOMS = [
     ['(P)=>((Q)=>(P))', 'A1. Anything implies truth'],
@@ -83,7 +86,7 @@ const AXIOMS = [
     ['Ax((x)=(x))', 'A4. Self-equality'],
     ['Ax(Ay(((x)=(y))=>((P[x])=>(P[y]))))', 'A5. Substitutability of equal terms'],
     ['Ay((Ax(P[x]))=>(P[y]))', 'A6. Generic example from universal'],
-    ['(Ax((P)=>(Q)))=>((P)=>(Ax(Q)))', 'A7. Specialisation of forall quantifier'],
+    ['(Ex(P[x]))=>((Ax((P[x])=>(Q)))=>(Q))', 'A7. Existential-elimination'],
     ['Ax(Ay(((S(x))=(S(y)))=>((x)=(y))))', 'PA1. Injectivity of S'],
     ['Ax(((S(x))=(0))=>(F))', 'PA2. 0 is not a successor'],
     ['Ax(((x)+(0))=(x))', 'PA3. 0 is the additive identity'],
@@ -100,6 +103,7 @@ function isSubstitutionInstanceOf(s1, s2) {
 }
 // if permissive, allow @, @0, etc as variables
 function parseVariable(sentence, permissive=false) {
+    if (sentence == '') return false;
     if (sentence[0] >= 'a' && sentence[0] <= 'z' && /^\d*$/.test(sentence.slice(1)))
     {
         return parsedSentence(sentence, [sentence], [], [sentence], [], undefined, false);
@@ -126,12 +130,12 @@ function parsedSentence(sentence, parsed, bound, free, generics, error, brackets
 }
 function parseTerm(sentence, permissive=false) {
     var length = sentence.length;
-    if (sentence === '') return parseError(sentence, 'empty string');
+    if (sentence === '') return parseError('empty', 'empty string');
     if (FUNCTIONS[1].includes(sentence[0]))
     {
         if (sentence[1] != '(' || sentence[length-1] != ')') return parseError(sentence, 'operand must be bracketed');
         var subResult = parseTerm(sentence.slice(2, length-1), permissive);
-        return parsedSentence(sentence, [sentence[0], subResult], subResult.bound, subResult.free, [], subResult.error, false);
+        return parsedSentence(sentence, [sentence[0], [], [subResult]], subResult.bound, subResult.free, [], subResult.error, false);
     }
     if (sentence[0] == '(')
     {
@@ -153,17 +157,17 @@ function parseTerm(sentence, permissive=false) {
         {
             return parseError(sentence, 'term operator not recognized: "'+operator+'"');
         }
-        return parsedSentence(sentence, [operator, op1, op2], newBound, newFree, [], op1.error || op2.error);
+        return parsedSentence(sentence, [operator, [], [op1, op2]], newBound, newFree, [], op1.error || op2.error);
     }
     if (length == 1 && FUNCTIONS[0].includes(sentence[0]))
     {
-        return parsedSentence(sentence, [sentence], [], [], [], undefined, false);
+        return parsedSentence(sentence, [sentence, [], []], [], [], [], undefined, false);
     }
     if (sentence[0] == "'") {
         // prefix function
         const i = sentence.indexOf('[');
         if (i == -1) return parseError(sentence, 'function must have square brackets');
-        if (sentence[sentence.length-1] != ']') return parseError(sentence, 'function must end in square brackets')
+        if (sentence[sentence.length-1] != ']') return parseError(sentence, 'function must end in square brackets ' + sentence)
         const op = sentence.slice(0, i);
         var terms = splitCommas(sentence.slice(i+1, -1));
         const arity = terms.length;
@@ -171,24 +175,82 @@ function parseTerm(sentence, permissive=false) {
         var ips = terms.map(t => parseTerm(t, permissive));
         const frees = uniSort(ips.flatMap(pt => pt.free));
         const error = ips.filter(pt => pt.error !== undefined).map(x=>x.error)[0];
-        return parsedSentence(sentence, [op, ...ips], [], frees, [], error, false);
+        return parsedSentence(sentence, [op, [], ips], [], frees, [], error, false);
     }
     var parsed = parseVariable(sentence, permissive);
     if (parsed) return parsed;
     return parseError(sentence, "expect terms to start with '(', an arity-1 operator, or be a primitive value");
 }
+function parsePred(sentence, permissive=false, allowNoArgs=false) {
+    // allowNoArgs is permissive with args, allowing any amount of them for currying
+    if (sentence === '') return parseError('empty', 'empty string');
+    if (sentence[0] >= 'P' && sentence[0] <= 'R') {
+        const i = sentence.indexOf('[');
+        if (i == -1) {
+            if (isGeneric(sentence)) return parsedSentence(sentence, [sentence, [], []], [], [], [sentence], undefined, false);
+            return parseError(sentence, 'unrecognised generic');
+        }
+        if (sentence[sentence.length-1] != ']') return parseError(sentence, 'unrecognised generic');
+        const gen = sentence.slice(0, i);
+        if (!isGeneric(gen)) return parseError(sentence, 'unrecognised generic');
+        var interior = sentence.slice(i+1, -1);
+        var terms = splitCommas(interior);
+        var ips = terms.map(t => parseTerm(t, permissive));
+        const frees = uniSort(ips.flatMap(pt => pt.free));
+        const error = ips.filter(pt => pt.error !== undefined).map(x => x.error)[0];
+        return parsedSentence(sentence, [gen, [], ips], [], frees, [gen], error, false);
+    }
+    if (sentence[0] == "'") {
+        // prefix relation
+        const i = sentence.indexOf('[');
+        if (i == -1) {
+            if (!RELATIONS.some(x => x.includes(sentence))) return parseError(sentence, 'unrecognised relation ' + sentence);
+            if (allowNoArgs) {
+                return parsedSentence(sentence, [sentence, [], []], [], [], []);
+            }
+            return parseError(sentence, "Relation must have square brackets");
+        }
+        if (sentence[sentence.length-1] != ']') return parseError(sentence, 'relation must end with square brackets ' + sentence)
+        const relation = sentence.slice(0, i);
+        let args = splitCommas(sentence.slice(i+1, -1), true);
+        args = args.filter(t => t.length);
+        const arity = args.filter(t => t !== ';').length;
+        //console.log(args);
+        if ((!allowNoArgs) && !RELATIONS[arity].includes(relation)) return parseError(sentence, 'unrecognised relation of arity ' + arity + ' ' + relation);
+        var strPreds = [];
+        var parsedPreds = [];
+        var generics = [];
+        const j = args.indexOf(';');
+        var terms = args;
+        if (j != -1) {
+            strPreds = args.slice(0, j);
+            parsedPreds = strPreds.map(p => parsePred(p, permissive, true));
+            //console.log(parsedPreds);
+            //for (const p of parsedPreds) if (p.error !== undefined) return parseError(sentence, "invalid predicate " + p.sentence);
+            for (const p of parsedPreds) generics = generics.concat(p.generics);
+            generics = uniSort(generics);
+            //console.log(generics);
+            terms = args.slice(j+1);
+        }
+        var ips = terms.map(t => parseTerm(t, permissive));
+        const frees = uniSort(ips.flatMap(pt => pt.free));
+        const error = parsedPreds.concat(ips).filter(pt => pt.error !== undefined).map(x=>x.error)[0];
+        return parsedSentence(sentence, [relation, parsedPreds, ips], [], frees, generics, error, false);
+    }
+    return parseError(sentence, 'expect a predicate to either be a relation or a generic (possibly containing other relations or generics)');
+}
 function parseSentence(sentence, permissive=false) {
     var length = sentence.length;
+    if (sentence === '') return parseError('empty', 'empty string');
     if (sentence == 'F') return parsedSentence(sentence, ["F"], [], [], [], undefined, false);
-    if (sentence === '') return parseError(sentence, 'empty string');
     if (sentence[0] == 'A' || sentence[0] == 'E')
     {
-        if (length < 5) return parseError(sentence, 'unknown string');
+        if (length < 5) return parseError(sentence, 'invalid quantifier statement ' + sentence);
         const j = sentence.indexOf('(');
         if (j == -1) return parseError(sentence, 'expected open paren');
         var newVar = sentence.slice(1, j);
         if (!parseVariable(newVar, permissive)) return parseError(sentence, 'invalid variable ' + newVar);
-        if (newVar[0] == '#') return parseError(sentence, 'cannot bind a defined variable (one that begins with #)');
+        //if (newVar[0] == '#') return parseError(sentence, 'cannot bind a defined variable (one that begins with #)');
         if (sentence[length - 1] != ')') return parseError(sentence, 'should end with close paren');
         var subResult = parseSentence(sentence.slice(j+1, length - 1), permissive);
         if (subResult.bound.includes(newVar)) return parseError(sentence, 'newly bound variable already bound');
@@ -196,7 +258,7 @@ function parseSentence(sentence, permissive=false) {
         var newFree = subResult.free.slice();
         var i = newFree.indexOf(newVar);
         if (i >= 0) newFree.splice(i, 1);
-        return parsedSentence(sentence, [sentence[0], newVar, subResult], newBound, newFree, subResult.generics, subResult.error, false);
+        return parsedSentence(sentence, [sentence[0], newVar, subResult], newBound, newFree, subResult.generics, subResult.error, true);
     }
     if (sentence[0] == '(')
     {
@@ -225,40 +287,16 @@ function parseSentence(sentence, permissive=false) {
         var newBound = uniSort(op1.bound.concat(op2.bound));
         var newFree = uniSort(op1.free.concat(op2.free));
         var newGenerics = uniSort(op1.generics.concat(op2.generics));
-        return parsedSentence(sentence, [operator, op1, op2], newBound, newFree, newGenerics, op1.error || op2.error);
+        return parsedSentence(sentence, [operator, [], [op1, op2]], newBound, newFree, newGenerics, op1.error || op2.error);
     }
     if (sentence[0] >= 'P' && sentence[0] <= 'R')
     {
-        const i = sentence.indexOf('[');
-        if (i == -1) {
-            if (isGeneric(sentence)) return parsedSentence(sentence, [sentence], [], [], [sentence], undefined, false);
-            return parseError(sentence, 'unrecognised generic');
-        }
-        if (sentence[sentence.length-1] != ']') return parseError(sentence, 'unrecognised generic');
-        const gen = sentence.slice(0, i);
-        if (!isGeneric(gen)) return parseError(sentence, 'unrecognised generic');
-        var interior = sentence.slice(i+1, -1);
-        var terms = splitCommas(interior);
-        var ips = terms.map(t => parseTerm(t, permissive));
-        const frees = uniSort(ips.flatMap(pt => pt.free));
-        const error = ips.filter(pt => pt.error !== undefined).map(x => x.error)[0];
-        return parsedSentence(sentence, [gen, ...ips], [], frees, [gen], error, false);
+        return parsePred(sentence, permissive);
     }
     if (sentence[0] == "'") {
-        // prefix relation
-        const i = sentence.indexOf('[');
-        if (i == -1) return parseError(sentence, 'relation must have square brackets');
-        if (sentence[sentence.length-1] != ']') return parseError(sentence, 'unrecognised relation')
-        const relation = sentence.slice(0, i);
-        var terms = splitCommas(sentence.slice(i+1, -1));
-        const arity = terms.length;
-        if (!RELATIONS[arity].includes(relation)) return parseError(sentence, 'unrecognised relation');
-        var ips = terms.map(t => parseTerm(t, permissive));
-        const frees = uniSort(ips.flatMap(pt => pt.free));
-        const error = ips.filter(pt => pt.error !== undefined).map(x=>x.error)[0];
-        return parsedSentence(sentence, [relation, ...ips], [], frees, [], error, false);
+        return parsePred(sentence, permissive);
     }
-    return parseError(sentence, 'expect a sentence to start with "A" or "("');
+    return parseError(sentence, 'expect a sentence to start with "A", "E", or "(", not "'+sentence[0]+'"');
 }
 function renderOperator(op) {
     if (op === "=>") return "&rArr;";
@@ -270,6 +308,7 @@ function renderOperator(op) {
     if (op === '!=') return "&ne;";
     if (op === '<') return "&lt;";
     if (op === '!<') return "&nlt;";
+    if (op === '<>') return "&lArr;&rArr;";
     return op;
 }
 function brender(parsed, statementId=-1, where=0) {
@@ -286,29 +325,56 @@ function renderParsed(parsed, statementId=-1, where=0) {
     if (p[0] >= 'P' && p[0] <= 'R') {
         var starter = (statementId >= 0 ? '<a href="#" onclick="return later(specStatement, ' + statementId + ', \'' + p[0] + '\')">' : '');
         var ender = statementId >= 0 ? '</a>' : '';
-        if (p.length == 1) return starter + p[0] + ender;
-        return starter + p[0] + '[' + p.slice(1).map(tp => renderParsed(tp, statementId, 0)).join(',') + ']' + ender;
+        if (p[2].length == 0) return starter + p[0] + ender;
+        return starter + p[0] + '[' + p[2].map(tp => renderParsed(tp, statementId, 0)).join(',') + ']' + ender;
     }
     if (statementId >= 1 && globalProver.orcMap.has(p[0])) {
         const [typename, arity, defn] = globalProver.orcMap.get(p[0]);
         if (defn != undefined && arity == 2 && p[0][0] != "'") {
-            return brender(p[1], statementId, where+1) + '<a href="#" onclick="return later(expandSymbol, ' + statementId + ', \'' + p[0] + '\', ' + (where+1+p[1].sentence.length+1) + ')">' + renderOperator(p[0]) + '</a>' + brender(p[2], statementId, where+1+p[1].sentence.length+1+p[0].length+1);
+            return brender(p[2][0], statementId, where+1) + '<a href="#" onclick="return later(expandSymbol, ' + statementId + ', \'' + p[0] + '\', ' + (where+1+p[2][0].sentence.length+1) + ')">' + renderOperator(p[0]) + '</a>' + brender(p[2][1], statementId, where+1+p[2][0].sentence.length+1+p[0].length+1);
         } else if (defn != undefined && p[0][0] == "'") {
-            var soFar = '<a href="#" onclick="return later(expandSymbol, ' + statementId + ', \'\\' + p[0] + '\', ' + (where) + ')" style="font-style:italic">'+p[0].slice(1) + '</a>[';
+            var soFar = '<a href="#" onclick="return later(expandSymbol, ' + statementId + ', \'\\' + p[0] + '\', ' + (where) + ')" style="font-style:italic">'+p[0].slice(1) + '</a>';
             var currentWhere = where + p[0].length + 1;
-            for (var i = 1; i < p.length; ++ i) {
-                const p0 = p[i];
-                soFar += renderParsed(p0, statementId, currentWhere)+',';
-                currentWhere + p0.sentence.length+1;
+            soFar += '&#x5b;';
+            if (p[1].length > 0) {
+                for (const gen of p[1]) {
+                    soFar += renderParsed(gen, statementId, currentWhere) + ',';
+                    currentWhere += gen.length + 1;
+                }
+                soFar = soFar.slice(0, -1) + ';';
             }
-            return soFar.slice(0,soFar.length-1) + ']';
+            for (const p0 of p[2]) {
+                soFar += renderParsed(p0, statementId, currentWhere)+',';
+                currentWhere += p0.sentence.length+1;
+            }
+            if (soFar[soFar.length-1] == ',')
+                soFar = soFar.slice(0,soFar.length-1);
+            soFar += '&#x5d;';
+            return soFar;
         }
     }
-    if (p[0][0] == "'") return p[0].slice(1) + '[' + p.slice(1).map(p0 => renderParsed(p0, statementId)).join(',') + ']';
-    if (p.length == 1) return p[0];
-    if (p.length == 2) return p[0] + brender(p[1], statementId, where+p[0].length+1);
-    if (p.length == 3)
-        return brender(p[1], statementId, where+1) + renderOperator(p[0]) + brender(p[2], statementId, where+1+p[1].sentence.length+1+p[0].length+1);
+    if (p[0][0] == "'") {
+        const gens = p[1].map(p0 => renderParsed(p0, statementId));
+        const vars = p[2].map(p0 => renderParsed(p0, statementId));
+        return p[0].slice(1) + '[' + (gens.length > 0 ? gens.join(',') + ';' : '') + vars.join(',') + ']';
+    }
+    if (p[0] == 'S') {
+        const innerBit = brender(p[2][0], statementId, where+p[0].length+1);
+        if (innerBit[0] >= '0' && innerBit[0] <= '9') {
+            // render as number
+            return '' + (+(innerBit)+1);
+        }
+        return p[0] + innerBit;
+    }
+    if (p.length == 1) return p[0].replace('l', '&ell;');
+    if (p.length == 2) {
+        console.log(p);
+        throw new Error('p length 2');
+    }
+    if (p.length == 3 && p[2].length == 0) return p[0];
+    if (p.length == 3 && p[2].length == 1) return p[0] + brender(p[2][0], statementId, where+p[0].length+1);
+    if (p.length == 3 && p[2].length == 2)
+        return brender(p[2][0], statementId, where+1) + renderOperator(p[0]) + brender(p[2][1], statementId, where+1+p[2][0].sentence.length+1+p[0].length+1);
     console.log(parsed);
     throw new Error('reached end of renderParsed');
 }
@@ -323,9 +389,9 @@ function renderClickable(statement) {
     } else if (parsed.parsed[0] == 'E') {
         result = '<a href="#" onclick="return later(specialiseExists, globalProver.statements.get('+statement.id+'))">' + result.slice(0, 8+parsed.parsed[1].length) + '</a>' + result.slice(8+parsed.parsed[1].length);
     }
-    if (!statement.proved) {
-        result = '<b style="background-color:#fbb">' + result + '</b>';
-    }
+    //if (statement.isAssumption) {
+    //    result = '<b style="background-color:#fbb">' + result + '</b>';
+    //}
     return result;
 }
 function getNewVarname(parsed, startingLetter, disallowedVars=[]) {
@@ -340,6 +406,7 @@ function renameDisallowed(parsed, disallowedVars) {
     // all different to each other and the existing bound and free variables in parsed.
     //console.log(i, replacement, 'Disallowed:', disallowedVars);
     var renameMapping = new Map();
+    disallowedVars = new Set(disallowedVars);
     for (const v of parsed.bound) {
         if (!disallowedVars.has(v)) continue;
         const vnew = getNewVarname(parsed, v[0], disallowedVars);
@@ -348,11 +415,38 @@ function renameDisallowed(parsed, disallowedVars) {
     }
     return [parsed, renameMapping];
 }
+
+var actionMetadata = new Map([
+    ['SetComment', [0]],
+    ['Highlight', [0]], 
+    ['Assume', []],
+    ['Quote', []],
+    ['Assert', []],
+    ['Rewrite', [0]],
+    ['AddFunction', [3, 4]],
+    ['AddConnective', []],
+    ['AddRelation', []],
+    ['SubConnective', [0]],
+    ['SubFunction', [0]],
+    ['SubRelation', [0]],
+    ['SV', [0]],
+    ['DT', [0, 1]],
+    ['MP', [0, 1]],
+    ['DEL', [0]],
+    ['DELRANGE', [0, 1]],
+    ['G', [0]],
+    ['GE', [0]],
+    ['S', [0]]
+]);
+
 class ProverState {
     constructor() {
+        this.permissiveExistential = false;
+        this.ignoreDeps = false;
+        this.allowGeneralising = false;
         this.axioms = AXIOMS.slice();
-        this.definitions = new Set();
-        this.statements = new Map();
+        this.definitions = new Map(); // variable -> id
+        this.statements = new Map(); // id -> data
         this.statementId = 0;
         this.knownTheorems = new Map();
         this.actions = [];
@@ -366,27 +460,40 @@ class ProverState {
         this.variableDefinitions = new Map();
         for (var [type, typename] of [[BASERELATIONS, 'RELATION'], [BASEFUNCTIONS, 'FUNCTION'], [BASECONNECTIVES, 'CONNECTIVE']])
             type.forEach((t, arity) => { t.forEach(rel => this.orcMap.set(rel, [typename, arity, undefined])); });
-        this.AddRelation(2, '<=', 'Ex(((@1)+(x))=(@2))');
-        this.AddRelation(2, '<', 'Ex(((@1)+(S(x)))=(@2))');
-        this.AddRelation(2, '!<', '((@1)<(@2))=>(F)');
-        this.AddRelation(2, '!=', '((@1)=(@2))=>(F)');
-        this.AddRelation(2, '|', 'Ex(((@1)*(x))=(@2))');
-        this.AddConnective(2, '||', '((P)=>(F))=>(Q)');
-        this.AddConnective(2, '&&', '((P)=>((Q)=>(F)))=>(F)');
-        this.AddRelation(3, '\'gcd', '(((@3)|(@1))&&((@3)|(@2)))&&(Ah((((h)|(@1))&&((h)|(@2)))=>((h)|(@3))))');
-        this.AddRelation(3, '\'mod', '((@3)<(@2))&&(En((@1)=(((n)*(@2))+(@3))))');
-        this.AddRelation(3, '\'zmod', "(((@2)=(0))&&((@3)=(0)))||(((0)<(@2))&&('mod[@1,@2,@3]))");
-        this.AddRelation(3, '\'cong', "Ea(('mod[@1,@3,a])&&('mod[@2,@3,a]))");
-        this.AddRelation(3, '\'conga', "Ea(Eb(((@1)+((@3)*(a)))=((@2)+((@3)*(b)))))");
-        this.AddRelation(2, '\'bezoutable', "((@1)!=(0))=>(((@2)!=(0))=>(Eu(Eg(('cong[(u)*(@1),g,@2])&&('gcd[@1,@2,g])))))");
-        this.AddRelation(2, '\'br', "Ea(Eb(Eg(('gcd[@1,@2,g])&&(((a)*(@1))=(((b)*(@2))+(g))))))");
-        this.AddRelation(2, '\'brr', "((@1)!=(0))=>('br[@1,@2])");
-        this.AddRelation(1, '\'prime', "((S(0))<(@1))&&(Aa(((a)<(@1))=>(((a)|(@1))=>((a)=(S(0))))))");
-        this.AddRelation(2, '\'nprod', "((@1)!=(0))&&(Ax(((x)<=(@2))=>(((x)!=(0))=>((x)|(@1)))))");
+        this.AddRelation(2, '<=', 'Ex(((@1)+(x))=(@2))', 0);
+        this.AddRelation(2, '<', 'Ex(((@1)+(S(x)))=(@2))', 0);
+        this.AddRelation(2, '!<', '((@1)<(@2))=>(F)', 0);
+        this.AddRelation(2, '!=', '((@1)=(@2))=>(F)', 0);
+        this.AddRelation(2, '|', 'Ex(((@1)*(x))=(@2))', 0);
+        this.AddRelation(2, '!|', '(Ex(((@1)*(x))=(@2)))=>(F)', 0);
+        this.AddConnective(2, '||', '((P)=>(F))=>(Q)', 0);
+        this.AddConnective(2, '&&', '((P)=>((Q)=>(F)))=>(F)', 0);
+        this.AddConnective(2, '<>', '((P)=>(Q))&&((Q)=>(P))', 0);
+        this.AddRelation(3, '\'gcd', '(((@3)|(@1))&&((@3)|(@2)))&&(Ah((((h)|(@1))&&((h)|(@2)))=>((h)|(@3))))', 0);
+        this.AddRelation(3, '\'lcm', '(((@1)|(@3))&&((@2)|(@3)))&&(Az(((@1)|(z))=>(((@2)|(z))=>((@3)|(z)))))', 0);
+        this.AddRelation(3, '\'mod', '((@3)<(@2))&&(En((@1)=(((n)*(@2))+(@3))))', 0);
+        this.AddRelation(3, '\'zmod', "(((@2)=(0))&&((@3)=(0)))||('mod[@1,@2,@3])", 0);
+        this.AddRelation(3, '\'cong', "Ea(('mod[@1,@3,a])&&('mod[@2,@3,a]))", 0);
+        this.AddRelation(3, '\'conga', "Ea(Eb(((@1)+((@3)*(a)))=((@2)+((@3)*(b)))))", 0);
+        this.AddRelation(2, '\'bezoutable', "((@1)!=(0))=>(((@2)!=(0))=>(Eu(Eg(('cong[(u)*(@1),g,@2])&&('gcd[@1,@2,g])))))", 0);
+        this.AddRelation(2, '\'br', "Ea(Eb(Eg(('gcd[@1,@2,g])&&(((a)*(@1))=(((b)*(@2))+(g))))))", 0);
+        this.AddRelation(2, '\'brr', "((@1)!=(0))=>('br[@1,@2])", 0);
+        this.AddRelation(1, '\'prime', "((S(0))<(@1))&&(Aa(((a)<(@1))=>(((a)|(@1))=>((a)=(S(0))))))", 0);
+        this.AddRelation(2, '\'nprod', "((@1)!=(0))&&(Ax(((x)<=(@2))=>(((x)!=(0))=>((x)|(@1)))))", 0);
+        this.AddRelation(0, "'func", "(Ax(Ey(P1[x,y])))&&(Ax(Ay1(Ay2((P1[x,y1])=>((P1[x,y2])=>((y1)=(y2)))))))", 1);
+        this.AddRelation(0, "'func2", "(Ax1(Ax2(Ey(P1[x1,x2,y]))))&&(Ax1(Ax2(Ay1(Ay2((P1[x1,x2,y1])=>((P1[x1,x2,y2])=>((y1)=(y2))))))))", 1);
+        this.AddRelation(2, "'next", "(((@1)<(@2))&&(P1[@2]))&&(Az0(((@1)<(z0))=>((P1[z0])=>((@2)<=(z0)))))", 1);
+        this.AddRelation(2, "'nextprime", "(((@1)<(@2))&&('prime[@2]))&&(Az0(((z0)<(@2))=>((((@1)<(z0))&&('prime[z0]))=>(F))))", 0);
+        this.AddRelation(1, "'test", "(@1)=(0)", 1);
+        this.AddRelation(0, "'inf", "An(Em((P1[m])&&((n)<=(m))))", 1);
+        this.AddRelation(3, "'multiply", "((@1)*(@2))=(@3)")
+        // defined in `recursion`, since it needs the definition of Mod which must be proven
+        //this.AddRelation(3, 1, "'recur", "Em(Ea(Eb(('mod[m,a,@1])&&(('mod[m,(a)+((b)*(@2)),@3])&&(Ai(((i)<(@2))=>(P1['Mod[m,(a)+((b)*(i))],S(i),'Mod[m,(a)+((b)*(S(i)))]])))))))");
+
         for (var X of this.axioms) {
             var sentence = X[0];
             var parsed = parseSentence(sentence);
-            if (!parsed.error) this.proveParsed(parsed, [], X[1], []);
+            if (!parsed.error) this.addStatement(parsed, [], X[1], []);
             else this.currentError = renderParsed(parsed);
         }
         this.mostRecentTheorem = undefined; // don't count axioms
@@ -406,8 +513,9 @@ class ProverState {
         setTimeout(() => this.saveActions());
     }
     doAction(x) {
+        if (!actionMetadata.has(x[0])) throw Error('Unknown action: ' + x[0]);
         try {
-        return this[x[0]](...x[1]);
+            return this[x[0]](...x[1]);
         } catch (e) {
             console.log('FAILED', x, e);
             return 0;
@@ -420,6 +528,7 @@ class ProverState {
         if (filenamesInitial.length == 0) return callback([[], new Set()], undefined);
         const filenamesInitialSet = new Set(filenamesInitial);
         var filesToLoad = new Set();
+        var filesToLoadArr = [];
         var self = this;
         var dataFromFilename = new Map(); // filenameInitial -> (contents, requirements that we don't already know, statements to export)
         var loadingFailedDueToLoop = false;
@@ -443,6 +552,7 @@ class ProverState {
             if (self.filesImported.includes(filename) && !filenamesInitialSet.has(filename)) return;
             if (filesToLoad.has(filename)) return;
             filesToLoad.add(filename);
+            filesToLoadArr.push(filename);
             getFile('PA_' + filename + '.js', function() {
                 if (loadingFailedDueToLoop) return;
                 const proof = window['proof_' + filename];
@@ -461,6 +571,7 @@ class ProverState {
                     showMessage('Verifying files...', '');
                     //console.log(dataFromFilename);
                     console.log('VERIFYING FILES...');
+                    console.log(filesToLoadArr);
                     setTimeout(() => {
                         const startTime = performance.now();
                         filenamesInitial.forEach(verifyFileRecursive);
@@ -524,7 +635,8 @@ class ProverState {
             filenamesInitialSet.delete(filename);
             if (filenamesInitialSet.size == 0) {
                 hideMessage();
-                setTimeout(()=> {callback([topLevelTheorems, filesToLoad], undefined);});
+                if (callback)
+                    setTimeout(()=> {callback([topLevelTheorems, filesToLoad], undefined);});
             }
             fullyVerifiedFiles.add(filename);
             return true;
@@ -548,14 +660,35 @@ class ProverState {
         this.recordAction(['Highlight', [id], id, s.p.sentence]);
         return id;
     }
-    proveParsed(p, used, comment='', deps=[]) {
+    addStatement(p, used, comment='', deps=[], isAssumption=false) {
         if (p.error) return this.error('Failed to add: ' + renderParsed(p) + ' due to ' + p.error);
         //if (someEntry(this.statements, (id,x) => x.p.sentence === p.sentence))
         //    this.currentError = 'Warning: already proved ' + renderParsed(p);
         this.statementId ++;
         deps = uniSort(deps);
+        if (this.permissiveExistential)
+        for (const [defVar, defId] of this.definitions.entries()) {
+            // if defId is the id of an assumption of this statement
+            // AND it's the only assumption that mentions #x
+            // AND this new statement doesn't mention #x
+            // then drop it as an assumption
+            if (!deps.includes(defId)) continue;
+            if (p.free.includes(defVar)) continue;
+            let included = false;
+            for (const depId of deps) {
+                if (depId == defId) continue;
+                const depSt = this.statements.get(depId);
+                if (depSt.p.free.includes(defVar)) {
+                    included = true;
+                }
+            }
+            if (included) continue;
+            deps = deps.filter(x => x != defId);
+        }
+        if (this.ignoreDeps) deps = uniSort([]);
+        if (isAssumption) deps = deps.concat([this.statementId]);
         this.statements.set(this.statementId,
-            {id: this.statementId, 'p': p, comment: comment, deps: deps, proved: true, highlight: false, used: used, deleted: false});
+            {id: this.statementId, 'p': p, comment: comment, deps: deps, isAssumption: isAssumption, highlight: false, used: used, deleted: false});
         if (deps.length == 0 && p.free.length == 0) {
             this.mostRecentTheorem = p.sentence;
             //console.log('New theorem:', this.mostRecentTheorem);
@@ -564,43 +697,48 @@ class ProverState {
             setTimeout(() => {window.userOnProof(this.statements.get(this.statementId));});
         return this.statementId;
     }
-    assumeParsed(p) {
-        if (p.error) return this.error('Failed to add: ' + renderParsed(p) + ' due to ' + p.error);
-        this.statementId ++;
-        this.statements.set(this.statementId,
-            {id: this.statementId, 'p': p, comment: '', deps: [this.statementId], proved: false, highlight: false, used: [], deleted: false});
-        return this.statementId;
-    }
     Assume(sentence) {
         const parsed = parseSentence(sentence);
-        const success = this.assumeParsed(parsed);
+        const success = this.addStatement(parsed, [], '', [], true);
         if (success) this.recordAction(['Assume', [sentence], success, sentence]);
         return success;
+    }
+    Assert(sentence, name) {
+        if (this.knownTheorems.has(name)) return this.error('Already have theorem with name ' + name);
+        this.knownTheorems.set(name, sentence);
+        this.recordAction(['Assert', [sentence, name], -1, sentence]);
+        return -1;
     }
     Quote(theoremName) {
         if (!this.knownTheorems.has(theoremName)) return this.error('No known theorem ' + theoremName);
         var sentence = this.knownTheorems.get(theoremName);
         var parsed = parseSentence(sentence);
-        var success = this.proveParsed(parsed, [], theoremName, []);
+        var success = this.addStatement(parsed, [], theoremName, []);
         if (success) this.recordAction(['Quote', [theoremName], success, sentence]);
         return success;
     }
-    Rewrite(id, claim) {
+    Rewrite(id, claim) { // rewrite Ea(x+a=y) into x<=y, or <expansion of func2['blah[Q;]]> into 'func2['blah[Q;];]
         if (!this.statements.has(id)) return this.error('Unknown id: ' + id);
         const s = this.statements.get(id);
         const parsedClaim = parseSentence(claim);
         if (parsedClaim.error) return this.error("Invalid claim, due to " + parsedClaim.error);
-        if (!this.orcMap.has(parsedClaim.parsed[0])) return this.error('Must be a user-defined symbol: ' + parsedClaim.parsed[0]);
+        if (isRenamingInstanceOf(parsedClaim, s.p)) {
+            const success = this.addStatement(parsedClaim, [id], '', s.deps);
+            if (success) this.recordAction(['Rewrite', [id, claim], success, parsedClaim.sentence]);
+            return success;
+        }
+        if (!this.orcMap.has(parsedClaim.parsed[0])) return this.error('Must be a user-defined symbol or rewriting bound variables: ' + parsedClaim.parsed[0]);
         const [typename, arity, defn] = this.orcMap.get(parsedClaim.parsed[0]);
         if (typename == 'RELATION' && defn) {
-            const mapData = parsedClaim.parsed.slice(1).map((x,i) => ['@'+(i+1), x]);
+            const mapData = parsedClaim.parsed[2].map((x,i) => ['@'+(i+1), x]);
+            const mapDataPred = parsedClaim.parsed[1].map((x, i) => ['P'+(i+1), x.sentence]);
             //console.log(mapData);
-            const [expandedClaim, err] = this.rewriteSentence(parseSentence(defn, true), new Map(mapData));
+            const [expandedClaim, err] = this.rewriteSentence(parseSentence(defn, true), new Map(mapData), new Map(mapDataPred));
             if (err) return this.error(err);
             if (!isRenamingInstanceOf(expandedClaim, s.p))
-                return this.error('the following sentences are not equivalent: ' + expandedClaim.sentence + ' ' + s.p.sentence);
+                return this.error('the following sentences are not equivalent:<br>' + expandedClaim.sentence + '<br>' + s.p.sentence);
             const parsed = parseSentence(claim);
-            const success = this.proveParsed(parsed, [id], '', s.deps);
+            const success = this.addStatement(parsed, [id], '', s.deps);
             if (success) this.recordAction(['Rewrite', [id, claim], success, parsed.sentence]);
             return success;
         } else if (typename == 'CONNECTIVE' && defn) {
@@ -610,29 +748,28 @@ class ProverState {
             while (disallowedGenerics.has('P'+j)) j++;
             const newGeneric = 'P' + j;
             const temp1 = replaceGeneric(defn, 'P', newGeneric);
-            const temp2 = replaceGeneric(temp1, 'Q', parsedClaim.parsed[2].sentence);
-            const temp3 = replaceGeneric(temp2, newGeneric, parsedClaim.parsed[1].sentence);
+            const temp2 = replaceGeneric(temp1, 'Q', parsedClaim.parsed[2][1].sentence);
+            const temp3 = replaceGeneric(temp2, newGeneric, parsedClaim.parsed[2][0].sentence);
             const t3p = parseSentence(temp3);
             if (!isRenamingInstanceOf(t3p, s.p))
-                return this.error('the following sentences are not equivalent: ' + t3p.sentence + ' ' + s.p.sentence);
+                return this.error('the following sentences are not equivalent:<br>' + t3p.sentence + '<br>' + s.p.sentence);
             const parsed = parseSentence(claim);
-            const success = this.proveParsed(parsed, [id], '', s.deps);
+            const success = this.addStatement(parsed, [id], '', s.deps);
             if (success) this.recordAction(['Rewrite', [id, claim], success, parsed.sentence]);
             return success;
         } else if (parsedClaim.parsed[0] == '=') {
-            const [lhs, rhs] = parsedClaim.parsed.slice(1);
+            const [lhs, rhs] = parsedClaim.parsed[2];
             if (!this.orcMap.has(lhs.parsed[0])) return this.error("You should type something of the form ('Function[x])=(y)");
             const symbol = lhs.parsed[0];
             const [typename, arity, defn] = this.orcMap.get(symbol);
             if (typename != 'FUNCTION' || !defn) return this.error("Cannot expand definition for " + symbol);;
-            const mapData = lhs.parsed.slice(1).map((x,i) => ['@'+(i+1), x]).concat([['@', parseTerm(rhs.sentence)]]);
+            const mapData = lhs.parsed[2].map((x,i) => ['@'+(i+1), x]).concat([['@', parseTerm(rhs.sentence)]]);
             const [expectedClaim, err] = this.rewriteSentence(parseSentence(defn, true), new Map(mapData));
             //console.log(expandedDefn.sentence, err);
-            console.log(expectedClaim.sentence);
             if (!isRenamingInstanceOf(expectedClaim, s.p))
                 return this.error('The statement you gave expands to ' + expectedClaim + ' which should be a rewriting of ' + s.p.sentence);
             const parsed = parseSentence(claim);
-            const success = this.proveParsed(parsed, [id], '', s.deps);
+            const success = this.addStatement(parsed, [id], '', s.deps);
             if (success) this.recordAction(['Rewrite', [id, claim], success, parsed.sentence]);
             return success;
         } else return this.error("Form of claimed sentence must be a relation, connective or function equalling something");
@@ -666,10 +803,10 @@ class ProverState {
             '(@'+(arity+1)+')=(@'+(arity+2)+')))'+
             arange(arity+2).map(i => ')').join(''), true);
         if (!isRenamingInstanceOf(uniqueClaim, uniqueExpected))
-            return this.error('The existence statement ' + uniqueClaim.sentence + ' should be a renaming of ' + uniqueExpected.sentence);
+            return this.error('The uniqueness statement ' + uniqueClaim.sentence + ' should be a renaming of ' + uniqueExpected.sentence);
         const parsed = parseSentence(sentence, true); // this sentence means @=f(@1,...,@n)
         if (parsed.error) return this.error('invalid formula ' + parsed.error);
-        if (parsed.bound.length != 0 || parsed.generics.length != 0) return this.error('invalid formula, expect no bound variables or generics: ' + renderParsed(parsed));
+        if (parsed.generics.length != 0) return this.error('invalid formula, expect no bound variables or generics: ' + renderParsed(parsed));
         if (!arrayEqual(uniSort(parsed.free), ['@'].concat(arange(arity).map(i => '@'+(i+1))))) return this.error('invalid formula, want free variables to be @ and @1 to @'+arity+': ' + renderParsed(parsed));
         this.orcMap.set(symbol, ['FUNCTION', arity, sentence]); // whatever, verify later lol
         FUNCTIONS[arity].push(symbol);
@@ -692,15 +829,16 @@ class ProverState {
         this.recordAction(['AddConnective', [arity, symbol, sentence], -1, '']);
         return -1;
     }
-    AddRelation(arity, symbol, sentence) {
-        if (arity < 1) return this.error('Relations must have positive arity');
+    AddRelation(arity, symbol, sentence, predArity) {
+        predArity = predArity || 0;
+        if (arity < 0) return this.error('Relations must have nonnegative arity');
         if (symbol.length == 0) return this.error('Relation symbol must have positive length');
         const prefix = symbol[0] == "'";
         if (!prefix) {
             if (arity != 2) return this.error('arity must be 2 for infix relations (those which don\'t start with "\'")');
             if (symbol.length > 2) return this.error('infix symbol cannot be too long');
         }
-        if (prefix && /^'[a-z]*$/.test(symbol) == false) return this.error('symbol must be alphanumeric after apostrophe');
+        if (prefix && /^'[a-z][a-z0-9]*$/.test(symbol) == false) return this.error('symbol must be alphanumeric after apostrophe');
         if (this.orcMap.has(symbol)) {
             const [curType, curArity, curSentence] = this.orcMap.get(symbol);
             if (curType == 'RELATION' && curArity == arity && curSentence == sentence) return -1; // success, we already knew it
@@ -710,17 +848,27 @@ class ProverState {
         const parsed = parseSentence(sentence, true);
         if (parsed.error) return this.error('invalid formula ' + parsed.error);
         if (!arrayEqual(uniSort(parsed.free), arange(arity).map(i => '@'+(i+1)))) return this.error('invalid formula, want free variables to be @1 to @'+arity+': ' + renderParsed(parsed));
-        if (parsed.generics.length > 0) return this.error('invalid formula - cannot have generics: ' + renderParsed(parsed));
-        this.orcMap.set(symbol, ['RELATION', arity, sentence]);
-        RELATIONS[arity].push(symbol);
-        this.recordAction(['AddRelation', [arity, symbol, sentence], -1, '']);
+        const allowedGenerics = arange(predArity).map(i => 'P'+(i+1));
+        const badGenerics = parsed.generics.filter(x => !allowedGenerics.includes(x));
+        if (badGenerics.length > 0) return this.error('invalid formula - cannot have generics: ' + renderParsed(parsed));
+        this.orcMap.set(symbol, ['RELATION', arity, sentence, predArity]);
+        const totalArity = arity + predArity;
+        while (RELATIONS[totalArity] === undefined) RELATIONS.push([]);
+        RELATIONS[totalArity].push(symbol);
+        this.recordAction(['AddRelation', [arity, symbol, sentence, predArity], -1, '']);
         return -1;
     }
     // substitutions of type (variable string) => (parsed term)
-    rewriteSentence(parsed, substitutions) { // given a permissive sentence, apply the substitutions, resolving conflicts.
+    // e.g. x1 => 'Func[P;a,0,S(y)]
+    rewriteSentence(parsed, substitutions, subPreds) { // given a permissive sentence, apply the substitutions, resolving conflicts.
         //console.log('Attempting rewrite', parsed, substitutions);
         const disallowed = new Set();
+        subPreds = subPreds || new Map();
         for (var [i, x] of substitutions.entries()) if (!parseVariable(i, true)) return [undefined, 'FAILED rewrite, can only substitute variables'];
+        for (var [i, p] of subPreds.entries()) {
+            if (!isGeneric(i)) return [undefined, 'FAILED rewrite, is not generic: ' + i];
+            if (parsePred(p, false, true).error !== undefined) return [undefined, 'FAILED rewrite, is not valid pred: ' + p];
+        }
         for (var [i, x] of substitutions.entries()) for (var v of x.free) disallowed.add(v);
         //console.log(parsed.sentence, substitutions, disallowed);
         //if (parsed.free.some(f => disallowed.has(f))) return [undefined, 'FAILED rewrite, cannot rename free variables'];
@@ -731,7 +879,10 @@ class ProverState {
             if (renameMapping.has(from)) from = renameMapping.get(from);
             temp = replaceVariable(temp, from, to.sentence);
         }
-        //console.log('all subs done', temp);
+        temp = replaceTokens(temp, subPreds);
+        temp = temp.replaceAll(';][', ';').replaceAll('][', ',');
+        if (parseSentence(temp).error !== undefined)
+            console.log('all subs done', temp);
         return [parseSentence(temp), undefined];
     }
     SubConnective(id, symbol, where) {
@@ -766,7 +917,7 @@ class ProverState {
         if (parsedSubbed.error) return this.error('couldn\'t parse statement ' + parsedSubbed.sentence + ' due to ' + parsedSubbed.error);
         const newSentence = P.sentence.slice(0, t1start) + parsedSubbed.sentence + P.sentence.slice(t2end+1);
         const parsed = parseSentence(newSentence);
-        var success = this.proveParsed(parsed, [id], '', s.deps);
+        var success = this.addStatement(parsed, [id], '', s.deps);
         if (success) this.recordAction(['SubConnective', [id, symbol, where], success, parsed.sentence]);
         return success;
     }
@@ -794,14 +945,14 @@ class ProverState {
         if (parsedSubbed.error) return this.error('couldn\'t parse statement ' + parsedSubbed.sentence + ' due to ' + parsedSubbed.error);
         const newSentence = 'Ez((' + parsedSubbed.sentence + ')&&(' + P.sentence.slice(0, where) + 'z' + P.sentence.slice(j+1) + '))';
         const parsed = parseSentence(newSentence);
-        var success = this.proveParsed(parsed, [id], '', s.deps);
+        var success = this.addStatement(parsed, [id], '', s.deps);
         if (success) this.recordAction(['SubFunction', [id, symbol, where], success, parsed.sentence]);
         return success;
     }
     SubRelation(id, symbol, where) {
         if (!this.statements.has(id)) return this.error('Unknown statement id: ' + id);
         if (!this.orcMap.has(symbol)) return this.error('unknown symbol ' + symbol);
-        const [relType, relArity, relDefinition] = this.orcMap.get(symbol);
+        const [relType, relArity, relDefinition, relGenArity] = this.orcMap.get(symbol);
         if (relType != 'RELATION' || relDefinition == undefined) return this.error('Must be a user-defined relation');
         const s = this.statements.get(id);
         const P = s.p;
@@ -812,15 +963,27 @@ class ProverState {
                 console.log('aaaah', P.sentence, where);
                 return this.error('could not find close bracket after relation ' + symbol + '; this should never happen???');
             }
-            const terms = splitCommas(P.sentence.slice(where+symbol.length+1, j));
+            let substr = P.sentence.slice(where+symbol.length+1, j);
+//            if (substr[substr.length-1] == ';') substr = substr.slice(0, -1);
+            let args = splitCommas(substr, true);
+            if (relGenArity > 0 && args[relGenArity] != ';') return this.error('Args should have semicolon between gen terms and others');
+            if (relGenArity == 0 && args[0] != ';') args = [';'].concat(args);
+            const terms = args.slice(relGenArity+1);
+            const genTerms = args.slice(0, relGenArity);
+            if (relGenArity + relArity != args.length-1){
+                console.log(relGenArity, relArity);
+                console.log(args);
+                throw new Error("arity of terms didn't match: " + args + " should have " + relGenArity + " generics and " + relArity + " normal terms, but has " + args.length-1);
+            }
             const parsedDefinition = parseSentence(relDefinition, true);
-            const mapData = terms.map((t, i) => ['@'+(i+1), parseTerm(t)]);
-            const [parsedSubbed, err] = this.rewriteSentence(parsedDefinition, new Map(mapData));
-            if (err) return this.error('couldn\'t rewrite statement ' + parsedSubbed.sentence + ' due to ' + err);
+            const mapData = terms.map((t, i) => ['@'+(i+1), parseTerm(t)])
+            const mapGenData = genTerms.map((p, i) => ['P' + (i+1), p]);
+            const [parsedSubbed, err] = this.rewriteSentence(parsedDefinition, new Map(mapData), new Map(mapGenData));
+            if (err) return this.error('couldn\'t rewrite statement ' + parsedDefinition.sentence + ' due to ' + err);
             if (parsedSubbed.error) return this.error('couldn\'t parse statement ' + parsedSubbed.sentence + ' due to ' + parsedSubbed.error);
             const newSentence = P.sentence.slice(0, where) + parsedSubbed.sentence + P.sentence.slice(j+1);
             const parsed = parseSentence(newSentence);
-            var success = this.proveParsed(parsed, [id], '', s.deps);
+            var success = this.addStatement(parsed, [id], '', s.deps);
             if (success) this.recordAction(['SubRelation', [id, symbol, where], success, parsed.sentence]);
             return success;
         }
@@ -838,11 +1001,11 @@ class ProverState {
         if (t2p.error) return this.error('couldn\'t parse term ' + term2 + ' due to ' + t2p.error);
         const parsedDefinition = parseSentence(relDefinition, true);
         const [parsedSubbed, err] = this.rewriteSentence(parsedDefinition, new Map([['@1', t1p], ['@2', t2p]]));
-        if (err) return this.error('couldn\'t rewrite statement ' + parsedSubbed.sentence + ' due to ' + err);
+        if (err) return this.error('couldn\'t rewrite statement ' + parsedDefinition.sentence + ' due to ' + err);
         if (parsedSubbed.error) return this.error('couldn\'t parse statement ' + parsedSubbed.sentence + ' due to ' + parsedSubbed.error);
         const newSentence = P.sentence.slice(0, t1start) + parsedSubbed.sentence + P.sentence.slice(t2end+1);
         const parsed = parseSentence(newSentence);
-        var success = this.proveParsed(parsed, [id], '', s.deps);
+        var success = this.addStatement(parsed, [id], '', s.deps);
         if (success) this.recordAction(['SubRelation', [id, symbol, where], success, parsed.sentence]);
         return success;
     }
@@ -851,7 +1014,7 @@ class ProverState {
         var s = this.statements.get(id);
         if (!s.p.bound.includes(from)) return this.error('sentence ' + s.sentence + ' does not have ' + from + ' as a bound variable');
         const parsed = parseSentence(replaceVariable(s.p.sentence, from, to));
-        var success = this.proveParsed(parsed, [id], '', s.deps);
+        var success = this.addStatement(parsed, [id], '', s.deps);
         if (success) this.recordAction(['ChangeBound', [id, from, to], success, parsed.sentence]);
         return success;
     }
@@ -872,16 +1035,19 @@ class ProverState {
         var success;
         if (P.parsed[0] == 'E') {
             const comment = 'Definition of <b>' + replacement + '</b>';
-            success = this.proveParsed(parsed, [id], comment, s.deps);
+            if (this.permissiveExistential)
+                success = this.addStatement(parsed, [id], comment, s.deps, true);
+            else
+                success = this.addStatement(parsed, [id], comment, [], true);
             if (success) {
                 this.variableDefinitions.set(replacement, success);
             }
         } else {
-            success = this.proveParsed(parsed, [id], '', s.deps);
+            success = this.addStatement(parsed, [id], '', s.deps);
         }
         if (success) {
             this.recordAction(['SV', [id, replacement], success, parsed.sentence]);
-            this.definitions.add(replacement);
+            if (P.parsed[0] == 'E') this.definitions.set(replacement, success);
         }
         return success;
     }
@@ -889,10 +1055,24 @@ class ProverState {
         if ((!this.statements.has(i1)) || (!this.statements.has(i2))) return this.error('Unknown statement ids: ' + i1 + ' ' + i2);
         var s1 = this.statements.get(i1);
         var s2 = this.statements.get(i2);
-        var sentence = '(' + s1.p.sentence + ')=>(' + s2.p.sentence + ')';
+//function renameDisallowed(parsed, disallowedVars) {
+    // rename all BOUND variables in parsed which are in disallowedVars to new variable names which are
+        //
+        //if (s2.p.sentence == '(S(0))|(x)') console.log('asdfasdfafdsaasadf\n\n\n\nasdfadsasfsafd');
+        const [new_s1, _1] = renameDisallowed(s1.p, s2.p.free);
+        /*if (new_s1.sentence != s1.p.sentence) {
+            console.log('DT CHANGED');
+            console.log(new_s1, s1.p);
+        }*/
+        const [new_s2, _2] = renameDisallowed(s2.p, new_s1.free);
+        /*if (new_s2.sentence != s2.p.sentence) {
+            console.log('DT CHANGED');
+            console.log(new_s2, s2.p);
+        }*/
+        var sentence = '(' + new_s1.sentence + ')=>(' + new_s2.sentence + ')';
         var parsed = parseSentence(sentence);
         var newDeps = s2.deps.filter(x => x != s1.id);
-        var success = this.proveParsed(parsed, [i1, i2], '', newDeps);
+        var success = this.addStatement(parsed, [i1, i2], '', newDeps);
         if (success) this.recordAction(['DT', [i1, i2], success, parsed.sentence]);
         return success;
     }
@@ -902,9 +1082,9 @@ class ProverState {
         var s2 = this.statements.get(i2);
         var p1 = s1.p;
         var p2 = s2.p;
-        if (p1.parsed[0] == '=>' && p1.parsed[1].sentence == p2.sentence) {
-            var parsed = parseSentence(p1.parsed[2].sentence);
-            var success = this.proveParsed(parsed, [i1, i2], '', s1.deps.concat(s2.deps));
+        if (p1.parsed[0] == '=>' && isRenamingInstanceOf(p1.parsed[2][0], p2)) {
+            var parsed = parseSentence(p1.parsed[2][1].sentence);
+            var success = this.addStatement(parsed, [i1, i2], '', s1.deps.concat(s2.deps));
             if (success) this.recordAction(['MP', [i1, i2], success, parsed.sentence]);
             return success;
         }
@@ -919,22 +1099,26 @@ class ProverState {
         this.statements.get(id).deleted = true;
         return id;
     }
+    DELRANGE(id1, id2) {
+        this.recordAction(['DELRANGE', [id1, id2], -1, '']);
+        for (var id = id1; id <= id2; ++ id)
+            this.statements.get(id).deleted = true;
+        return -1;
+    }
     G(idx, variable) {
         if (!this.statements.has(idx)) return this.error('Unknown statement id: ' + idx);
-        if (variable[0] == '#') return this.error('Cannot generalize over definitional variable ' + variable);
+        //if (variable[0] == '#') return this.error('Cannot generalize over definitional variable ' + variable);
         var s = this.statements.get(idx);
         /*if (s.p.free.some(v=>v[0]=='#')) return this.error('Cannot generalize over a sentence that has a free definitional variable');*/
-        const deps = s.deps;
-        const defDeps = s.p.free.flatMap(v => v[0]=='#'?this.variableDefinitions.get(v):[]);
-        //console.log(defDeps);
-        for (const id of s.deps.concat(defDeps)) {
+        if (!this.allowGeneralising)
+        for (const id of s.deps) {
             var s1 = this.statements.get(id);
             //if (s1.proved) continue;
-            if (s1.p.free.includes(variable)) return this.error('The assumptions or definitions contain <b>' + variable + '</b> as a free variable, so this is invalid.');
+            if (s1.p.free.includes(variable)) return this.error('The assumptions contain <b>' + variable + '</b> as a free variable, so this is invalid.');
         }
         var sentence = `A${variable}(${s.p.sentence})`;
         var parsed = parseSentence(sentence);
-        var success = this.proveParsed(parsed, [idx], '', s.deps);
+        var success = this.addStatement(parsed, [idx], '', s.deps);
         if (success) this.recordAction(['G', [idx, variable], success, parsed.sentence]);
         return success;
     }
@@ -949,6 +1133,7 @@ class ProverState {
         if (claimParsed.parsed[0] != 'E') return this.error('Statement must start with exists');
         const variable = claimParsed.parsed[1];
         const subSentence = claimParsed.parsed[2].sentence; // should have `variable` only as free
+        //console.log('SEARCH', subSentence, variable);
         const j = searchToken(subSentence, variable);
         //console.log('search', subSentence, 'for', variable, 'at', j);
         var targetSentence = subSentence;
@@ -965,7 +1150,7 @@ class ProverState {
             console.log(subSentence, variable, replacement);
             return this.error('Could not identify ' + renderParsed(sParsed) + ' as an example of ' + renderParsed(claimParsed));
         }
-        var success = this.proveParsed(claimParsed, [idx], '', s.deps);
+        var success = this.addStatement(claimParsed, [idx], '', s.deps);
         if (success) this.recordAction(['GE', [idx, sentence], success, claimParsed.sentence]);
         return success;
     }
@@ -974,9 +1159,8 @@ class ProverState {
         var s = this.statements.get(idx);
         if (s.deps.length > 0) return this.error('can\'t specialise ' + gen + ' because that statement is, or depends on, unproven assumptions.');
         var sentence = replaceGeneric(s.p.sentence, gen, target);
-        console.log(sentence);
         const parsed = parseSentence(sentence);
-        var success = this.proveParsed(parsed, [idx], '', s.deps);
+        var success = this.addStatement(parsed, [idx], '', s.deps);
         if (success) this.recordAction(['S', [idx, gen, target], success, parsed.sentence]);
         return success;
     }
@@ -987,13 +1171,14 @@ class ProverState {
         for (var i = 1; i <= NUMAXIOMS; ++ i) oldIdsToKeep.add(i);
         for (var ri = this.actions.length - 1; ri >= 0; ri --) {
             const record = this.actions[ri];
-            if (record[0] == 'AddRelation' || record[0] == 'AddConnective' || record[0] == 'SetComment' && record[0] == 'Highlight' || record[0] == 'DEL') continue;
             const id = record[2];
+            if (id == -1) continue;
             const s = this.statements.get(id);
+            console.log(id, s);
             if ((!oldIdsToKeep.has(id)) && (s.id != index) && (index || !s.highlight)) continue;
             oldIdsToKeep.add(id);
             // add anything this statement used
-            for (var idx of s.used) oldIdsToKeep.add(idx);
+            for (var idx of s.used) if (idx != -1) oldIdsToKeep.add(idx);
         }
         // "new" is off by NUMAXIOMS+1
         var newToOld = uniSort(oldIdsToKeep);
@@ -1002,10 +1187,10 @@ class ProverState {
         var newActionsSoFar = [];
         var nextId = NUMAXIOMS+1;
         for (const oldRecord of this.actions) {
-            if (!oldIdsToKeep.has(oldRecord[2])) continue;
+            // always keep new symbol definitions
+            if ((!["AddConnective", "AddFunction", "AddRelation", ].includes(oldRecord[0])) && !oldIdsToKeep.has(oldRecord[2])) continue;
             var newArgs = oldRecord[1];
-            if (oldRecord[0] == 'DT' || oldRecord[0] == 'MP') newArgs = newArgs.map(a => (typeof a === "number" ? oldToNew.get(a)+1 : a));
-            else newArgs[0] = (a => (typeof a === "number" ? oldToNew.get(a)+1 : a))(newArgs[0]);
+            for (var idx of actionMetadata.get(oldRecord[0])) newArgs[idx] = oldToNew.get(newArgs[idx])+1;
             newActionsSoFar.push([
                 oldRecord[0],
                 newArgs,
@@ -1016,6 +1201,176 @@ class ProverState {
         return newActionsSoFar;
     }
 }
+
+
+function insertProofLines(filename, where, number) {
+    inspectFile(filename, function(prover) {
+        var fixedProver = new ProverState();
+        window.fixedProver = fixedProver;
+        fixedProver.importFiles(prover.filesImported, function([theorems, allFiles], error) {
+            for (var i = 0; i < prover.actions.length; ++ i) {
+                let x = prover.actions[i];
+                var args = x[1].filter(x => true);
+                for (var idx of actionMetadata.get(x[0])) args[idx] = newFromOld(args[idx]);
+                x = [x[0], args, x[2], x[3]];
+                let new_id = fixedProver.doAction(x);
+                if (!new_id) {
+                    console.log('FAIIIILED', x);
+                    return;
+                }
+                if (new_id >= where) {
+                    console.log(x);
+                }
+                function newFromOld(old) {
+                    return old <= where ? old : old + number;
+                }
+                if (new_id == where) {
+                    for (var j = 0; j < number; ++ j) {
+                        fixedProver.G(1, 'y');
+                    }
+                }
+            }
+        });
+    });
+}
+
+
+
+window.busyProving = false;
+window.fixedProver = undefined;
+function makeFixedProver(filename) {
+    window.busyProving = true;
+    inspectFile(filename, function(prover) {
+        var fixedProver = new ProverState();
+        window.fixedProver = fixedProver;
+        fixedProver.permissiveExistential = false;
+        fixedProver.importFiles(prover.filesImported, function([theorems, allFiles], error) {
+            if (error) {
+                alert(error);
+                console.log(error);
+                console.log(globalProver.currentError);
+                return;
+            }
+            console.log('succeeded importing:', theorems, allFiles);
+            var newFromOld = new Map();
+            var oldFromNew = new Map();
+            for (var i = 0; i < prover.actions.length; ++ i) {
+                var x = prover.actions[i];
+                var args = x[1].filter(x => true);
+                for (var idx of actionMetadata.get(x[0])) args[idx] = newFromOld.get(args[idx]) || args[idx];
+                x = [x[0], args, x[2], x[3]];
+                let new_id = fixedProver.doAction(x);
+                if (!new_id) {
+                    console.log('FAILLLLED');
+                    console.log(x);
+                    console.log(fixedProver);
+                    console.log(newFromOld);
+                    saveModule(fixedProver, 'test');
+                    return;
+                }
+                if (new_id == -1) continue;
+                var loops = 0;
+do{
+                loops += 1;
+                if (loops >= 5) return;
+                newFromOld.set(x[2], new_id);
+                const statement = fixedProver.statements.get(new_id);
+                const deps = statement.deps;
+                if (deps.length == 1 && deps[0] == new_id) continue;
+                const p = statement.p;
+                var fixedDefinition = false;
+                for (const [defVar, defId] of fixedProver.definitions.entries()) {
+                    // if defId is the id of an assumption of this statement
+                    // AND it's the only assumption that mentions #x
+                    // AND this new statement doesn't mention #x
+                    // then can do it
+                    if (!deps.includes(defId)) continue;
+                    if (p.free.includes(defVar)) continue;
+                    let included = false;
+                    for (const depId of deps) {
+                        if (depId == defId) continue;
+                        const depSt = fixedProver.statements.get(depId);
+                        if (depSt.p.free.includes(defVar)) {
+                            included = true;
+                        }
+                    }
+                    if (included) continue;
+                    console.log('GOT ONE!!!', loops, defVar, p.sentence, defId, new_id);
+                    const s1 = fixedProver.DT(defId, new_id);
+                    const s2 = fixedProver.G(s1, defVar);
+                    const defSt = fixedProver.statements.get(defId)
+                    const t11 = fixedProver.S(7, 'Q', 'Q123');
+                    if (fixedProver.currentError) console.log(fixedProver.currentError);
+                    const t12 = fixedProver.S(t11, 'P', 'P123[@]');
+                    if (fixedProver.currentError) console.log(fixedProver.currentError);
+                    const t1 = fixedProver.S(t12, 'Q123', p.sentence);
+                    if (fixedProver.currentError) console.log(fixedProver.currentError);
+                    const t2 = fixedProver.S(t1, 'P123', renameDisallowed(parseSentence(replaceVariable(defSt.p.sentence, defVar, '@')), p.free)[0].sentence);
+                    if (fixedProver.currentError) console.log(fixedProver.currentError);
+                    const t3 = fixedProver.MP(t2, defSt.used[0]);
+                    if (fixedProver.currentError) console.log(fixedProver.currentError);
+                    const t4 = fixedProver.MP(t3, s2);
+                    if (fixedProver.currentError) console.log(fixedProver.currentError);
+                    const t5 = fixedProver.Rewrite(t4, p.sentence);
+                    if (fixedProver.currentError) console.log(fixedProver.currentError);
+                    console.log(s1, s2, defSt, t1, t2, t3, t4, t5);
+                    if (t5 == 0) {
+                    console.log(fixedProver.statements.get(s1).p.sentence);
+                    console.log(fixedProver.statements.get(s2).p.sentence);
+                    console.log(fixedProver.statements.get(t1).p.sentence);
+                    console.log(fixedProver.statements.get(t2).p.sentence);
+                    console.log(fixedProver.statements.get(defSt.used[0]).p.sentence);
+                    console.log(fixedProver.statements.get(t3).p.sentence);
+                    console.log(fixedProver.statements.get(t4).p.sentence);
+                    }
+                    newFromOld.set(x[2], t5);
+                    fixedDefinition = true;
+                    new_id = t5;
+                    break;
+                }
+} while (fixedDefinition);
+            }
+            saveFixedModule(fixedProver, filename);
+            window.busyProving = false;
+        });
+    });
+}
+
+function saveFixedModule(prover, stateName) {
+    if (prover.filesImported.includes(stateName)) {
+        alert('cannot save with name ' + stateName + ' as you imported a file with this name already');
+        return;
+    }
+    const history = prover.actions;
+    var toExport = new Map();
+    for (const [id, s] of prover.statements.entries()) {
+        if (id > AXIOMS.length && s.highlight && s.comment.length > 0 && !s.deleted)
+            toExport.set(s.p.sentence, s.comment);
+    }
+    var fileContents = escape('window.exportStatements_' + stateName + ' = new Map(' + JSON.stringify([...toExport.entries()]) + ');\n\n' +
+    'window.requiredModules_' + stateName + ' = ' + JSON.stringify(prover.filesImportedManually) + ';\n\n' +
+        'window.proof_' + stateName + ' = ' + JSON.stringify(history, null, 1) + ';');
+    var link = document.createElement('a');
+    link.download = 'PA_' + stateName + '.js';
+    link.href = 'data:,' + fileContents;
+    link.click();
+}
+
+function fixnextmodule() {
+    makeFixedProver(allmymodules[0]);
+    allmymodules = allmymodules.slice(1);
+}
+
+var allmymodules =
+`PA_addition_associates.js
+PA_S_functional.js
+PA_S_preserves_leq.js
+PA_strong_induction2.js
+PA_strong_induction.js
+PA_zmod.js`.split('\n').map(x => x.slice(3, -3));
+
+
+
 var globalProver = new ProverState();
 globalProver.storage = "globalProver_";
 var modusPonensSelected = undefined;
@@ -1063,7 +1418,14 @@ function deductionTheorem(i) {
         updatePage();
         return;
     }
-    globalProver.DT(deductionTheoremSelected, i);
+    const success = globalProver.DT(deductionTheoremSelected, i);
+    /*if (success) {
+        if (confirm('Delete intervening statements?')) {
+            const i1 = Math.min(deductionTheoremSelected, i);
+            const i2 = Math.max(deductionTheoremSelected, i);
+            globalProver.DELRANGE(i1+1, i2-1);
+        }
+    }*/
     deductionTheoremSelected = undefined;
     updatePage();
 }
@@ -1158,11 +1520,40 @@ function rewriteStatement(i) {
     globalProver.Rewrite(i, claim);
     updatePage();
 }
+function assertStatement() {
+    var s = prompt("What do you want to assert? This will be treated like a new axiom")
+    if (!s) return;
+    for (var i = 0; i < 100; ++ i) {
+        if (!globalProver.knownTheorems.has("assertion " + i)) break;
+    }
+    if (i == 100) return;
+    globalProver.Assert(s, "assertion " + i);
+    globalProver.Quote("assertion " + i);
+    updatePage();
+}
 function updatePage() {
     var output = '';
+    var numDeleted = 0;
     for (const [i, statement] of globalProver.statements.entries()) {
-        if (statement.deleted) continue;
-        var style = statement.highlight ? 'background-color:white' : '';
+        if (OPTION_ASSUMPTIONS_SEPARATE && statement.isAssumption) {
+            continue;
+        }
+        var isDeleted = false
+        for (const depId of statement.deps) {
+            if (globalProver.statements.get(depId).deleted) {
+                isDeleted = true;
+                break;
+            }
+        }
+        if (isDeleted || statement.deleted) {
+            numDeleted ++;
+            continue;
+        }
+        if (numDeleted > 0) {
+            output += "<tr style='background-color: black; color: white'><td></td><td></td><td>" + numDeleted + " hidden</td></tr>";
+            numDeleted = 0;
+        }
+        var style = statement.highlight ? 'background-color:#ffa' : '';
         output += "<tr style='"+style+"' id='statement"+i+"'><td style='white-space:nowrap; width:1px;padding-right:5px'>"+i+"</td><td style='white-space: nowrap; width: 1px; padding-right: 5px'>" +
     //    "<button onclick='saveStatement("+i+")'>&#128190;</button>" +
         "<button title='Copy the underlying statement' onclick='copyStatement("+i+")'>&#9986;</button>" +
@@ -1175,6 +1566,32 @@ function updatePage() {
         "<button title='Highlight' onclick='proverHighlight("+i+")'>#</button>"+
         "<button title='Delete' onclick='deleteStatement(" + (i) + ",true)' >x</button>"+
         "</td><td style='width:50%; word-wrap: break-word;word-break: break-word;'>" + renderClickable(statement) + "</td><td style='width:30%'>" + statement.comment + "</td><td>" + statement.deps + "</td></tr>";
+    }
+    if (OPTION_ASSUMPTIONS_SEPARATE) {
+        for (const [i, statement] of globalProver.statements.entries()) {
+            if (!statement.isAssumption) {
+                continue;
+            }
+            var rowstyle = 'background-color: green';
+            var textstyle = 'background-color: #ffa';
+            if (statement.deleted) {
+                continue;
+                rowstyle = 'background-color: gray';
+                textstyle = '';
+            }
+            output += "<tr style='"+rowstyle+"' id='statement"+i+"'><td style='white-space:nowrap; width:1px;padding-right:5px'>"+i+"</td><td style='white-space: nowrap; width: 1px; padding-right: 5px'>" +
+        //    "<button onclick='saveStatement("+i+")'>&#128190;</button>" +
+            "<button title='Copy the underlying statement' onclick='copyStatement("+i+")'>&#9986;</button>" +
+            "<button title='Quantify over all of some variable' onclick='generalizeStatement(globalProver.statements.get("+i+"))'>&forall;</button>" +
+            "<button title='Quantify over one of some variable' onclick='existentialiseStatement("+i+")'>&exist;</button>" +
+            "<button title='Use this as one of two statements in modus ponens' onclick='modusPonens("+i+")'>&rArr;</button>" +
+            "<button title='Use this statement in a deduction' onclick='deductionTheorem("+i+")'>D</button>" +
+            "<button title='Rewrite this statement to use a predefined operator' style='height:22px' onclick='rewriteStatement("+i+")'>&#9998;</button>" +
+            "<button title='Add a comment' onclick='commentStatement("+i+")'>c</button>"+
+            "<button title='Highlight' onclick='proverHighlight("+i+")'>#</button>"+
+            "<button title='Delete' onclick='deleteStatement(" + (i) + ",true)' >x</button>"+
+            "</td><td style='width:50%; word-wrap: break-word;word-break: break-word;'><b style='" + textstyle + "'>" + renderClickable(statement) + "</b></td><td style='width:30%'>" + statement.comment + "</td><td>" + statement.deps + "</td></tr>";
+        }
     }
     //var scrollpos = window.scrollY;
     document.getElementById("statementTable").innerHTML = output;
@@ -1194,21 +1611,22 @@ function completeReset() {
     globalProver.saveActions();
     window.location.reload();
 }
-function saveModule() {
-    var stateName = prompt('Name to save module under?');
+function saveModule(prover, stateName) {
+    prover = prover || globalProver;
+    var stateName = stateName || prompt('Name to save module under?');
     if (!stateName) return;
-    if (globalProver.filesImported.includes(stateName)) {
+    if (prover.filesImported.includes(stateName)) {
         alert('cannot save with name ' + stateName + ' as you imported a file with this name already');
         return;
     }
-    const history = globalProver.actions;
+    const history = prover.actions;
     var toExport = new Map();
-    for (const [id, s] of globalProver.statements.entries()) {
+    for (const [id, s] of prover.statements.entries()) {
         if (id > AXIOMS.length && s.highlight && s.comment.length > 0 && !s.deleted)
             toExport.set(s.p.sentence, s.comment);
     }
     var fileContents = escape('window.exportStatements_' + stateName + ' = new Map(' + JSON.stringify([...toExport.entries()]) + ');\n\n' +
-    'window.requiredModules_' + stateName + ' = ' + JSON.stringify(globalProver.filesImportedManually) + ';\n\n' +
+    'window.requiredModules_' + stateName + ' = ' + JSON.stringify(prover.filesImportedManually) + ';\n\n' +
         'window.proof_' + stateName + ' = ' + JSON.stringify(history, null, 1) + ';');
     var link = document.createElement('a');
     link.download = 'PA_' + stateName + '.js';
@@ -1260,10 +1678,12 @@ function importFile(filename=undefined, callback=undefined) {
         callback && callback();
     });
 }
-function inspectFile() {
-    const filename = prompt('What file to open? WARNING: will lose progress');
+function inspectFile(filename, callback) {
+    filename = filename || prompt('What file to open? WARNING: will lose progress');
     if (!filename) return;
     globalProver = new ProverState();
+//globalProver.permissiveExistential = false;
+//    globalProver.allowGeneralising = true;
     globalProver.storage = "globalProver_";
     globalProver.saveActions(true);
     globalProver.importFiles([filename], function([theorems, allFiles], error) {
@@ -1275,10 +1695,12 @@ function inspectFile() {
             updatePage();
             return;
         }
-        //console.log('succeeded importing:', theorems, allFiles);
+        console.log('inspectFile succeeded importing:', theorems, allFiles);
         updatePage();
         globalProver.saveActions(true);
         if (window.userOnLoad) setTimeout(() => { window.userOnLoad(); });
+        console.log(globalProver.filesImported, globalProver.actions);
+        if (callback) callback(globalProver);
     }, true);
 }
 function getFile(path, callback) {
@@ -1288,19 +1710,27 @@ function getFile(path, callback) {
     document.head.appendChild(scr);
 }
 function showMessage(title, message) {
+    try{
     document.getElementById('popup-header').innerHTML = '&#x1F3B9;&nbsp;&nbsp;' + title;
     document.getElementById('popup-body').innerHTML = message;
     document.getElementById('bodyDisable').style.display = 'initial';
     document.getElementById('popup').style.display = 'initial';
+    } catch{}
 }
 function hideMessage() {
+    try{
     document.getElementById('bodyDisable').style.display = 'none';
     document.getElementById('popup').style.display = 'none';
+    }catch{}
 }
 function keyPressEvent(e) {
     e = e || window.event;
     if (e.key == "Escape") {
         hideMessage();
+    }
+    else if (e.key == "Enter") {
+        //console.log(window.busyProving);
+       //if (!window.busyProving) fixnextmodule();
     }
 }
 function showExtraFeatures() {

@@ -1,6 +1,6 @@
 window.exportStatements_finite_products_old = new Map([]);
 
-window.requiredModules_finite_products_old = ["explosion","lt","lt","leq","and_introduction","div","multiplication_commutes","logic"];
+window.requiredModules_finite_products_old = ["explosion","nonzero_is_successor","addition_commutes","addition_injective","S_functional","addition_associates","equal_or_unequal","or_implies","add_to_0","addition","lt_asymmetric","lt_irreflexive","lt_transitive","S_preserves_leq","excluded_middle_or","leq_total","leq_transitive","leq_reflexive","and_elimination1","and_elimination2","leq_antisymmetric","distributivity","multiplication_associates","multiplication_commutes","alternative_implication","or_introduction1","logic","multiply_to_0","multiply_unchanged","and_introduction","multiply_to_1","multiplication","leq","or_commutes","lt_trichotomous","nothing_lt_0","lt","div_antisymmetric","div_reflexive","div_transitive","div"];
 
 window.proof_finite_products_old = [
  [
@@ -54,6 +54,16 @@ window.proof_finite_products_old = [
   ""
  ],
  [
+  "AddRelation",
+  [
+   2,
+   "!|",
+   "(Ex(((@1)*(x))=(@2)))=>(F)"
+  ],
+  -1,
+  ""
+ ],
+ [
   "AddConnective",
   [
    2,
@@ -87,8 +97,28 @@ window.proof_finite_products_old = [
   "AddRelation",
   [
    3,
+   "'lcm",
+   "(((@1)|(@3))&&((@2)|(@3)))&&(Az(((@1)|(z))=>(((@2)|(z))=>((@3)|(z)))))"
+  ],
+  -1,
+  ""
+ ],
+ [
+  "AddRelation",
+  [
+   3,
    "'mod",
    "((@3)<(@2))&&(En((@1)=(((n)*(@2))+(@3))))"
+  ],
+  -1,
+  ""
+ ],
+ [
+  "AddRelation",
+  [
+   3,
+   "'zmod",
+   "(((@2)=(0))&&((@3)=(0)))||('mod[@1,@2,@3])"
   ],
   -1,
   ""
@@ -149,6 +179,16 @@ window.proof_finite_products_old = [
    1,
    "'prime",
    "((S(0))<(@1))&&(Aa(((a)<(@1))=>(((a)|(@1))=>((a)=(S(0))))))"
+  ],
+  -1,
+  ""
+ ],
+ [
+  "AddRelation",
+  [
+   2,
+   "'nprod",
+   "((@1)!=(0))&&(Ax(((x)<=(@2))=>(((x)!=(0))=>((x)|(@1)))))"
   ],
   -1,
   ""

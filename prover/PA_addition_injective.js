@@ -1,5 +1,198 @@
+window.exportStatements_addition_injective = new Map([["Ax(Aa(Ab((((x)+(a))=((x)+(b)))=>((a)=(b)))))","addition_injective"]]);
+
 window.requiredModules_addition_injective = ["addition_commutes"];
+
 window.proof_addition_injective = [
+ [
+  "AddRelation",
+  [
+   2,
+   "<=",
+   "Ex(((@1)+(x))=(@2))"
+  ],
+  -1,
+  ""
+ ],
+ [
+  "AddRelation",
+  [
+   2,
+   "<",
+   "Ex(((@1)+(S(x)))=(@2))"
+  ],
+  -1,
+  ""
+ ],
+ [
+  "AddRelation",
+  [
+   2,
+   "!<",
+   "((@1)<(@2))=>(F)"
+  ],
+  -1,
+  ""
+ ],
+ [
+  "AddRelation",
+  [
+   2,
+   "!=",
+   "((@1)=(@2))=>(F)"
+  ],
+  -1,
+  ""
+ ],
+ [
+  "AddRelation",
+  [
+   2,
+   "|",
+   "Ex(((@1)*(x))=(@2))"
+  ],
+  -1,
+  ""
+ ],
+ [
+  "AddRelation",
+  [
+   2,
+   "!|",
+   "(Ex(((@1)*(x))=(@2)))=>(F)"
+  ],
+  -1,
+  ""
+ ],
+ [
+  "AddConnective",
+  [
+   2,
+   "||",
+   "((P)=>(F))=>(Q)"
+  ],
+  -1,
+  ""
+ ],
+ [
+  "AddConnective",
+  [
+   2,
+   "&&",
+   "((P)=>((Q)=>(F)))=>(F)"
+  ],
+  -1,
+  ""
+ ],
+ [
+  "AddRelation",
+  [
+   3,
+   "'gcd",
+   "(((@3)|(@1))&&((@3)|(@2)))&&(Ah((((h)|(@1))&&((h)|(@2)))=>((h)|(@3))))"
+  ],
+  -1,
+  ""
+ ],
+ [
+  "AddRelation",
+  [
+   3,
+   "'lcm",
+   "(((@1)|(@3))&&((@2)|(@3)))&&(Az(((@1)|(z))=>(((@2)|(z))=>((@3)|(z)))))"
+  ],
+  -1,
+  ""
+ ],
+ [
+  "AddRelation",
+  [
+   3,
+   "'mod",
+   "((@3)<(@2))&&(En((@1)=(((n)*(@2))+(@3))))"
+  ],
+  -1,
+  ""
+ ],
+ [
+  "AddRelation",
+  [
+   3,
+   "'zmod",
+   "(((@2)=(0))&&((@3)=(0)))||('mod[@1,@2,@3])"
+  ],
+  -1,
+  ""
+ ],
+ [
+  "AddRelation",
+  [
+   3,
+   "'cong",
+   "Ea(('mod[@1,@3,a])&&('mod[@2,@3,a]))"
+  ],
+  -1,
+  ""
+ ],
+ [
+  "AddRelation",
+  [
+   3,
+   "'conga",
+   "Ea(Eb(((@1)+((@3)*(a)))=((@2)+((@3)*(b)))))"
+  ],
+  -1,
+  ""
+ ],
+ [
+  "AddRelation",
+  [
+   2,
+   "'bezoutable",
+   "((@1)!=(0))=>(((@2)!=(0))=>(Eu(Eg(('cong[(u)*(@1),g,@2])&&('gcd[@1,@2,g])))))"
+  ],
+  -1,
+  ""
+ ],
+ [
+  "AddRelation",
+  [
+   2,
+   "'br",
+   "Ea(Eb(Eg(('gcd[@1,@2,g])&&(((a)*(@1))=(((b)*(@2))+(g))))))"
+  ],
+  -1,
+  ""
+ ],
+ [
+  "AddRelation",
+  [
+   2,
+   "'brr",
+   "((@1)!=(0))=>('br[@1,@2])"
+  ],
+  -1,
+  ""
+ ],
+ [
+  "AddRelation",
+  [
+   1,
+   "'prime",
+   "((S(0))<(@1))&&(Aa(((a)<(@1))=>(((a)|(@1))=>((a)=(S(0))))))"
+  ],
+  -1,
+  ""
+ ],
+ [
+  "AddRelation",
+  [
+   2,
+   "'nprod",
+   "((@1)!=(0))&&(Ax(((x)<=(@2))=>(((x)!=(0))=>((x)|(@1)))))"
+  ],
+  -1,
+  ""
+ ],
  [
   "Quote",
   [
@@ -66,7 +259,7 @@ window.proof_addition_injective = [
   [
    20
   ],
-  22,
+  20,
   "Ay((((0)+(a))=(y))=>((P[(0)+(a)])=>(P[y])))"
  ],
  [
@@ -76,7 +269,7 @@ window.proof_addition_injective = [
    "P",
    "((a)+(0))=(@)"
   ],
-  23,
+  22,
   "(((0)+(a))=((0)+(b)))=>((((a)+(0))=((0)+(a)))=>(((a)+(0))=((0)+(b))))"
  ],
  [
@@ -84,7 +277,7 @@ window.proof_addition_injective = [
   [
    21
   ],
-  24,
+  21,
   "(((0)+(a))=((0)+(b)))=>((P[(0)+(a)])=>(P[(0)+(b)]))"
  ],
  [
@@ -93,7 +286,7 @@ window.proof_addition_injective = [
    22,
    16
   ],
-  25,
+  23,
   "(((a)+(0))=((0)+(a)))=>(((a)+(0))=((0)+(b)))"
  ],
  [
@@ -102,7 +295,7 @@ window.proof_addition_injective = [
    23,
    18
   ],
-  26,
+  24,
   "((a)+(0))=((0)+(b))"
  ],
  [
@@ -110,7 +303,7 @@ window.proof_addition_injective = [
   [
    23
   ],
-  27,
+  23,
   "(((a)+(0))=((0)+(a)))=>(((a)+(0))=((0)+(b)))"
  ],
  [
@@ -118,7 +311,7 @@ window.proof_addition_injective = [
   [
    22
   ],
-  28,
+  22,
   "(((0)+(a))=((0)+(b)))=>((((a)+(0))=((0)+(a)))=>(((a)+(0))=((0)+(b))))"
  ],
  [
@@ -127,7 +320,7 @@ window.proof_addition_injective = [
    10,
    "a"
   ],
-  29,
+  25,
   "((a)+(0))=(a)"
  ],
  [
@@ -136,7 +329,7 @@ window.proof_addition_injective = [
    10,
    "b"
   ],
-  30,
+  26,
   "((b)+(0))=(b)"
  ],
  [
@@ -145,7 +338,7 @@ window.proof_addition_injective = [
    5,
    "(a)+(0)"
   ],
-  31,
+  27,
   "Ay((((a)+(0))=(y))=>((P[(a)+(0)])=>(P[y])))"
  ],
  [
@@ -154,7 +347,7 @@ window.proof_addition_injective = [
    27,
    "a"
   ],
-  32,
+  28,
   "(((a)+(0))=(a))=>((P[(a)+(0)])=>(P[a]))"
  ],
  [
@@ -162,7 +355,7 @@ window.proof_addition_injective = [
   [
    27
   ],
-  33,
+  27,
   "Ay((((a)+(0))=(y))=>((P[(a)+(0)])=>(P[y])))"
  ],
  [
@@ -172,7 +365,7 @@ window.proof_addition_injective = [
    "P",
    "(@)=((0)+(b))"
   ],
-  34,
+  29,
   "(((a)+(0))=(a))=>((((a)+(0))=((0)+(b)))=>((a)=((0)+(b))))"
  ],
  [
@@ -180,7 +373,7 @@ window.proof_addition_injective = [
   [
    28
   ],
-  35,
+  28,
   "(((a)+(0))=(a))=>((P[(a)+(0)])=>(P[a]))"
  ],
  [
@@ -189,7 +382,7 @@ window.proof_addition_injective = [
    29,
    25
   ],
-  36,
+  30,
   "(((a)+(0))=((0)+(b)))=>((a)=((0)+(b)))"
  ],
  [
@@ -198,7 +391,7 @@ window.proof_addition_injective = [
    30,
    24
   ],
-  37,
+  31,
   "(a)=((0)+(b))"
  ],
  [
@@ -206,7 +399,7 @@ window.proof_addition_injective = [
   [
    29
   ],
-  38,
+  29,
   "(((a)+(0))=(a))=>((((a)+(0))=((0)+(b)))=>((a)=((0)+(b))))"
  ],
  [
@@ -214,7 +407,7 @@ window.proof_addition_injective = [
   [
    30
   ],
-  39,
+  30,
   "(((a)+(0))=((0)+(b)))=>((a)=((0)+(b)))"
  ],
  [
@@ -223,7 +416,7 @@ window.proof_addition_injective = [
    5,
    "(b)+(0)"
   ],
-  40,
+  32,
   "Ay((((b)+(0))=(y))=>((P[(b)+(0)])=>(P[y])))"
  ],
  [
@@ -232,7 +425,7 @@ window.proof_addition_injective = [
    32,
    "(0)+(b)"
   ],
-  41,
+  33,
   "(((b)+(0))=((0)+(b)))=>((P[(b)+(0)])=>(P[(0)+(b)]))"
  ],
  [
@@ -240,7 +433,7 @@ window.proof_addition_injective = [
   [
    32
   ],
-  42,
+  32,
   "Ay((((b)+(0))=(y))=>((P[(b)+(0)])=>(P[y])))"
  ],
  [
@@ -250,7 +443,7 @@ window.proof_addition_injective = [
    "P",
    "(@)=((b)+(0))"
   ],
-  43,
+  34,
   "(((b)+(0))=((0)+(b)))=>((((b)+(0))=((b)+(0)))=>(((0)+(b))=((b)+(0))))"
  ],
  [
@@ -258,7 +451,7 @@ window.proof_addition_injective = [
   [
    33
   ],
-  44,
+  33,
   "(((b)+(0))=((0)+(b)))=>((P[(b)+(0)])=>(P[(0)+(b)]))"
  ],
  [
@@ -267,7 +460,7 @@ window.proof_addition_injective = [
    4,
    "(b)+(0)"
   ],
-  45,
+  35,
   "((b)+(0))=((b)+(0))"
  ],
  [
@@ -276,7 +469,7 @@ window.proof_addition_injective = [
    34,
    19
   ],
-  46,
+  36,
   "(((b)+(0))=((b)+(0)))=>(((0)+(b))=((b)+(0)))"
  ],
  [
@@ -285,7 +478,7 @@ window.proof_addition_injective = [
    36,
    35
   ],
-  47,
+  37,
   "((0)+(b))=((b)+(0))"
  ],
  [
@@ -294,7 +487,7 @@ window.proof_addition_injective = [
    5,
    "(0)+(b)"
   ],
-  48,
+  38,
   "Ay((((0)+(b))=(y))=>((P[(0)+(b)])=>(P[y])))"
  ],
  [
@@ -303,7 +496,7 @@ window.proof_addition_injective = [
    38,
    "(b)+(0)"
   ],
-  49,
+  39,
   "(((0)+(b))=((b)+(0)))=>((P[(0)+(b)])=>(P[(b)+(0)]))"
  ],
  [
@@ -311,7 +504,7 @@ window.proof_addition_injective = [
   [
    38
   ],
-  50,
+  38,
   "Ay((((0)+(b))=(y))=>((P[(0)+(b)])=>(P[y])))"
  ],
  [
@@ -321,7 +514,7 @@ window.proof_addition_injective = [
    "P",
    "(a)=(@)"
   ],
-  51,
+  40,
   "(((0)+(b))=((b)+(0)))=>(((a)=((0)+(b)))=>((a)=((b)+(0))))"
  ],
  [
@@ -329,7 +522,7 @@ window.proof_addition_injective = [
   [
    39
   ],
-  52,
+  39,
   "(((0)+(b))=((b)+(0)))=>((P[(0)+(b)])=>(P[(b)+(0)]))"
  ],
  [
@@ -338,7 +531,7 @@ window.proof_addition_injective = [
    40,
    37
   ],
-  53,
+  41,
   "((a)=((0)+(b)))=>((a)=((b)+(0)))"
  ],
  [
@@ -347,7 +540,7 @@ window.proof_addition_injective = [
    41,
    31
   ],
-  54,
+  42,
   "(a)=((b)+(0))"
  ],
  [
@@ -355,7 +548,7 @@ window.proof_addition_injective = [
   [
    34
   ],
-  55,
+  34,
   "(((b)+(0))=((0)+(b)))=>((((b)+(0))=((b)+(0)))=>(((0)+(b))=((b)+(0))))"
  ],
  [
@@ -363,7 +556,7 @@ window.proof_addition_injective = [
   [
    35
   ],
-  56,
+  35,
   "((b)+(0))=((b)+(0))"
  ],
  [
@@ -371,7 +564,7 @@ window.proof_addition_injective = [
   [
    36
   ],
-  57,
+  36,
   "(((b)+(0))=((b)+(0)))=>(((0)+(b))=((b)+(0)))"
  ],
  [
@@ -379,7 +572,7 @@ window.proof_addition_injective = [
   [
    37
   ],
-  58,
+  37,
   "((0)+(b))=((b)+(0))"
  ],
  [
@@ -387,7 +580,7 @@ window.proof_addition_injective = [
   [
    40
   ],
-  59,
+  40,
   "(((0)+(b))=((b)+(0)))=>(((a)=((0)+(b)))=>((a)=((b)+(0))))"
  ],
  [
@@ -395,7 +588,7 @@ window.proof_addition_injective = [
   [
    41
   ],
-  60,
+  41,
   "((a)=((0)+(b)))=>((a)=((b)+(0)))"
  ],
  [
@@ -404,7 +597,7 @@ window.proof_addition_injective = [
    5,
    "(b)+(0)"
   ],
-  61,
+  43,
   "Ay((((b)+(0))=(y))=>((P[(b)+(0)])=>(P[y])))"
  ],
  [
@@ -413,7 +606,7 @@ window.proof_addition_injective = [
    43,
    "b"
   ],
-  62,
+  44,
   "(((b)+(0))=(b))=>((P[(b)+(0)])=>(P[b]))"
  ],
  [
@@ -421,7 +614,7 @@ window.proof_addition_injective = [
   [
    43
   ],
-  63,
+  43,
   "Ay((((b)+(0))=(y))=>((P[(b)+(0)])=>(P[y])))"
  ],
  [
@@ -431,7 +624,7 @@ window.proof_addition_injective = [
    "P",
    "(a)=(@)"
   ],
-  64,
+  45,
   "(((b)+(0))=(b))=>(((a)=((b)+(0)))=>((a)=(b)))"
  ],
  [
@@ -439,7 +632,7 @@ window.proof_addition_injective = [
   [
    44
   ],
-  65,
+  44,
   "(((b)+(0))=(b))=>((P[(b)+(0)])=>(P[b]))"
  ],
  [
@@ -448,7 +641,7 @@ window.proof_addition_injective = [
    45,
    26
   ],
-  66,
+  46,
   "((a)=((b)+(0)))=>((a)=(b))"
  ],
  [
@@ -457,7 +650,7 @@ window.proof_addition_injective = [
    46,
    42
   ],
-  67,
+  47,
   "(a)=(b)"
  ],
  [
@@ -465,7 +658,7 @@ window.proof_addition_injective = [
   [
    46
   ],
-  68,
+  46,
   "((a)=((b)+(0)))=>((a)=(b))"
  ],
  [
@@ -473,7 +666,7 @@ window.proof_addition_injective = [
   [
    45
   ],
-  69,
+  45,
   "(((b)+(0))=(b))=>(((a)=((b)+(0)))=>((a)=(b)))"
  ],
  [
@@ -482,7 +675,7 @@ window.proof_addition_injective = [
    16,
    47
   ],
-  70,
+  48,
   "(((0)+(a))=((0)+(b)))=>((a)=(b))"
  ],
  [
@@ -490,7 +683,7 @@ window.proof_addition_injective = [
   [
    "(((x)+(a))=((x)+(b)))=>((a)=(b))"
   ],
-  71,
+  49,
   "(((x)+(a))=((x)+(b)))=>((a)=(b))"
  ],
  [
@@ -498,7 +691,7 @@ window.proof_addition_injective = [
   [
    "((S(x))+(a))=((S(x))+(b))"
   ],
-  72,
+  50,
   "((S(x))+(a))=((S(x))+(b))"
  ],
  [
@@ -507,7 +700,7 @@ window.proof_addition_injective = [
    15,
    "S(x)"
   ],
-  73,
+  51,
   "At(((t)+(S(x)))=((S(x))+(t)))"
  ],
  [
@@ -516,7 +709,7 @@ window.proof_addition_injective = [
    51,
    "a"
   ],
-  74,
+  52,
   "((a)+(S(x)))=((S(x))+(a))"
  ],
  [
@@ -525,7 +718,7 @@ window.proof_addition_injective = [
    11,
    "a"
   ],
-  75,
+  53,
   "Ay(((a)+(S(y)))=(S((a)+(y))))"
  ],
  [
@@ -534,7 +727,7 @@ window.proof_addition_injective = [
    53,
    "x"
   ],
-  76,
+  54,
   "((a)+(S(x)))=(S((a)+(x)))"
  ],
  [
@@ -543,7 +736,7 @@ window.proof_addition_injective = [
    51,
    "b"
   ],
-  77,
+  55,
   "((b)+(S(x)))=((S(x))+(b))"
  ],
  [
@@ -552,7 +745,7 @@ window.proof_addition_injective = [
    11,
    "b"
   ],
-  78,
+  56,
   "Ay(((b)+(S(y)))=(S((b)+(y))))"
  ],
  [
@@ -561,7 +754,7 @@ window.proof_addition_injective = [
    56,
    "x"
   ],
-  79,
+  57,
   "((b)+(S(x)))=(S((b)+(x)))"
  ],
  [
@@ -569,7 +762,7 @@ window.proof_addition_injective = [
   [
    51
   ],
-  80,
+  51,
   "At(((t)+(S(x)))=((S(x))+(t)))"
  ],
  [
@@ -577,7 +770,7 @@ window.proof_addition_injective = [
   [
    53
   ],
-  81,
+  53,
   "Ay(((a)+(S(y)))=(S((a)+(y))))"
  ],
  [
@@ -585,7 +778,7 @@ window.proof_addition_injective = [
   [
    56
   ],
-  82,
+  56,
   "Ay(((b)+(S(y)))=(S((b)+(y))))"
  ],
  [
@@ -594,7 +787,7 @@ window.proof_addition_injective = [
    5,
    "(b)+(S(x))"
   ],
-  83,
+  58,
   "Ay((((b)+(S(x)))=(y))=>((P[(b)+(S(x))])=>(P[y])))"
  ],
  [
@@ -603,7 +796,7 @@ window.proof_addition_injective = [
    58,
    "S((b)+(x))"
   ],
-  84,
+  59,
   "(((b)+(S(x)))=(S((b)+(x))))=>((P[(b)+(S(x))])=>(P[S((b)+(x))]))"
  ],
  [
@@ -611,7 +804,7 @@ window.proof_addition_injective = [
   [
    58
   ],
-  85,
+  58,
   "Ay((((b)+(S(x)))=(y))=>((P[(b)+(S(x))])=>(P[y])))"
  ],
  [
@@ -621,7 +814,7 @@ window.proof_addition_injective = [
    "P",
    "(@)=((S(x))+(b))"
   ],
-  86,
+  60,
   "(((b)+(S(x)))=(S((b)+(x))))=>((((b)+(S(x)))=((S(x))+(b)))=>((S((b)+(x)))=((S(x))+(b))))"
  ],
  [
@@ -629,7 +822,7 @@ window.proof_addition_injective = [
   [
    59
   ],
-  87,
+  59,
   "(((b)+(S(x)))=(S((b)+(x))))=>((P[(b)+(S(x))])=>(P[S((b)+(x))]))"
  ],
  [
@@ -638,7 +831,7 @@ window.proof_addition_injective = [
    60,
    57
   ],
-  88,
+  61,
   "(((b)+(S(x)))=((S(x))+(b)))=>((S((b)+(x)))=((S(x))+(b)))"
  ],
  [
@@ -647,7 +840,7 @@ window.proof_addition_injective = [
    61,
    55
   ],
-  89,
+  62,
   "(S((b)+(x)))=((S(x))+(b))"
  ],
  [
@@ -655,7 +848,7 @@ window.proof_addition_injective = [
   [
    60
   ],
-  90,
+  60,
   "(((b)+(S(x)))=(S((b)+(x))))=>((((b)+(S(x)))=((S(x))+(b)))=>((S((b)+(x)))=((S(x))+(b))))"
  ],
  [
@@ -663,7 +856,7 @@ window.proof_addition_injective = [
   [
    61
   ],
-  91,
+  61,
   "(((b)+(S(x)))=((S(x))+(b)))=>((S((b)+(x)))=((S(x))+(b)))"
  ],
  [
@@ -672,7 +865,7 @@ window.proof_addition_injective = [
    5,
    "(S(x))+(a)"
   ],
-  92,
+  63,
   "Ay((((S(x))+(a))=(y))=>((P[(S(x))+(a)])=>(P[y])))"
  ],
  [
@@ -681,7 +874,7 @@ window.proof_addition_injective = [
    63,
    "(S(x))+(b)"
   ],
-  93,
+  64,
   "(((S(x))+(a))=((S(x))+(b)))=>((P[(S(x))+(a)])=>(P[(S(x))+(b)]))"
  ],
  [
@@ -689,7 +882,7 @@ window.proof_addition_injective = [
   [
    63
   ],
-  94,
+  63,
   "Ay((((S(x))+(a))=(y))=>((P[(S(x))+(a)])=>(P[y])))"
  ],
  [
@@ -699,7 +892,7 @@ window.proof_addition_injective = [
    "P",
    "(@)=((S(x))+(a))"
   ],
-  95,
+  65,
   "(((S(x))+(a))=((S(x))+(b)))=>((((S(x))+(a))=((S(x))+(a)))=>(((S(x))+(b))=((S(x))+(a))))"
  ],
  [
@@ -707,7 +900,7 @@ window.proof_addition_injective = [
   [
    64
   ],
-  96,
+  64,
   "(((S(x))+(a))=((S(x))+(b)))=>((P[(S(x))+(a)])=>(P[(S(x))+(b)]))"
  ],
  [
@@ -716,7 +909,7 @@ window.proof_addition_injective = [
    4,
    "(S(x))+(a)"
   ],
-  97,
+  66,
   "((S(x))+(a))=((S(x))+(a))"
  ],
  [
@@ -725,7 +918,7 @@ window.proof_addition_injective = [
    65,
    50
   ],
-  98,
+  67,
   "(((S(x))+(a))=((S(x))+(a)))=>(((S(x))+(b))=((S(x))+(a)))"
  ],
  [
@@ -734,7 +927,7 @@ window.proof_addition_injective = [
    67,
    66
   ],
-  99,
+  68,
   "((S(x))+(b))=((S(x))+(a))"
  ],
  [
@@ -743,7 +936,7 @@ window.proof_addition_injective = [
    5,
    "(S(x))+(b)"
   ],
-  100,
+  69,
   "Ay((((S(x))+(b))=(y))=>((P[(S(x))+(b)])=>(P[y])))"
  ],
  [
@@ -752,7 +945,7 @@ window.proof_addition_injective = [
    69,
    "(S(x))+(a)"
   ],
-  101,
+  70,
   "(((S(x))+(b))=((S(x))+(a)))=>((P[(S(x))+(b)])=>(P[(S(x))+(a)]))"
  ],
  [
@@ -760,7 +953,7 @@ window.proof_addition_injective = [
   [
    69
   ],
-  102,
+  69,
   "Ay((((S(x))+(b))=(y))=>((P[(S(x))+(b)])=>(P[y])))"
  ],
  [
@@ -770,7 +963,7 @@ window.proof_addition_injective = [
    "P",
    "(S((b)+(x)))=(@)"
   ],
-  103,
+  71,
   "(((S(x))+(b))=((S(x))+(a)))=>(((S((b)+(x)))=((S(x))+(b)))=>((S((b)+(x)))=((S(x))+(a))))"
  ],
  [
@@ -778,7 +971,7 @@ window.proof_addition_injective = [
   [
    70
   ],
-  104,
+  70,
   "(((S(x))+(b))=((S(x))+(a)))=>((P[(S(x))+(b)])=>(P[(S(x))+(a)]))"
  ],
  [
@@ -787,7 +980,7 @@ window.proof_addition_injective = [
    71,
    68
   ],
-  105,
+  72,
   "((S((b)+(x)))=((S(x))+(b)))=>((S((b)+(x)))=((S(x))+(a)))"
  ],
  [
@@ -796,7 +989,7 @@ window.proof_addition_injective = [
    72,
    62
   ],
-  106,
+  73,
   "(S((b)+(x)))=((S(x))+(a))"
  ],
  [
@@ -804,7 +997,7 @@ window.proof_addition_injective = [
   [
    65
   ],
-  107,
+  65,
   "(((S(x))+(a))=((S(x))+(b)))=>((((S(x))+(a))=((S(x))+(a)))=>(((S(x))+(b))=((S(x))+(a))))"
  ],
  [
@@ -812,7 +1005,7 @@ window.proof_addition_injective = [
   [
    66
   ],
-  108,
+  66,
   "((S(x))+(a))=((S(x))+(a))"
  ],
  [
@@ -820,7 +1013,7 @@ window.proof_addition_injective = [
   [
    67
   ],
-  109,
+  67,
   "(((S(x))+(a))=((S(x))+(a)))=>(((S(x))+(b))=((S(x))+(a)))"
  ],
  [
@@ -828,7 +1021,7 @@ window.proof_addition_injective = [
   [
    68
   ],
-  110,
+  68,
   "((S(x))+(b))=((S(x))+(a))"
  ],
  [
@@ -836,7 +1029,7 @@ window.proof_addition_injective = [
   [
    71
   ],
-  111,
+  71,
   "(((S(x))+(b))=((S(x))+(a)))=>(((S((b)+(x)))=((S(x))+(b)))=>((S((b)+(x)))=((S(x))+(a))))"
  ],
  [
@@ -844,7 +1037,7 @@ window.proof_addition_injective = [
   [
    72
   ],
-  112,
+  72,
   "((S((b)+(x)))=((S(x))+(b)))=>((S((b)+(x)))=((S(x))+(a)))"
  ],
  [
@@ -853,7 +1046,7 @@ window.proof_addition_injective = [
    5,
    "(a)+(S(x))"
   ],
-  113,
+  74,
   "Ay((((a)+(S(x)))=(y))=>((P[(a)+(S(x))])=>(P[y])))"
  ],
  [
@@ -862,7 +1055,7 @@ window.proof_addition_injective = [
    74,
    "(S(x))+(a)"
   ],
-  114,
+  75,
   "(((a)+(S(x)))=((S(x))+(a)))=>((P[(a)+(S(x))])=>(P[(S(x))+(a)]))"
  ],
  [
@@ -870,7 +1063,7 @@ window.proof_addition_injective = [
   [
    74
   ],
-  115,
+  74,
   "Ay((((a)+(S(x)))=(y))=>((P[(a)+(S(x))])=>(P[y])))"
  ],
  [
@@ -880,7 +1073,7 @@ window.proof_addition_injective = [
    "P",
    "(@)=((a)+(S(x)))"
   ],
-  116,
+  76,
   "(((a)+(S(x)))=((S(x))+(a)))=>((((a)+(S(x)))=((a)+(S(x))))=>(((S(x))+(a))=((a)+(S(x)))))"
  ],
  [
@@ -888,7 +1081,7 @@ window.proof_addition_injective = [
   [
    75
   ],
-  117,
+  75,
   "(((a)+(S(x)))=((S(x))+(a)))=>((P[(a)+(S(x))])=>(P[(S(x))+(a)]))"
  ],
  [
@@ -897,7 +1090,7 @@ window.proof_addition_injective = [
    4,
    "(a)+(S(x))"
   ],
-  118,
+  77,
   "((a)+(S(x)))=((a)+(S(x)))"
  ],
  [
@@ -906,7 +1099,7 @@ window.proof_addition_injective = [
    76,
    52
   ],
-  119,
+  78,
   "(((a)+(S(x)))=((a)+(S(x))))=>(((S(x))+(a))=((a)+(S(x))))"
  ],
  [
@@ -915,7 +1108,7 @@ window.proof_addition_injective = [
    78,
    77
   ],
-  120,
+  79,
   "((S(x))+(a))=((a)+(S(x)))"
  ],
  [
@@ -924,7 +1117,7 @@ window.proof_addition_injective = [
    5,
    "(S(x))+(a)"
   ],
-  121,
+  80,
   "Ay((((S(x))+(a))=(y))=>((P[(S(x))+(a)])=>(P[y])))"
  ],
  [
@@ -933,7 +1126,7 @@ window.proof_addition_injective = [
    80,
    "(a)+(S(x))"
   ],
-  122,
+  81,
   "(((S(x))+(a))=((a)+(S(x))))=>((P[(S(x))+(a)])=>(P[(a)+(S(x))]))"
  ],
  [
@@ -941,7 +1134,7 @@ window.proof_addition_injective = [
   [
    80
   ],
-  123,
+  80,
   "Ay((((S(x))+(a))=(y))=>((P[(S(x))+(a)])=>(P[y])))"
  ],
  [
@@ -951,7 +1144,7 @@ window.proof_addition_injective = [
    "P",
    "(S((b)+(x)))=(@)"
   ],
-  124,
+  82,
   "(((S(x))+(a))=((a)+(S(x))))=>(((S((b)+(x)))=((S(x))+(a)))=>((S((b)+(x)))=((a)+(S(x)))))"
  ],
  [
@@ -959,7 +1152,7 @@ window.proof_addition_injective = [
   [
    81
   ],
-  125,
+  81,
   "(((S(x))+(a))=((a)+(S(x))))=>((P[(S(x))+(a)])=>(P[(a)+(S(x))]))"
  ],
  [
@@ -968,7 +1161,7 @@ window.proof_addition_injective = [
    82,
    79
   ],
-  126,
+  83,
   "((S((b)+(x)))=((S(x))+(a)))=>((S((b)+(x)))=((a)+(S(x))))"
  ],
  [
@@ -977,7 +1170,7 @@ window.proof_addition_injective = [
    83,
    73
   ],
-  127,
+  84,
   "(S((b)+(x)))=((a)+(S(x)))"
  ],
  [
@@ -985,7 +1178,7 @@ window.proof_addition_injective = [
   [
    76
   ],
-  128,
+  76,
   "(((a)+(S(x)))=((S(x))+(a)))=>((((a)+(S(x)))=((a)+(S(x))))=>(((S(x))+(a))=((a)+(S(x)))))"
  ],
  [
@@ -993,7 +1186,7 @@ window.proof_addition_injective = [
   [
    77
   ],
-  129,
+  77,
   "((a)+(S(x)))=((a)+(S(x)))"
  ],
  [
@@ -1001,7 +1194,7 @@ window.proof_addition_injective = [
   [
    78
   ],
-  130,
+  78,
   "(((a)+(S(x)))=((a)+(S(x))))=>(((S(x))+(a))=((a)+(S(x))))"
  ],
  [
@@ -1009,7 +1202,7 @@ window.proof_addition_injective = [
   [
    79
   ],
-  131,
+  79,
   "((S(x))+(a))=((a)+(S(x)))"
  ],
  [
@@ -1017,7 +1210,7 @@ window.proof_addition_injective = [
   [
    82
   ],
-  132,
+  82,
   "(((S(x))+(a))=((a)+(S(x))))=>(((S((b)+(x)))=((S(x))+(a)))=>((S((b)+(x)))=((a)+(S(x)))))"
  ],
  [
@@ -1025,7 +1218,7 @@ window.proof_addition_injective = [
   [
    83
   ],
-  133,
+  83,
   "((S((b)+(x)))=((S(x))+(a)))=>((S((b)+(x)))=((a)+(S(x))))"
  ],
  [
@@ -1034,7 +1227,7 @@ window.proof_addition_injective = [
    5,
    "(a)+(S(x))"
   ],
-  134,
+  85,
   "Ay((((a)+(S(x)))=(y))=>((P[(a)+(S(x))])=>(P[y])))"
  ],
  [
@@ -1043,7 +1236,7 @@ window.proof_addition_injective = [
    85,
    "S((a)+(x))"
   ],
-  135,
+  86,
   "(((a)+(S(x)))=(S((a)+(x))))=>((P[(a)+(S(x))])=>(P[S((a)+(x))]))"
  ],
  [
@@ -1051,7 +1244,7 @@ window.proof_addition_injective = [
   [
    85
   ],
-  136,
+  85,
   "Ay((((a)+(S(x)))=(y))=>((P[(a)+(S(x))])=>(P[y])))"
  ],
  [
@@ -1061,7 +1254,7 @@ window.proof_addition_injective = [
    "P",
    "(S((b)+(x)))=(@)"
   ],
-  137,
+  87,
   "(((a)+(S(x)))=(S((a)+(x))))=>(((S((b)+(x)))=((a)+(S(x))))=>((S((b)+(x)))=(S((a)+(x)))))"
  ],
  [
@@ -1069,7 +1262,7 @@ window.proof_addition_injective = [
   [
    86
   ],
-  138,
+  86,
   "(((a)+(S(x)))=(S((a)+(x))))=>((P[(a)+(S(x))])=>(P[S((a)+(x))]))"
  ],
  [
@@ -1078,7 +1271,7 @@ window.proof_addition_injective = [
    87,
    54
   ],
-  139,
+  88,
   "((S((b)+(x)))=((a)+(S(x))))=>((S((b)+(x)))=(S((a)+(x))))"
  ],
  [
@@ -1087,7 +1280,7 @@ window.proof_addition_injective = [
    88,
    84
   ],
-  140,
+  89,
   "(S((b)+(x)))=(S((a)+(x)))"
  ],
  [
@@ -1095,7 +1288,7 @@ window.proof_addition_injective = [
   [
    88
   ],
-  141,
+  88,
   "((S((b)+(x)))=((a)+(S(x))))=>((S((b)+(x)))=(S((a)+(x))))"
  ],
  [
@@ -1103,7 +1296,7 @@ window.proof_addition_injective = [
   [
    87
   ],
-  142,
+  87,
   "(((a)+(S(x)))=(S((a)+(x))))=>(((S((b)+(x)))=((a)+(S(x))))=>((S((b)+(x)))=(S((a)+(x)))))"
  ],
  [
@@ -1112,7 +1305,7 @@ window.proof_addition_injective = [
    8,
    "(b)+(x)"
   ],
-  143,
+  90,
   "Ay(((S((b)+(x)))=(S(y)))=>(((b)+(x))=(y)))"
  ],
  [
@@ -1121,7 +1314,7 @@ window.proof_addition_injective = [
    90,
    "(a)+(x)"
   ],
-  144,
+  91,
   "((S((b)+(x)))=(S((a)+(x))))=>(((b)+(x))=((a)+(x)))"
  ],
  [
@@ -1130,7 +1323,7 @@ window.proof_addition_injective = [
    91,
    89
   ],
-  145,
+  92,
   "((b)+(x))=((a)+(x))"
  ],
  [
@@ -1139,7 +1332,7 @@ window.proof_addition_injective = [
    15,
    "b"
   ],
-  146,
+  93,
   "At(((t)+(b))=((b)+(t)))"
  ],
  [
@@ -1148,7 +1341,7 @@ window.proof_addition_injective = [
    15,
    "a"
   ],
-  147,
+  94,
   "At(((t)+(a))=((a)+(t)))"
  ],
  [
@@ -1157,7 +1350,7 @@ window.proof_addition_injective = [
    93,
    "x"
   ],
-  148,
+  95,
   "((x)+(b))=((b)+(x))"
  ],
  [
@@ -1166,7 +1359,7 @@ window.proof_addition_injective = [
    94,
    "x"
   ],
-  149,
+  96,
   "((x)+(a))=((a)+(x))"
  ],
  [
@@ -1174,7 +1367,7 @@ window.proof_addition_injective = [
   [
    93
   ],
-  150,
+  93,
   "At(((t)+(b))=((b)+(t)))"
  ],
  [
@@ -1182,7 +1375,7 @@ window.proof_addition_injective = [
   [
    94
   ],
-  151,
+  94,
   "At(((t)+(a))=((a)+(t)))"
  ],
  [
@@ -1191,7 +1384,7 @@ window.proof_addition_injective = [
    5,
    "(b)+(x)"
   ],
-  152,
+  97,
   "Ay((((b)+(x))=(y))=>((P[(b)+(x)])=>(P[y])))"
  ],
  [
@@ -1200,7 +1393,7 @@ window.proof_addition_injective = [
    97,
    "(a)+(x)"
   ],
-  153,
+  98,
   "(((b)+(x))=((a)+(x)))=>((P[(b)+(x)])=>(P[(a)+(x)]))"
  ],
  [
@@ -1208,7 +1401,7 @@ window.proof_addition_injective = [
   [
    97
   ],
-  154,
+  97,
   "Ay((((b)+(x))=(y))=>((P[(b)+(x)])=>(P[y])))"
  ],
  [
@@ -1218,7 +1411,7 @@ window.proof_addition_injective = [
    "P",
    "((x)+(b))=(@)"
   ],
-  155,
+  99,
   "(((b)+(x))=((a)+(x)))=>((((x)+(b))=((b)+(x)))=>(((x)+(b))=((a)+(x))))"
  ],
  [
@@ -1226,7 +1419,7 @@ window.proof_addition_injective = [
   [
    98
   ],
-  156,
+  98,
   "(((b)+(x))=((a)+(x)))=>((P[(b)+(x)])=>(P[(a)+(x)]))"
  ],
  [
@@ -1235,7 +1428,7 @@ window.proof_addition_injective = [
    99,
    92
   ],
-  157,
+  100,
   "(((x)+(b))=((b)+(x)))=>(((x)+(b))=((a)+(x)))"
  ],
  [
@@ -1244,7 +1437,7 @@ window.proof_addition_injective = [
    100,
    95
   ],
-  158,
+  101,
   "((x)+(b))=((a)+(x))"
  ],
  [
@@ -1252,7 +1445,7 @@ window.proof_addition_injective = [
   [
    100
   ],
-  159,
+  100,
   "(((x)+(b))=((b)+(x)))=>(((x)+(b))=((a)+(x)))"
  ],
  [
@@ -1260,7 +1453,7 @@ window.proof_addition_injective = [
   [
    99
   ],
-  160,
+  99,
   "(((b)+(x))=((a)+(x)))=>((((x)+(b))=((b)+(x)))=>(((x)+(b))=((a)+(x))))"
  ],
  [
@@ -1269,7 +1462,7 @@ window.proof_addition_injective = [
    5,
    "(x)+(b)"
   ],
-  161,
+  102,
   "Ay((((x)+(b))=(y))=>((P[(x)+(b)])=>(P[y])))"
  ],
  [
@@ -1278,7 +1471,7 @@ window.proof_addition_injective = [
    102,
    "(a)+(x)"
   ],
-  162,
+  103,
   "(((x)+(b))=((a)+(x)))=>((P[(x)+(b)])=>(P[(a)+(x)]))"
  ],
  [
@@ -1286,7 +1479,7 @@ window.proof_addition_injective = [
   [
    102
   ],
-  163,
+  102,
   "Ay((((x)+(b))=(y))=>((P[(x)+(b)])=>(P[y])))"
  ],
  [
@@ -1296,7 +1489,7 @@ window.proof_addition_injective = [
    "P",
    "(@)=((x)+(b))"
   ],
-  164,
+  104,
   "(((x)+(b))=((a)+(x)))=>((((x)+(b))=((x)+(b)))=>(((a)+(x))=((x)+(b))))"
  ],
  [
@@ -1304,7 +1497,7 @@ window.proof_addition_injective = [
   [
    103
   ],
-  165,
+  103,
   "(((x)+(b))=((a)+(x)))=>((P[(x)+(b)])=>(P[(a)+(x)]))"
  ],
  [
@@ -1313,7 +1506,7 @@ window.proof_addition_injective = [
    4,
    "(x)+(b)"
   ],
-  166,
+  105,
   "((x)+(b))=((x)+(b))"
  ],
  [
@@ -1322,7 +1515,7 @@ window.proof_addition_injective = [
    104,
    101
   ],
-  167,
+  106,
   "(((x)+(b))=((x)+(b)))=>(((a)+(x))=((x)+(b)))"
  ],
  [
@@ -1331,7 +1524,7 @@ window.proof_addition_injective = [
    106,
    105
   ],
-  168,
+  107,
   "((a)+(x))=((x)+(b))"
  ],
  [
@@ -1340,7 +1533,7 @@ window.proof_addition_injective = [
    5,
    "(a)+(x)"
   ],
-  169,
+  108,
   "Ay((((a)+(x))=(y))=>((P[(a)+(x)])=>(P[y])))"
  ],
  [
@@ -1349,7 +1542,7 @@ window.proof_addition_injective = [
    108,
    "(x)+(b)"
   ],
-  170,
+  109,
   "(((a)+(x))=((x)+(b)))=>((P[(a)+(x)])=>(P[(x)+(b)]))"
  ],
  [
@@ -1357,7 +1550,7 @@ window.proof_addition_injective = [
   [
    108
   ],
-  171,
+  108,
   "Ay((((a)+(x))=(y))=>((P[(a)+(x)])=>(P[y])))"
  ],
  [
@@ -1367,7 +1560,7 @@ window.proof_addition_injective = [
    "P",
    "((x)+(a))=(@)"
   ],
-  172,
+  110,
   "(((a)+(x))=((x)+(b)))=>((((x)+(a))=((a)+(x)))=>(((x)+(a))=((x)+(b))))"
  ],
  [
@@ -1375,7 +1568,7 @@ window.proof_addition_injective = [
   [
    109
   ],
-  173,
+  109,
   "(((a)+(x))=((x)+(b)))=>((P[(a)+(x)])=>(P[(x)+(b)]))"
  ],
  [
@@ -1384,7 +1577,7 @@ window.proof_addition_injective = [
    110,
    107
   ],
-  174,
+  111,
   "(((x)+(a))=((a)+(x)))=>(((x)+(a))=((x)+(b)))"
  ],
  [
@@ -1393,7 +1586,7 @@ window.proof_addition_injective = [
    111,
    96
   ],
-  175,
+  112,
   "((x)+(a))=((x)+(b))"
  ],
  [
@@ -1401,7 +1594,7 @@ window.proof_addition_injective = [
   [
    104
   ],
-  176,
+  104,
   "(((x)+(b))=((a)+(x)))=>((((x)+(b))=((x)+(b)))=>(((a)+(x))=((x)+(b))))"
  ],
  [
@@ -1409,7 +1602,7 @@ window.proof_addition_injective = [
   [
    105
   ],
-  177,
+  105,
   "((x)+(b))=((x)+(b))"
  ],
  [
@@ -1417,7 +1610,7 @@ window.proof_addition_injective = [
   [
    106
   ],
-  178,
+  106,
   "(((x)+(b))=((x)+(b)))=>(((a)+(x))=((x)+(b)))"
  ],
  [
@@ -1425,7 +1618,7 @@ window.proof_addition_injective = [
   [
    107
   ],
-  179,
+  107,
   "((a)+(x))=((x)+(b))"
  ],
  [
@@ -1433,7 +1626,7 @@ window.proof_addition_injective = [
   [
    110
   ],
-  180,
+  110,
   "(((a)+(x))=((x)+(b)))=>((((x)+(a))=((a)+(x)))=>(((x)+(a))=((x)+(b))))"
  ],
  [
@@ -1441,7 +1634,7 @@ window.proof_addition_injective = [
   [
    111
   ],
-  181,
+  111,
   "(((x)+(a))=((a)+(x)))=>(((x)+(a))=((x)+(b)))"
  ],
  [
@@ -1450,7 +1643,7 @@ window.proof_addition_injective = [
    49,
    112
   ],
-  182,
+  113,
   "(a)=(b)"
  ],
  [
@@ -1459,7 +1652,7 @@ window.proof_addition_injective = [
    50,
    113
   ],
-  183,
+  114,
   "(((S(x))+(a))=((S(x))+(b)))=>((a)=(b))"
  ],
  [
@@ -1468,7 +1661,7 @@ window.proof_addition_injective = [
    49,
    114
   ],
-  184,
+  115,
   "((((x)+(a))=((x)+(b)))=>((a)=(b)))=>((((S(x))+(a))=((S(x))+(b)))=>((a)=(b)))"
  ],
  [
@@ -1477,7 +1670,7 @@ window.proof_addition_injective = [
    115,
    "x"
   ],
-  185,
+  116,
   "Ax(((((x)+(a))=((x)+(b)))=>((a)=(b)))=>((((S(x))+(a))=((S(x))+(b)))=>((a)=(b))))"
  ],
  [
@@ -1487,7 +1680,7 @@ window.proof_addition_injective = [
    "P",
    "(((@)+(a))=((@)+(b)))=>((a)=(b))"
   ],
-  186,
+  117,
   "((((0)+(a))=((0)+(b)))=>((a)=(b)))=>((Ax(((((x)+(a))=((x)+(b)))=>((a)=(b)))=>((((S(x))+(a))=((S(x))+(b)))=>((a)=(b)))))=>(Ax((((x)+(a))=((x)+(b)))=>((a)=(b)))))"
  ],
  [
@@ -1496,7 +1689,7 @@ window.proof_addition_injective = [
    117,
    48
   ],
-  187,
+  118,
   "(Ax(((((x)+(a))=((x)+(b)))=>((a)=(b)))=>((((S(x))+(a))=((S(x))+(b)))=>((a)=(b)))))=>(Ax((((x)+(a))=((x)+(b)))=>((a)=(b))))"
  ],
  [
@@ -1505,7 +1698,7 @@ window.proof_addition_injective = [
    118,
    116
   ],
-  188,
+  119,
   "Ax((((x)+(a))=((x)+(b)))=>((a)=(b)))"
  ],
  [
@@ -1514,7 +1707,7 @@ window.proof_addition_injective = [
    119,
    "x"
   ],
-  189,
+  120,
   "(((x)+(a))=((x)+(b)))=>((a)=(b))"
  ],
  [
@@ -1523,7 +1716,7 @@ window.proof_addition_injective = [
    120,
    "b"
   ],
-  190,
+  121,
   "Ab((((x)+(a))=((x)+(b)))=>((a)=(b)))"
  ],
  [
@@ -1532,7 +1725,7 @@ window.proof_addition_injective = [
    121,
    "a"
   ],
-  191,
+  122,
   "Aa(Ab((((x)+(a))=((x)+(b)))=>((a)=(b))))"
  ],
  [
@@ -1541,7 +1734,24 @@ window.proof_addition_injective = [
    122,
    "x"
   ],
-  192,
+  123,
+  "Ax(Aa(Ab((((x)+(a))=((x)+(b)))=>((a)=(b)))))"
+ ],
+ [
+  "Highlight",
+  [
+   123
+  ],
+  123,
+  "Ax(Aa(Ab((((x)+(a))=((x)+(b)))=>((a)=(b)))))"
+ ],
+ [
+  "SetComment",
+  [
+   123,
+   "addition_injective"
+  ],
+  123,
   "Ax(Aa(Ab((((x)+(a))=((x)+(b)))=>((a)=(b)))))"
  ]
 ];

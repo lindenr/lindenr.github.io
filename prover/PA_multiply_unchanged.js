@@ -1,4 +1,6 @@
-window.requiredModules_multiply_unchanged = ["alternative_implication","explosion","and_elimination1","and_elimination2","equal_or_unequal","excluded_middle_or","or_implies","or_introduction1","logic","nonzero_is_successor","addition_commutes","addition_injective","S_functional","addition_associates","add_to_0","addition","distributivity","multiplication_associates","multiplication_commutes","multiply_to_0","equal_or_unequal"];
+window.exportStatements_multiply_unchanged = new Map([["Ax(Aa((((x)*(a))=(x))=>(((x)=(0))||((a)=(S(0))))))","multiply_unchanged"]]);
+
+window.requiredModules_multiply_unchanged = ["alternative_implication","explosion","and_elimination1","and_elimination2","equal_or_unequal","excluded_middle_or","or_implies","or_introduction1","logic","nonzero_is_successor","addition_commutes","addition_injective","S_functional","addition_associates","add_to_0","addition","distributivity","multiplication_associates","multiplication_commutes","multiply_to_0"];
 
 window.proof_multiply_unchanged = [
  [
@@ -8,7 +10,7 @@ window.proof_multiply_unchanged = [
    "<=",
    "Ex(((@1)+(x))=(@2))"
   ],
-  null,
+  -1,
   ""
  ],
  [
@@ -18,7 +20,7 @@ window.proof_multiply_unchanged = [
    "<",
    "Ex(((@1)+(S(x)))=(@2))"
   ],
-  null,
+  -1,
   ""
  ],
  [
@@ -28,7 +30,7 @@ window.proof_multiply_unchanged = [
    "!<",
    "((@1)<(@2))=>(F)"
   ],
-  null,
+  -1,
   ""
  ],
  [
@@ -38,7 +40,7 @@ window.proof_multiply_unchanged = [
    "!=",
    "((@1)=(@2))=>(F)"
   ],
-  null,
+  -1,
   ""
  ],
  [
@@ -48,7 +50,17 @@ window.proof_multiply_unchanged = [
    "|",
    "Ex(((@1)*(x))=(@2))"
   ],
-  null,
+  -1,
+  ""
+ ],
+ [
+  "AddRelation",
+  [
+   2,
+   "!|",
+   "(Ex(((@1)*(x))=(@2)))=>(F)"
+  ],
+  -1,
   ""
  ],
  [
@@ -58,7 +70,7 @@ window.proof_multiply_unchanged = [
    "||",
    "((P)=>(F))=>(Q)"
   ],
-  null,
+  -1,
   ""
  ],
  [
@@ -68,7 +80,117 @@ window.proof_multiply_unchanged = [
    "&&",
    "((P)=>((Q)=>(F)))=>(F)"
   ],
-  null,
+  -1,
+  ""
+ ],
+ [
+  "AddRelation",
+  [
+   3,
+   "'gcd",
+   "(((@3)|(@1))&&((@3)|(@2)))&&(Ah((((h)|(@1))&&((h)|(@2)))=>((h)|(@3))))"
+  ],
+  -1,
+  ""
+ ],
+ [
+  "AddRelation",
+  [
+   3,
+   "'lcm",
+   "(((@1)|(@3))&&((@2)|(@3)))&&(Az(((@1)|(z))=>(((@2)|(z))=>((@3)|(z)))))"
+  ],
+  -1,
+  ""
+ ],
+ [
+  "AddRelation",
+  [
+   3,
+   "'mod",
+   "((@3)<(@2))&&(En((@1)=(((n)*(@2))+(@3))))"
+  ],
+  -1,
+  ""
+ ],
+ [
+  "AddRelation",
+  [
+   3,
+   "'zmod",
+   "(((@2)=(0))&&((@3)=(0)))||('mod[@1,@2,@3])"
+  ],
+  -1,
+  ""
+ ],
+ [
+  "AddRelation",
+  [
+   3,
+   "'cong",
+   "Ea(('mod[@1,@3,a])&&('mod[@2,@3,a]))"
+  ],
+  -1,
+  ""
+ ],
+ [
+  "AddRelation",
+  [
+   3,
+   "'conga",
+   "Ea(Eb(((@1)+((@3)*(a)))=((@2)+((@3)*(b)))))"
+  ],
+  -1,
+  ""
+ ],
+ [
+  "AddRelation",
+  [
+   2,
+   "'bezoutable",
+   "((@1)!=(0))=>(((@2)!=(0))=>(Eu(Eg(('cong[(u)*(@1),g,@2])&&('gcd[@1,@2,g])))))"
+  ],
+  -1,
+  ""
+ ],
+ [
+  "AddRelation",
+  [
+   2,
+   "'br",
+   "Ea(Eb(Eg(('gcd[@1,@2,g])&&(((a)*(@1))=(((b)*(@2))+(g))))))"
+  ],
+  -1,
+  ""
+ ],
+ [
+  "AddRelation",
+  [
+   2,
+   "'brr",
+   "((@1)!=(0))=>('br[@1,@2])"
+  ],
+  -1,
+  ""
+ ],
+ [
+  "AddRelation",
+  [
+   1,
+   "'prime",
+   "((S(0))<(@1))&&(Aa(((a)<(@1))=>(((a)|(@1))=>((a)=(S(0))))))"
+  ],
+  -1,
+  ""
+ ],
+ [
+  "AddRelation",
+  [
+   2,
+   "'nprod",
+   "((@1)!=(0))&&(Ax(((x)<=(@2))=>(((x)!=(0))=>((x)|(@1)))))"
+  ],
+  -1,
   ""
  ],
  [
@@ -1717,6 +1839,91 @@ window.proof_multiply_unchanged = [
   "(a)=(S(0))"
  ],
  [
+  "DT",
+  [
+   44,
+   117
+  ],
+  118,
+  "((a)=(S(#y)))=>((a)=(S(0)))"
+ ],
+ [
+  "G",
+  [
+   118,
+   "#y"
+  ],
+  119,
+  "A#y(((a)=(S(#y)))=>((a)=(S(0))))"
+ ],
+ [
+  "S",
+  [
+   7,
+   "Q",
+   "Q123"
+  ],
+  120,
+  "(Ex(P[x]))=>((Ax((P[x])=>(Q123)))=>(Q123))"
+ ],
+ [
+  "S",
+  [
+   120,
+   "P",
+   "P123[@]"
+  ],
+  121,
+  "(Ex(P123[x]))=>((Ax((P123[x])=>(Q123)))=>(Q123))"
+ ],
+ [
+  "S",
+  [
+   121,
+   "Q123",
+   "(a)=(S(0))"
+  ],
+  122,
+  "(Ex(P123[x]))=>((Ax((P123[x])=>((a)=(S(0)))))=>((a)=(S(0))))"
+ ],
+ [
+  "S",
+  [
+   122,
+   "P123",
+   "(a)=(S(@))"
+  ],
+  123,
+  "(Ex((a)=(S(x))))=>((Ax(((a)=(S(x)))=>((a)=(S(0)))))=>((a)=(S(0))))"
+ ],
+ [
+  "MP",
+  [
+   123,
+   43
+  ],
+  124,
+  "(Ax(((a)=(S(x)))=>((a)=(S(0)))))=>((a)=(S(0)))"
+ ],
+ [
+  "MP",
+  [
+   124,
+   119
+  ],
+  125,
+  "(a)=(S(0))"
+ ],
+ [
+  "Rewrite",
+  [
+   125,
+   "(a)=(S(0))"
+  ],
+  126,
+  "(a)=(S(0))"
+ ],
+ [
   "DEL",
   [
    115
@@ -1752,27 +1959,27 @@ window.proof_multiply_unchanged = [
   "DT",
   [
    104,
-   117
+   126
   ],
-  118,
+  127,
   "(((x)=(0))=>(F))=>((a)=(S(0)))"
  ],
  [
   "Rewrite",
   [
-   118,
+   127,
    "((x)=(0))||((a)=(S(0)))"
   ],
-  119,
+  128,
   "((x)=(0))||((a)=(S(0)))"
  ],
  [
   "DT",
   [
    40,
-   119
+   128
   ],
-  120,
+  129,
   "((a)!=(0))=>(((x)=(0))||((a)=(S(0))))"
  ],
  [
@@ -1780,25 +1987,25 @@ window.proof_multiply_unchanged = [
   [
    "equal_or_unequal"
   ],
-  121,
+  130,
   "Ax(Ay(((x)=(y))||((x)!=(y))))"
  ],
  [
   "SV",
   [
-   121,
+   130,
    "a"
   ],
-  122,
+  131,
   "Ay(((a)=(y))||((a)!=(y)))"
  ],
  [
   "SV",
   [
-   122,
+   131,
    "0"
   ],
-  123,
+  132,
   "((a)=(0))||((a)!=(0))"
  ],
  [
@@ -1808,81 +2015,98 @@ window.proof_multiply_unchanged = [
    "P",
    "(a)=(0)"
   ],
-  124,
+  133,
   "(((a)=(0))||(Q))=>((((a)=(0))=>(R))=>(((Q)=>(R))=>(R)))"
  ],
  [
   "S",
   [
-   124,
+   133,
    "Q",
    "(a)!=(0)"
   ],
-  125,
+  134,
   "(((a)=(0))||((a)!=(0)))=>((((a)=(0))=>(R))=>((((a)!=(0))=>(R))=>(R)))"
  ],
  [
   "S",
   [
-   125,
+   134,
    "R",
    "((x)=(0))||((a)=(S(0)))"
   ],
-  126,
+  135,
   "(((a)=(0))||((a)!=(0)))=>((((a)=(0))=>(((x)=(0))||((a)=(S(0)))))=>((((a)!=(0))=>(((x)=(0))||((a)=(S(0)))))=>(((x)=(0))||((a)=(S(0))))))"
  ],
  [
   "MP",
   [
-   126,
-   123
+   135,
+   132
   ],
-  127,
+  136,
   "(((a)=(0))=>(((x)=(0))||((a)=(S(0)))))=>((((a)!=(0))=>(((x)=(0))||((a)=(S(0)))))=>(((x)=(0))||((a)=(S(0)))))"
  ],
  [
   "MP",
   [
-   127,
+   136,
    39
   ],
-  128,
+  137,
   "(((a)!=(0))=>(((x)=(0))||((a)=(S(0)))))=>(((x)=(0))||((a)=(S(0))))"
  ],
  [
   "MP",
   [
-   128,
-   120
+   137,
+   129
   ],
-  129,
+  138,
   "((x)=(0))||((a)=(S(0)))"
  ],
  [
   "DT",
   [
    15,
-   129
+   138
   ],
-  130,
+  139,
   "(((x)*(a))=(x))=>(((x)=(0))||((a)=(S(0))))"
  ],
  [
   "G",
   [
-   130,
+   139,
    "a"
   ],
-  131,
+  140,
   "Aa((((x)*(a))=(x))=>(((x)=(0))||((a)=(S(0)))))"
  ],
  [
   "G",
   [
-   131,
+   140,
    "x"
   ],
-  132,
+  141,
+  "Ax(Aa((((x)*(a))=(x))=>(((x)=(0))||((a)=(S(0))))))"
+ ],
+ [
+  "Highlight",
+  [
+   141
+  ],
+  141,
+  "Ax(Aa((((x)*(a))=(x))=>(((x)=(0))||((a)=(S(0))))))"
+ ],
+ [
+  "SetComment",
+  [
+   141,
+   "multiply_unchanged"
+  ],
+  141,
   "Ax(Aa((((x)*(a))=(x))=>(((x)=(0))||((a)=(S(0))))))"
  ]
 ];

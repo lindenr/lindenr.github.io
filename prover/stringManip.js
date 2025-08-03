@@ -1,16 +1,25 @@
 function escapeRegex(string) {
     return string.replace(/[/\-\\^$*+?.()|[\]{}]/g, '\\$&');
 }
-function splitCommas(s) {
+function splitCommas(s, separate_semicolon=false) {
     var depth = 0;
-    var splits = [0];
+    var splits = [];
+    var cur = 0;
     for (var i = 0; i < s.length; ++ i) {
-        if (s[i] == ',' && depth == 0) splits.push(i+1);
+        if (s[i] == ',' && depth == 0) {
+            splits.push(s.slice(cur, i));
+            cur = i+1;
+        }
+        else if (s[i] == ';' && depth == 0 && separate_semicolon) {
+            splits.push(s.slice(cur, i));
+            splits.push(';');
+            cur = i+1;
+        }
         else if (s[i] == '[') depth ++;
         else if (s[i] == ']') depth --;
     }
-    splits.push(s.length+1);
-    return splits.slice(0, -1).map((n,i,m) => s.slice(n, splits[i+1]-1));
+    if (cur < s.length) return splits.concat(s.slice(cur));
+    return splits;
 }
 function isRenamingInstanceOf(parsed1, parsed2, mustRename=new Map()) {
     // can you rename bound variables of p1 to get p2? (easier version of "substitution instance").
@@ -25,13 +34,13 @@ function isRenamingInstanceOf(parsed1, parsed2, mustRename=new Map()) {
         return false;
     }
     if (RELATIONS[2].includes(p1[0]) || CONNECTIVES[2].includes(p1[0]) || FUNCTIONS[2].includes(p1[0])) {
-        return isRenamingInstanceOf(p1[1], p2[1], mustRename) && isRenamingInstanceOf(p1[2], p2[2], mustRename);
+        return isRenamingInstanceOf(p1[2][0], p2[2][0], mustRename) && isRenamingInstanceOf(p1[2][1], p2[2][1], mustRename);
     } else if (FUNCTIONS[1].includes(p1[0])) {
-        return isRenamingInstanceOf(p1[1], p2[1], mustRename);
-    } else if (FUNCTIONS[1].includes(p1[0])) {
+        return isRenamingInstanceOf(p1[2][0], p2[2][0], mustRename);
+    } else if (FUNCTIONS[0].includes(p1[0])) {
         return true;
     } else if (isGeneric(p1[0])) {
-        const subs1 = p1.slice(1), subs2 = p2.slice(2);
+        const subs1 = p1[1], subs2 = p2[1];
         return subs1.length == subs2.length && subs1.every((x, i) => (isRenamingInstanceOf(x, subs2[i], mustRename)));
     } else if (p1[0] == 'A' || p1[0] == 'E') {
         const newMustRename = new Map(mustRename);
@@ -43,9 +52,9 @@ function isRenamingInstanceOf(parsed1, parsed2, mustRename=new Map()) {
         return true;
     } else if (p1[0][0] == "'") {
         if (p1[0] != p2[0]) return false;
-        if (p1.length != p2.length) throw new Error('same operator, different arities????');
-        for (var i = 1; i < p1.length; ++ i) {
-            if (!isRenamingInstanceOf(p1[i], p2[i], mustRename)) return false;
+        if (p1[2].length != p2[2].length) throw new Error('same operator, different arities????');
+        for (var i = 0; i < p1[2].length; ++ i) {
+            if (!isRenamingInstanceOf(p1[2][i], p2[2][i], mustRename)) return false;
         }
         return true;
     } else {
@@ -60,11 +69,12 @@ function replaceGeneric(sentenceOrig, gen, replaceOrig) {
     var sentence = sentenceParsed.sentence;
     const [replaceParsed, renaming2] = renameDisallowed(rop, new Set(sentenceParsed.free));
     const replace = replaceParsed.sentence;
+    const isPred = parsePred(replaceOrig, false, true).error === undefined;
     // replacement contains @, @1, @2 etc symbols for the replacements, if any
     for (var i = 0; i < sentence.length; ++ i) {
         if (sentence.slice(i, i + gen.length) != gen) continue;
-        if (i+gen.length >= sentence.length) throw new Error('generic without following brackets');
-        if (sentence[i+gen.length] == ')') {
+        if (i+gen.length >= sentence.length && i > 0) throw new Error('should never happen: generic at end of sentence with no brackets, and isn\'t the whole thing');
+        if (isPred || [')', ';', ',', undefined].includes(sentence[i+gen.length])) {
             sentence = sentence.slice(0, i) + replace + sentence.slice(i+gen.length);
             i += replace.length;
             continue;
@@ -79,7 +89,7 @@ function replaceGeneric(sentenceOrig, gen, replaceOrig) {
         sentence = sentence.slice(0, i) + replacement + sentence.slice(j+1);
         i += replacement.length;
     }
-    return sentence;
+    return sentence.replaceAll(";][", ";").replaceAll("][", ",");
 }
 function isVarChar(x) {
     return x == '#' || x == '@' || (x >= '0' && x <= '9') || (x >= 'a' && x <= 'z');
@@ -126,6 +136,15 @@ function getSubSentence(sentence, start) {
         if (depth == -1) break;
     }
     return sentence.slice(start, i);
+}
+function replaceTokens(sentence, tokMap) { // token here only refers to variables (x, a1, etc) and generics (P, Q1, etc)
+    for (const [k, v] of tokMap.entries()) {
+        sentence = sentence.replace(new RegExp("(?<![#@a-zPQR0-9])"+escapeRegex(k)+"(?![#@a-zPQR0-9])", "g"), '_' + k + '_');
+    }
+    for (const [k, v] of tokMap.entries()) {
+        sentence = sentence.replace(new RegExp(escapeRegex('_' + k + '_'), "g"), v);
+    }
+    return sentence;
 }
 function searchToken(sentence, tok, start=0) {
     for (var i = start; i < sentence.length; ++ i) {

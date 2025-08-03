@@ -26,6 +26,12 @@ tr:nth-of-type(even) {
 tr:hover {
     background-color: #ccf
 }
+.assumptionRow{
+    background-color:green,
+}
+.assumptionRow:hover{
+    background-color:#afa,
+}
 #errorLogging { background-color:#ffaaaa; }
 .header {
 border-radius: 10px;
@@ -86,10 +92,11 @@ border-radius: 10px;
 <button onclick="showExample1()">EXAMPLE 1</button>
 <button onclick="showExample2()">EXAMPLE 2</button>
 <button onclick="showExample3()">EXAMPLE 3</button>
+<button onclick="assertStatement()">ASSERT</button>
 </div>
 <table style="background-color:white;width:100%" id="statementTable"></table>
 <p id="errorLogging"></p>
-<form onsubmit='return later(assumptionFormSubmitted)'>
+<form oninput='return later(userInputUpdated)' onsubmit='return later(assumptionFormSubmitted)'>
   <label>Command: <input type="text" id='assumptionInput' style="width:80%" /></label>
 <input type="submit" hidden />
 </form>

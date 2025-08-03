@@ -1,3 +1,5 @@
+window.exportStatements_div_reflexive = new Map([["Ax((x)|(x))","div_reflexive"]]);
+
 window.requiredModules_div_reflexive = ["addition_commutes","S_functional","addition_associates","distributivity","multiplication_associates","multiplication_commutes","nonzero_is_successor","addition_injective"];
 
 window.proof_div_reflexive = [
@@ -8,7 +10,7 @@ window.proof_div_reflexive = [
    "<=",
    "Ex(((@1)+(x))=(@2))"
   ],
-  null,
+  -1,
   ""
  ],
  [
@@ -18,7 +20,7 @@ window.proof_div_reflexive = [
    "<",
    "Ex(((@1)+(S(x)))=(@2))"
   ],
-  null,
+  -1,
   ""
  ],
  [
@@ -28,7 +30,7 @@ window.proof_div_reflexive = [
    "!<",
    "((@1)<(@2))=>(F)"
   ],
-  null,
+  -1,
   ""
  ],
  [
@@ -38,7 +40,7 @@ window.proof_div_reflexive = [
    "!=",
    "((@1)=(@2))=>(F)"
   ],
-  null,
+  -1,
   ""
  ],
  [
@@ -48,7 +50,17 @@ window.proof_div_reflexive = [
    "|",
    "Ex(((@1)*(x))=(@2))"
   ],
-  null,
+  -1,
+  ""
+ ],
+ [
+  "AddRelation",
+  [
+   2,
+   "!|",
+   "(Ex(((@1)*(x))=(@2)))=>(F)"
+  ],
+  -1,
   ""
  ],
  [
@@ -58,7 +70,7 @@ window.proof_div_reflexive = [
    "||",
    "((P)=>(F))=>(Q)"
   ],
-  null,
+  -1,
   ""
  ],
  [
@@ -68,7 +80,117 @@ window.proof_div_reflexive = [
    "&&",
    "((P)=>((Q)=>(F)))=>(F)"
   ],
-  null,
+  -1,
+  ""
+ ],
+ [
+  "AddRelation",
+  [
+   3,
+   "'gcd",
+   "(((@3)|(@1))&&((@3)|(@2)))&&(Ah((((h)|(@1))&&((h)|(@2)))=>((h)|(@3))))"
+  ],
+  -1,
+  ""
+ ],
+ [
+  "AddRelation",
+  [
+   3,
+   "'lcm",
+   "(((@1)|(@3))&&((@2)|(@3)))&&(Az(((@1)|(z))=>(((@2)|(z))=>((@3)|(z)))))"
+  ],
+  -1,
+  ""
+ ],
+ [
+  "AddRelation",
+  [
+   3,
+   "'mod",
+   "((@3)<(@2))&&(En((@1)=(((n)*(@2))+(@3))))"
+  ],
+  -1,
+  ""
+ ],
+ [
+  "AddRelation",
+  [
+   3,
+   "'zmod",
+   "(((@2)=(0))&&((@3)=(0)))||('mod[@1,@2,@3])"
+  ],
+  -1,
+  ""
+ ],
+ [
+  "AddRelation",
+  [
+   3,
+   "'cong",
+   "Ea(('mod[@1,@3,a])&&('mod[@2,@3,a]))"
+  ],
+  -1,
+  ""
+ ],
+ [
+  "AddRelation",
+  [
+   3,
+   "'conga",
+   "Ea(Eb(((@1)+((@3)*(a)))=((@2)+((@3)*(b)))))"
+  ],
+  -1,
+  ""
+ ],
+ [
+  "AddRelation",
+  [
+   2,
+   "'bezoutable",
+   "((@1)!=(0))=>(((@2)!=(0))=>(Eu(Eg(('cong[(u)*(@1),g,@2])&&('gcd[@1,@2,g])))))"
+  ],
+  -1,
+  ""
+ ],
+ [
+  "AddRelation",
+  [
+   2,
+   "'br",
+   "Ea(Eb(Eg(('gcd[@1,@2,g])&&(((a)*(@1))=(((b)*(@2))+(g))))))"
+  ],
+  -1,
+  ""
+ ],
+ [
+  "AddRelation",
+  [
+   2,
+   "'brr",
+   "((@1)!=(0))=>('br[@1,@2])"
+  ],
+  -1,
+  ""
+ ],
+ [
+  "AddRelation",
+  [
+   1,
+   "'prime",
+   "((S(0))<(@1))&&(Aa(((a)<(@1))=>(((a)|(@1))=>((a)=(S(0))))))"
+  ],
+  -1,
+  ""
+ ],
+ [
+  "AddRelation",
+  [
+   2,
+   "'nprod",
+   "((@1)!=(0))&&(Ax(((x)<=(@2))=>(((x)!=(0))=>((x)|(@1)))))"
+  ],
+  -1,
   ""
  ],
  [
@@ -589,6 +711,15 @@ window.proof_div_reflexive = [
   "Highlight",
   [
    45
+  ],
+  45,
+  "Ax((x)|(x))"
+ ],
+ [
+  "SetComment",
+  [
+   45,
+   "div_reflexive"
   ],
   45,
   "Ax((x)|(x))"

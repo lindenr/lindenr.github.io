@@ -1,4 +1,7 @@
-window.requiredModules_and_elimination1 = ['explosion'];
+window.exportStatements_and_elimination1 = new Map([["((P)&&(Q))=>(P)","and_elimination1"]]);
+
+window.requiredModules_and_elimination1 = ["explosion"];
+
 window.proof_and_elimination1 = [
  [
   "AddRelation",
@@ -7,7 +10,7 @@ window.proof_and_elimination1 = [
    "<=",
    "Ex(((@1)+(x))=(@2))"
   ],
-  null,
+  -1,
   ""
  ],
  [
@@ -17,7 +20,7 @@ window.proof_and_elimination1 = [
    "<",
    "Ex(((@1)+(S(x)))=(@2))"
   ],
-  null,
+  -1,
   ""
  ],
  [
@@ -27,7 +30,7 @@ window.proof_and_elimination1 = [
    "!<",
    "((@1)<(@2))=>(F)"
   ],
-  null,
+  -1,
   ""
  ],
  [
@@ -37,7 +40,27 @@ window.proof_and_elimination1 = [
    "!=",
    "((@1)=(@2))=>(F)"
   ],
-  null,
+  -1,
+  ""
+ ],
+ [
+  "AddRelation",
+  [
+   2,
+   "|",
+   "Ex(((@1)*(x))=(@2))"
+  ],
+  -1,
+  ""
+ ],
+ [
+  "AddRelation",
+  [
+   2,
+   "!|",
+   "(Ex(((@1)*(x))=(@2)))=>(F)"
+  ],
+  -1,
   ""
  ],
  [
@@ -47,7 +70,7 @@ window.proof_and_elimination1 = [
    "||",
    "((P)=>(F))=>(Q)"
   ],
-  null,
+  -1,
   ""
  ],
  [
@@ -57,7 +80,117 @@ window.proof_and_elimination1 = [
    "&&",
    "((P)=>((Q)=>(F)))=>(F)"
   ],
-  null,
+  -1,
+  ""
+ ],
+ [
+  "AddRelation",
+  [
+   3,
+   "'gcd",
+   "(((@3)|(@1))&&((@3)|(@2)))&&(Ah((((h)|(@1))&&((h)|(@2)))=>((h)|(@3))))"
+  ],
+  -1,
+  ""
+ ],
+ [
+  "AddRelation",
+  [
+   3,
+   "'lcm",
+   "(((@1)|(@3))&&((@2)|(@3)))&&(Az(((@1)|(z))=>(((@2)|(z))=>((@3)|(z)))))"
+  ],
+  -1,
+  ""
+ ],
+ [
+  "AddRelation",
+  [
+   3,
+   "'mod",
+   "((@3)<(@2))&&(En((@1)=(((n)*(@2))+(@3))))"
+  ],
+  -1,
+  ""
+ ],
+ [
+  "AddRelation",
+  [
+   3,
+   "'zmod",
+   "(((@2)=(0))&&((@3)=(0)))||('mod[@1,@2,@3])"
+  ],
+  -1,
+  ""
+ ],
+ [
+  "AddRelation",
+  [
+   3,
+   "'cong",
+   "Ea(('mod[@1,@3,a])&&('mod[@2,@3,a]))"
+  ],
+  -1,
+  ""
+ ],
+ [
+  "AddRelation",
+  [
+   3,
+   "'conga",
+   "Ea(Eb(((@1)+((@3)*(a)))=((@2)+((@3)*(b)))))"
+  ],
+  -1,
+  ""
+ ],
+ [
+  "AddRelation",
+  [
+   2,
+   "'bezoutable",
+   "((@1)!=(0))=>(((@2)!=(0))=>(Eu(Eg(('cong[(u)*(@1),g,@2])&&('gcd[@1,@2,g])))))"
+  ],
+  -1,
+  ""
+ ],
+ [
+  "AddRelation",
+  [
+   2,
+   "'br",
+   "Ea(Eb(Eg(('gcd[@1,@2,g])&&(((a)*(@1))=(((b)*(@2))+(g))))))"
+  ],
+  -1,
+  ""
+ ],
+ [
+  "AddRelation",
+  [
+   2,
+   "'brr",
+   "((@1)!=(0))=>('br[@1,@2])"
+  ],
+  -1,
+  ""
+ ],
+ [
+  "AddRelation",
+  [
+   1,
+   "'prime",
+   "((S(0))<(@1))&&(Aa(((a)<(@1))=>(((a)|(@1))=>((a)=(S(0))))))"
+  ],
+  -1,
+  ""
+ ],
+ [
+  "AddRelation",
+  [
+   2,
+   "'nprod",
+   "((@1)!=(0))&&(Ax(((x)<=(@2))=>(((x)!=(0))=>((x)|(@1)))))"
+  ],
+  -1,
   ""
  ],
  [
@@ -171,6 +304,23 @@ window.proof_and_elimination1 = [
   [
    16,
    26
+  ],
+  27,
+  "((P)&&(Q))=>(P)"
+ ],
+ [
+  "Highlight",
+  [
+   27
+  ],
+  27,
+  "((P)&&(Q))=>(P)"
+ ],
+ [
+  "SetComment",
+  [
+   27,
+   "and_elimination1"
   ],
   27,
   "((P)&&(Q))=>(P)"

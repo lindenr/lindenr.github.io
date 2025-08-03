@@ -1,5 +1,198 @@
+window.exportStatements_addition_commutes = new Map([["Ax(At(((t)+(x))=((x)+(t))))","addition_commutes"]]);
+
 window.requiredModules_addition_commutes = [];
+
 window.proof_addition_commutes = [
+ [
+  "AddRelation",
+  [
+   2,
+   "<=",
+   "Ex(((@1)+(x))=(@2))"
+  ],
+  -1,
+  ""
+ ],
+ [
+  "AddRelation",
+  [
+   2,
+   "<",
+   "Ex(((@1)+(S(x)))=(@2))"
+  ],
+  -1,
+  ""
+ ],
+ [
+  "AddRelation",
+  [
+   2,
+   "!<",
+   "((@1)<(@2))=>(F)"
+  ],
+  -1,
+  ""
+ ],
+ [
+  "AddRelation",
+  [
+   2,
+   "!=",
+   "((@1)=(@2))=>(F)"
+  ],
+  -1,
+  ""
+ ],
+ [
+  "AddRelation",
+  [
+   2,
+   "|",
+   "Ex(((@1)*(x))=(@2))"
+  ],
+  -1,
+  ""
+ ],
+ [
+  "AddRelation",
+  [
+   2,
+   "!|",
+   "(Ex(((@1)*(x))=(@2)))=>(F)"
+  ],
+  -1,
+  ""
+ ],
+ [
+  "AddConnective",
+  [
+   2,
+   "||",
+   "((P)=>(F))=>(Q)"
+  ],
+  -1,
+  ""
+ ],
+ [
+  "AddConnective",
+  [
+   2,
+   "&&",
+   "((P)=>((Q)=>(F)))=>(F)"
+  ],
+  -1,
+  ""
+ ],
+ [
+  "AddRelation",
+  [
+   3,
+   "'gcd",
+   "(((@3)|(@1))&&((@3)|(@2)))&&(Ah((((h)|(@1))&&((h)|(@2)))=>((h)|(@3))))"
+  ],
+  -1,
+  ""
+ ],
+ [
+  "AddRelation",
+  [
+   3,
+   "'lcm",
+   "(((@1)|(@3))&&((@2)|(@3)))&&(Az(((@1)|(z))=>(((@2)|(z))=>((@3)|(z)))))"
+  ],
+  -1,
+  ""
+ ],
+ [
+  "AddRelation",
+  [
+   3,
+   "'mod",
+   "((@3)<(@2))&&(En((@1)=(((n)*(@2))+(@3))))"
+  ],
+  -1,
+  ""
+ ],
+ [
+  "AddRelation",
+  [
+   3,
+   "'zmod",
+   "(((@2)=(0))&&((@3)=(0)))||('mod[@1,@2,@3])"
+  ],
+  -1,
+  ""
+ ],
+ [
+  "AddRelation",
+  [
+   3,
+   "'cong",
+   "Ea(('mod[@1,@3,a])&&('mod[@2,@3,a]))"
+  ],
+  -1,
+  ""
+ ],
+ [
+  "AddRelation",
+  [
+   3,
+   "'conga",
+   "Ea(Eb(((@1)+((@3)*(a)))=((@2)+((@3)*(b)))))"
+  ],
+  -1,
+  ""
+ ],
+ [
+  "AddRelation",
+  [
+   2,
+   "'bezoutable",
+   "((@1)!=(0))=>(((@2)!=(0))=>(Eu(Eg(('cong[(u)*(@1),g,@2])&&('gcd[@1,@2,g])))))"
+  ],
+  -1,
+  ""
+ ],
+ [
+  "AddRelation",
+  [
+   2,
+   "'br",
+   "Ea(Eb(Eg(('gcd[@1,@2,g])&&(((a)*(@1))=(((b)*(@2))+(g))))))"
+  ],
+  -1,
+  ""
+ ],
+ [
+  "AddRelation",
+  [
+   2,
+   "'brr",
+   "((@1)!=(0))=>('br[@1,@2])"
+  ],
+  -1,
+  ""
+ ],
+ [
+  "AddRelation",
+  [
+   1,
+   "'prime",
+   "((S(0))<(@1))&&(Aa(((a)<(@1))=>(((a)|(@1))=>((a)=(S(0))))))"
+  ],
+  -1,
+  ""
+ ],
+ [
+  "AddRelation",
+  [
+   2,
+   "'nprod",
+   "((@1)!=(0))&&(Ax(((x)<=(@2))=>(((x)!=(0))=>((x)|(@1)))))"
+  ],
+  -1,
+  ""
+ ],
  [
   "Assume",
   [
@@ -148,7 +341,7 @@ window.proof_addition_commutes = [
   [
    27
   ],
-  31,
+  27,
   "((0)+(S(x)))=(S((0)+(x)))"
  ],
  [
@@ -156,7 +349,7 @@ window.proof_addition_commutes = [
   [
    30
   ],
-  32,
+  30,
   "(S((x)+(0)))=(S((0)+(x)))"
  ],
  [
@@ -165,7 +358,7 @@ window.proof_addition_commutes = [
    10,
    "x"
   ],
-  33,
+  31,
   "((x)+(0))=(x)"
  ],
  [
@@ -174,7 +367,7 @@ window.proof_addition_commutes = [
    24,
    "(x)+(0)"
   ],
-  34,
+  32,
   "Ay((((x)+(0))=(y))=>((S((x)+(0)))=(S(y))))"
  ],
  [
@@ -183,7 +376,7 @@ window.proof_addition_commutes = [
    32,
    "x"
   ],
-  35,
+  33,
   "(((x)+(0))=(x))=>((S((x)+(0)))=(S(x)))"
  ],
  [
@@ -192,7 +385,7 @@ window.proof_addition_commutes = [
    33,
    31
   ],
-  36,
+  34,
   "(S((x)+(0)))=(S(x))"
  ],
  [
@@ -200,7 +393,7 @@ window.proof_addition_commutes = [
   [
    34
   ],
-  37,
+  34,
   "(S((x)+(0)))=(S(x))"
  ],
  [
@@ -209,7 +402,7 @@ window.proof_addition_commutes = [
    10,
    "S(x)"
   ],
-  38,
+  35,
   "((S(x))+(0))=(S(x))"
  ],
  [
@@ -217,7 +410,7 @@ window.proof_addition_commutes = [
   [
    35
   ],
-  39,
+  35,
   "((S(x))+(0))=(S(x))"
  ],
  [
@@ -226,7 +419,7 @@ window.proof_addition_commutes = [
    5,
    "(0)+(S(x))"
   ],
-  40,
+  36,
   "Ay((((0)+(S(x)))=(y))=>((P[(0)+(S(x))])=>(P[y])))"
  ],
  [
@@ -235,7 +428,7 @@ window.proof_addition_commutes = [
    36,
    "S((0)+(x))"
   ],
-  41,
+  37,
   "(((0)+(S(x)))=(S((0)+(x))))=>((P[(0)+(S(x))])=>(P[S((0)+(x))]))"
  ],
  [
@@ -243,7 +436,7 @@ window.proof_addition_commutes = [
   [
    36
   ],
-  42,
+  36,
   "Ay((((0)+(S(x)))=(y))=>((P[(0)+(S(x))])=>(P[y])))"
  ],
  [
@@ -253,7 +446,7 @@ window.proof_addition_commutes = [
    "P",
    "(@)=((0)+(S(x)))"
   ],
-  43,
+  38,
   "(((0)+(S(x)))=(S((0)+(x))))=>((((0)+(S(x)))=((0)+(S(x))))=>((S((0)+(x)))=((0)+(S(x)))))"
  ],
  [
@@ -261,7 +454,7 @@ window.proof_addition_commutes = [
   [
    37
   ],
-  44,
+  37,
   "(((0)+(S(x)))=(S((0)+(x))))=>((P[(0)+(S(x))])=>(P[S((0)+(x))]))"
  ],
  [
@@ -270,7 +463,7 @@ window.proof_addition_commutes = [
    4,
    "(0)+(S(x))"
   ],
-  45,
+  39,
   "((0)+(S(x)))=((0)+(S(x)))"
  ],
  [
@@ -279,7 +472,7 @@ window.proof_addition_commutes = [
    38,
    27
   ],
-  46,
+  40,
   "(((0)+(S(x)))=((0)+(S(x))))=>((S((0)+(x)))=((0)+(S(x))))"
  ],
  [
@@ -288,7 +481,7 @@ window.proof_addition_commutes = [
    40,
    39
   ],
-  47,
+  41,
   "(S((0)+(x)))=((0)+(S(x)))"
  ],
  [
@@ -297,7 +490,7 @@ window.proof_addition_commutes = [
    5,
    "S((0)+(x))"
   ],
-  48,
+  42,
   "Ay(((S((0)+(x)))=(y))=>((P[S((0)+(x))])=>(P[y])))"
  ],
  [
@@ -306,7 +499,7 @@ window.proof_addition_commutes = [
    42,
    "(0)+(S(x))"
   ],
-  49,
+  43,
   "((S((0)+(x)))=((0)+(S(x))))=>((P[S((0)+(x))])=>(P[(0)+(S(x))]))"
  ],
  [
@@ -314,7 +507,7 @@ window.proof_addition_commutes = [
   [
    42
   ],
-  50,
+  42,
   "Ay(((S((0)+(x)))=(y))=>((P[S((0)+(x))])=>(P[y])))"
  ],
  [
@@ -324,7 +517,7 @@ window.proof_addition_commutes = [
    "P",
    "(S((x)+(0)))=(@)"
   ],
-  51,
+  44,
   "((S((0)+(x)))=((0)+(S(x))))=>(((S((x)+(0)))=(S((0)+(x))))=>((S((x)+(0)))=((0)+(S(x)))))"
  ],
  [
@@ -332,7 +525,7 @@ window.proof_addition_commutes = [
   [
    43
   ],
-  52,
+  43,
   "((S((0)+(x)))=((0)+(S(x))))=>((P[S((0)+(x))])=>(P[(0)+(S(x))]))"
  ],
  [
@@ -341,7 +534,7 @@ window.proof_addition_commutes = [
    44,
    41
   ],
-  53,
+  45,
   "((S((x)+(0)))=(S((0)+(x))))=>((S((x)+(0)))=((0)+(S(x))))"
  ],
  [
@@ -350,7 +543,7 @@ window.proof_addition_commutes = [
    45,
    30
   ],
-  54,
+  46,
   "(S((x)+(0)))=((0)+(S(x)))"
  ],
  [
@@ -358,7 +551,7 @@ window.proof_addition_commutes = [
   [
    38
   ],
-  55,
+  38,
   "(((0)+(S(x)))=(S((0)+(x))))=>((((0)+(S(x)))=((0)+(S(x))))=>((S((0)+(x)))=((0)+(S(x)))))"
  ],
  [
@@ -366,7 +559,7 @@ window.proof_addition_commutes = [
   [
    39
   ],
-  56,
+  39,
   "((0)+(S(x)))=((0)+(S(x)))"
  ],
  [
@@ -374,7 +567,7 @@ window.proof_addition_commutes = [
   [
    40
   ],
-  57,
+  40,
   "(((0)+(S(x)))=((0)+(S(x))))=>((S((0)+(x)))=((0)+(S(x))))"
  ],
  [
@@ -382,7 +575,7 @@ window.proof_addition_commutes = [
   [
    41
   ],
-  58,
+  41,
   "(S((0)+(x)))=((0)+(S(x)))"
  ],
  [
@@ -390,7 +583,7 @@ window.proof_addition_commutes = [
   [
    44
   ],
-  59,
+  44,
   "((S((0)+(x)))=((0)+(S(x))))=>(((S((x)+(0)))=(S((0)+(x))))=>((S((x)+(0)))=((0)+(S(x)))))"
  ],
  [
@@ -398,7 +591,7 @@ window.proof_addition_commutes = [
   [
    45
   ],
-  60,
+  45,
   "((S((x)+(0)))=(S((0)+(x))))=>((S((x)+(0)))=((0)+(S(x))))"
  ],
  [
@@ -407,7 +600,7 @@ window.proof_addition_commutes = [
    5,
    "(S(x))+(0)"
   ],
-  61,
+  47,
   "Ay((((S(x))+(0))=(y))=>((P[(S(x))+(0)])=>(P[y])))"
  ],
  [
@@ -416,7 +609,7 @@ window.proof_addition_commutes = [
    47,
    "S(x)"
   ],
-  62,
+  48,
   "(((S(x))+(0))=(S(x)))=>((P[(S(x))+(0)])=>(P[S(x)]))"
  ],
  [
@@ -424,7 +617,7 @@ window.proof_addition_commutes = [
   [
    47
   ],
-  63,
+  47,
   "Ay((((S(x))+(0))=(y))=>((P[(S(x))+(0)])=>(P[y])))"
  ],
  [
@@ -434,7 +627,7 @@ window.proof_addition_commutes = [
    "P",
    "(@)=((S(x))+(0))"
   ],
-  64,
+  49,
   "(((S(x))+(0))=(S(x)))=>((((S(x))+(0))=((S(x))+(0)))=>((S(x))=((S(x))+(0))))"
  ],
  [
@@ -442,7 +635,7 @@ window.proof_addition_commutes = [
   [
    48
   ],
-  65,
+  48,
   "(((S(x))+(0))=(S(x)))=>((P[(S(x))+(0)])=>(P[S(x)]))"
  ],
  [
@@ -451,7 +644,7 @@ window.proof_addition_commutes = [
    4,
    "(S(x))+(0)"
   ],
-  66,
+  50,
   "((S(x))+(0))=((S(x))+(0))"
  ],
  [
@@ -460,7 +653,7 @@ window.proof_addition_commutes = [
    49,
    35
   ],
-  67,
+  51,
   "(((S(x))+(0))=((S(x))+(0)))=>((S(x))=((S(x))+(0)))"
  ],
  [
@@ -469,7 +662,7 @@ window.proof_addition_commutes = [
    51,
    50
   ],
-  68,
+  52,
   "(S(x))=((S(x))+(0))"
  ],
  [
@@ -478,7 +671,7 @@ window.proof_addition_commutes = [
    5,
    "S(x)"
   ],
-  69,
+  53,
   "Ay(((S(x))=(y))=>((P[S(x)])=>(P[y])))"
  ],
  [
@@ -487,7 +680,7 @@ window.proof_addition_commutes = [
    53,
    "(S(x))+(0)"
   ],
-  70,
+  54,
   "((S(x))=((S(x))+(0)))=>((P[S(x)])=>(P[(S(x))+(0)]))"
  ],
  [
@@ -495,7 +688,7 @@ window.proof_addition_commutes = [
   [
    53
   ],
-  71,
+  53,
   "Ay(((S(x))=(y))=>((P[S(x)])=>(P[y])))"
  ],
  [
@@ -505,7 +698,7 @@ window.proof_addition_commutes = [
    "P",
    "(S((x)+(0)))=(@)"
   ],
-  72,
+  55,
   "((S(x))=((S(x))+(0)))=>(((S((x)+(0)))=(S(x)))=>((S((x)+(0)))=((S(x))+(0))))"
  ],
  [
@@ -513,7 +706,7 @@ window.proof_addition_commutes = [
   [
    54
   ],
-  73,
+  54,
   "((S(x))=((S(x))+(0)))=>((P[S(x)])=>(P[(S(x))+(0)]))"
  ],
  [
@@ -522,7 +715,7 @@ window.proof_addition_commutes = [
    55,
    52
   ],
-  74,
+  56,
   "((S((x)+(0)))=(S(x)))=>((S((x)+(0)))=((S(x))+(0)))"
  ],
  [
@@ -531,7 +724,7 @@ window.proof_addition_commutes = [
    56,
    34
   ],
-  75,
+  57,
   "(S((x)+(0)))=((S(x))+(0))"
  ],
  [
@@ -539,7 +732,7 @@ window.proof_addition_commutes = [
   [
    49
   ],
-  76,
+  49,
   "(((S(x))+(0))=(S(x)))=>((((S(x))+(0))=((S(x))+(0)))=>((S(x))=((S(x))+(0))))"
  ],
  [
@@ -547,7 +740,7 @@ window.proof_addition_commutes = [
   [
    50
   ],
-  77,
+  50,
   "((S(x))+(0))=((S(x))+(0))"
  ],
  [
@@ -555,7 +748,7 @@ window.proof_addition_commutes = [
   [
    51
   ],
-  78,
+  51,
   "(((S(x))+(0))=((S(x))+(0)))=>((S(x))=((S(x))+(0)))"
  ],
  [
@@ -563,7 +756,7 @@ window.proof_addition_commutes = [
   [
    52
   ],
-  79,
+  52,
   "(S(x))=((S(x))+(0))"
  ],
  [
@@ -571,7 +764,7 @@ window.proof_addition_commutes = [
   [
    55
   ],
-  80,
+  55,
   "((S(x))=((S(x))+(0)))=>(((S((x)+(0)))=(S(x)))=>((S((x)+(0)))=((S(x))+(0))))"
  ],
  [
@@ -579,7 +772,7 @@ window.proof_addition_commutes = [
   [
    56
   ],
-  81,
+  56,
   "((S((x)+(0)))=(S(x)))=>((S((x)+(0)))=((S(x))+(0)))"
  ],
  [
@@ -587,7 +780,7 @@ window.proof_addition_commutes = [
   [
    35
   ],
-  82,
+  35,
   "((S(x))+(0))=(S(x))"
  ],
  [
@@ -595,7 +788,7 @@ window.proof_addition_commutes = [
   [
    34
   ],
-  83,
+  34,
   "(S((x)+(0)))=(S(x))"
  ],
  [
@@ -603,7 +796,7 @@ window.proof_addition_commutes = [
   [
    30
   ],
-  84,
+  30,
   "(S((x)+(0)))=(S((0)+(x)))"
  ],
  [
@@ -611,7 +804,7 @@ window.proof_addition_commutes = [
   [
    26
   ],
-  85,
+  26,
   "Ay(((0)+(S(y)))=(S((0)+(y))))"
  ],
  [
@@ -619,7 +812,7 @@ window.proof_addition_commutes = [
   [
    26
   ],
-  86,
+  26,
   "Ay(((0)+(S(y)))=(S((0)+(y))))"
  ],
  [
@@ -627,7 +820,7 @@ window.proof_addition_commutes = [
   [
    27
   ],
-  87,
+  27,
   "((0)+(S(x)))=(S((0)+(x)))"
  ],
  [
@@ -635,7 +828,7 @@ window.proof_addition_commutes = [
   [
    46
   ],
-  88,
+  46,
   "(S((x)+(0)))=((0)+(S(x)))"
  ],
  [
@@ -643,7 +836,7 @@ window.proof_addition_commutes = [
   [
    57
   ],
-  89,
+  57,
   "(S((x)+(0)))=((S(x))+(0))"
  ],
  [
@@ -652,7 +845,7 @@ window.proof_addition_commutes = [
    5,
    "S((x)+(0))"
   ],
-  90,
+  58,
   "Ay(((S((x)+(0)))=(y))=>((P[S((x)+(0))])=>(P[y])))"
  ],
  [
@@ -661,7 +854,7 @@ window.proof_addition_commutes = [
    58,
    "(S(x))+(0)"
   ],
-  91,
+  59,
   "((S((x)+(0)))=((S(x))+(0)))=>((P[S((x)+(0))])=>(P[(S(x))+(0)]))"
  ],
  [
@@ -669,7 +862,7 @@ window.proof_addition_commutes = [
   [
    58
   ],
-  92,
+  58,
   "Ay(((S((x)+(0)))=(y))=>((P[S((x)+(0))])=>(P[y])))"
  ],
  [
@@ -679,7 +872,7 @@ window.proof_addition_commutes = [
    "P",
    "(@)=((0)+(S(x)))"
   ],
-  93,
+  60,
   "((S((x)+(0)))=((S(x))+(0)))=>(((S((x)+(0)))=((0)+(S(x))))=>(((S(x))+(0))=((0)+(S(x)))))"
  ],
  [
@@ -687,7 +880,7 @@ window.proof_addition_commutes = [
   [
    59
   ],
-  94,
+  59,
   "((S((x)+(0)))=((S(x))+(0)))=>((P[S((x)+(0))])=>(P[(S(x))+(0)]))"
  ],
  [
@@ -696,7 +889,7 @@ window.proof_addition_commutes = [
    60,
    57
   ],
-  95,
+  61,
   "((S((x)+(0)))=((0)+(S(x))))=>(((S(x))+(0))=((0)+(S(x))))"
  ],
  [
@@ -705,7 +898,7 @@ window.proof_addition_commutes = [
    61,
    46
   ],
-  96,
+  62,
   "((S(x))+(0))=((0)+(S(x)))"
  ],
  [
@@ -713,7 +906,7 @@ window.proof_addition_commutes = [
   [
    60
   ],
-  97,
+  60,
   "((S((x)+(0)))=((S(x))+(0)))=>(((S((x)+(0)))=((0)+(S(x))))=>(((S(x))+(0))=((0)+(S(x)))))"
  ],
  [
@@ -721,7 +914,7 @@ window.proof_addition_commutes = [
   [
    61
   ],
-  98,
+  61,
   "((S((x)+(0)))=((0)+(S(x))))=>(((S(x))+(0))=((0)+(S(x))))"
  ],
  [
@@ -729,7 +922,7 @@ window.proof_addition_commutes = [
   [
    62
   ],
-  99,
+  62,
   "((S(x))+(0))=((0)+(S(x)))"
  ],
  [
@@ -737,7 +930,7 @@ window.proof_addition_commutes = [
   [
    57
   ],
-  100,
+  57,
   "(S((x)+(0)))=((S(x))+(0))"
  ],
  [
@@ -745,7 +938,7 @@ window.proof_addition_commutes = [
   [
    46
   ],
-  101,
+  46,
   "(S((x)+(0)))=((0)+(S(x)))"
  ],
  [
@@ -754,7 +947,7 @@ window.proof_addition_commutes = [
    25,
    62
   ],
-  102,
+  63,
   "(((x)+(0))=((0)+(x)))=>(((S(x))+(0))=((0)+(S(x))))"
  ],
  [
@@ -762,7 +955,7 @@ window.proof_addition_commutes = [
   [
    62
   ],
-  103,
+  62,
   "((S(x))+(0))=((0)+(S(x)))"
  ],
  [
@@ -771,7 +964,7 @@ window.proof_addition_commutes = [
    63,
    "x"
   ],
-  104,
+  64,
   "Ax((((x)+(0))=((0)+(x)))=>(((S(x))+(0))=((0)+(S(x)))))"
  ],
  [
@@ -779,7 +972,7 @@ window.proof_addition_commutes = [
   [
    64
   ],
-  105,
+  64,
   "Ax((((x)+(0))=((0)+(x)))=>(((S(x))+(0))=((0)+(S(x)))))"
  ],
  [
@@ -788,7 +981,7 @@ window.proof_addition_commutes = [
    4,
    "(0)+(0)"
   ],
-  106,
+  65,
   "((0)+(0))=((0)+(0))"
  ],
  [
@@ -798,7 +991,7 @@ window.proof_addition_commutes = [
    "P",
    "((@)+(0))=((0)+(@))"
   ],
-  107,
+  66,
   "(((0)+(0))=((0)+(0)))=>((Ax((((x)+(0))=((0)+(x)))=>(((S(x))+(0))=((0)+(S(x))))))=>(Ax(((x)+(0))=((0)+(x)))))"
  ],
  [
@@ -807,7 +1000,7 @@ window.proof_addition_commutes = [
    66,
    65
   ],
-  108,
+  67,
   "(Ax((((x)+(0))=((0)+(x)))=>(((S(x))+(0))=((0)+(S(x))))))=>(Ax(((x)+(0))=((0)+(x))))"
  ],
  [
@@ -816,7 +1009,7 @@ window.proof_addition_commutes = [
    67,
    64
   ],
-  109,
+  68,
   "Ax(((x)+(0))=((0)+(x)))"
  ],
  [
@@ -824,7 +1017,7 @@ window.proof_addition_commutes = [
   [
    64
   ],
-  110,
+  64,
   "Ax((((x)+(0))=((0)+(x)))=>(((S(x))+(0))=((0)+(S(x)))))"
  ],
  [
@@ -832,7 +1025,7 @@ window.proof_addition_commutes = [
   [
    68
   ],
-  111,
+  68,
   "Ax(((x)+(0))=((0)+(x)))"
  ],
  [
@@ -840,7 +1033,7 @@ window.proof_addition_commutes = [
   [
    "Ax(((x)+(y))=((y)+(x)))"
   ],
-  112,
+  69,
   "Ax(((x)+(y))=((y)+(x)))"
  ],
  [
@@ -849,7 +1042,7 @@ window.proof_addition_commutes = [
    68,
    "S(y)"
   ],
-  113,
+  70,
   "((S(y))+(0))=((0)+(S(y)))"
  ],
  [
@@ -857,7 +1050,7 @@ window.proof_addition_commutes = [
   [
    68
   ],
-  114,
+  68,
   "Ax(((x)+(0))=((0)+(x)))"
  ],
  [
@@ -865,7 +1058,7 @@ window.proof_addition_commutes = [
   [
    70
   ],
-  115,
+  70,
   "((S(y))+(0))=((0)+(S(y)))"
  ],
  [
@@ -873,7 +1066,7 @@ window.proof_addition_commutes = [
   [
    68
   ],
-  116,
+  68,
   "Ax(((x)+(0))=((0)+(x)))"
  ],
  [
@@ -881,7 +1074,7 @@ window.proof_addition_commutes = [
   [
    69
   ],
-  117,
+  69,
   "Ax(((x)+(y))=((y)+(x)))"
  ],
  [
@@ -889,7 +1082,7 @@ window.proof_addition_commutes = [
   [
    "((x)+(S(y)))=((S(y))+(x))"
   ],
-  118,
+  71,
   "((x)+(S(y)))=((S(y))+(x))"
  ],
  [
@@ -898,7 +1091,7 @@ window.proof_addition_commutes = [
    11,
    "S(x)"
   ],
-  119,
+  72,
   "Ay(((S(x))+(S(y)))=(S((S(x))+(y))))"
  ],
  [
@@ -907,7 +1100,7 @@ window.proof_addition_commutes = [
    72,
    "y"
   ],
-  120,
+  73,
   "((S(x))+(S(y)))=(S((S(x))+(y)))"
  ],
  [
@@ -915,7 +1108,7 @@ window.proof_addition_commutes = [
   [
    73
   ],
-  121,
+  73,
   "((S(x))+(S(y)))=(S((S(x))+(y)))"
  ],
  [
@@ -923,7 +1116,7 @@ window.proof_addition_commutes = [
   [
    24
   ],
-  122,
+  24,
   "Ax(Ay(((x)=(y))=>((S(x))=(S(y)))))"
  ],
  [
@@ -932,7 +1125,7 @@ window.proof_addition_commutes = [
    69,
    "S(x)"
   ],
-  123,
+  74,
   "((S(x))+(y))=((y)+(S(x)))"
  ],
  [
@@ -941,7 +1134,7 @@ window.proof_addition_commutes = [
    24,
    "(S(x))+(y)"
   ],
-  124,
+  75,
   "Ay0((((S(x))+(y))=(y0))=>((S((S(x))+(y)))=(S(y0))))"
  ],
  [
@@ -950,7 +1143,7 @@ window.proof_addition_commutes = [
    75,
    "(y)+(S(x))"
   ],
-  125,
+  76,
   "(((S(x))+(y))=((y)+(S(x))))=>((S((S(x))+(y)))=(S((y)+(S(x)))))"
  ],
  [
@@ -959,7 +1152,7 @@ window.proof_addition_commutes = [
    76,
    74
   ],
-  126,
+  77,
   "(S((S(x))+(y)))=(S((y)+(S(x))))"
  ],
  [
@@ -967,7 +1160,7 @@ window.proof_addition_commutes = [
   [
    77
   ],
-  127,
+  77,
   "(S((S(x))+(y)))=(S((y)+(S(x))))"
  ],
  [
@@ -976,7 +1169,7 @@ window.proof_addition_commutes = [
    11,
    "y"
   ],
-  128,
+  78,
   "Ay0(((y)+(S(y0)))=(S((y)+(y0))))"
  ],
  [
@@ -985,7 +1178,7 @@ window.proof_addition_commutes = [
    78,
    "x"
   ],
-  129,
+  79,
   "((y)+(S(x)))=(S((y)+(x)))"
  ],
  [
@@ -994,7 +1187,7 @@ window.proof_addition_commutes = [
    24,
    "(y)+(S(x))"
   ],
-  130,
+  80,
   "Ay0((((y)+(S(x)))=(y0))=>((S((y)+(S(x))))=(S(y0))))"
  ],
  [
@@ -1003,7 +1196,7 @@ window.proof_addition_commutes = [
    80,
    "S((y)+(x))"
   ],
-  131,
+  81,
   "(((y)+(S(x)))=(S((y)+(x))))=>((S((y)+(S(x))))=(S(S((y)+(x)))))"
  ],
  [
@@ -1012,7 +1205,7 @@ window.proof_addition_commutes = [
    81,
    79
   ],
-  132,
+  82,
   "(S((y)+(S(x))))=(S(S((y)+(x))))"
  ],
  [
@@ -1020,7 +1213,7 @@ window.proof_addition_commutes = [
   [
    82
   ],
-  133,
+  82,
   "(S((y)+(S(x))))=(S(S((y)+(x))))"
  ],
  [
@@ -1029,7 +1222,7 @@ window.proof_addition_commutes = [
    69,
    "x"
   ],
-  134,
+  83,
   "((x)+(y))=((y)+(x))"
  ],
  [
@@ -1038,7 +1231,7 @@ window.proof_addition_commutes = [
    24,
    "(x)+(y)"
   ],
-  135,
+  84,
   "Ay0((((x)+(y))=(y0))=>((S((x)+(y)))=(S(y0))))"
  ],
  [
@@ -1047,7 +1240,7 @@ window.proof_addition_commutes = [
    84,
    "(y)+(x)"
   ],
-  136,
+  85,
   "(((x)+(y))=((y)+(x)))=>((S((x)+(y)))=(S((y)+(x))))"
  ],
  [
@@ -1056,7 +1249,7 @@ window.proof_addition_commutes = [
    85,
    83
   ],
-  137,
+  86,
   "(S((x)+(y)))=(S((y)+(x)))"
  ],
  [
@@ -1065,7 +1258,7 @@ window.proof_addition_commutes = [
    24,
    "S((x)+(y))"
   ],
-  138,
+  87,
   "Ay0(((S((x)+(y)))=(y0))=>((S(S((x)+(y))))=(S(y0))))"
  ],
  [
@@ -1074,7 +1267,7 @@ window.proof_addition_commutes = [
    87,
    "S((y)+(x))"
   ],
-  139,
+  88,
   "((S((x)+(y)))=(S((y)+(x))))=>((S(S((x)+(y))))=(S(S((y)+(x)))))"
  ],
  [
@@ -1083,7 +1276,7 @@ window.proof_addition_commutes = [
    88,
    86
   ],
-  140,
+  89,
   "(S(S((x)+(y))))=(S(S((y)+(x))))"
  ],
  [
@@ -1091,7 +1284,7 @@ window.proof_addition_commutes = [
   [
    89
   ],
-  141,
+  89,
   "(S(S((x)+(y))))=(S(S((y)+(x))))"
  ],
  [
@@ -1099,7 +1292,7 @@ window.proof_addition_commutes = [
   [
    11
   ],
-  142,
+  11,
   "Ax(Ay(((x)+(S(y)))=(S((x)+(y)))))"
  ],
  [
@@ -1108,7 +1301,7 @@ window.proof_addition_commutes = [
    11,
    "x"
   ],
-  143,
+  90,
   "Ay(((x)+(S(y)))=(S((x)+(y))))"
  ],
  [
@@ -1117,7 +1310,7 @@ window.proof_addition_commutes = [
    90,
    "y"
   ],
-  144,
+  91,
   "((x)+(S(y)))=(S((x)+(y)))"
  ],
  [
@@ -1126,7 +1319,7 @@ window.proof_addition_commutes = [
    24,
    "(x)+(S(y))"
   ],
-  145,
+  92,
   "Ay0((((x)+(S(y)))=(y0))=>((S((x)+(S(y))))=(S(y0))))"
  ],
  [
@@ -1135,7 +1328,7 @@ window.proof_addition_commutes = [
    92,
    "S((x)+(y))"
   ],
-  146,
+  93,
   "(((x)+(S(y)))=(S((x)+(y))))=>((S((x)+(S(y))))=(S(S((x)+(y)))))"
  ],
  [
@@ -1144,7 +1337,7 @@ window.proof_addition_commutes = [
    93,
    91
   ],
-  147,
+  94,
   "(S((x)+(S(y))))=(S(S((x)+(y))))"
  ],
  [
@@ -1152,7 +1345,7 @@ window.proof_addition_commutes = [
   [
    94
   ],
-  148,
+  94,
   "(S((x)+(S(y))))=(S(S((x)+(y))))"
  ],
  [
@@ -1161,7 +1354,7 @@ window.proof_addition_commutes = [
    24,
    "(x)+(S(y))"
   ],
-  149,
+  95,
   "Ay0((((x)+(S(y)))=(y0))=>((S((x)+(S(y))))=(S(y0))))"
  ],
  [
@@ -1170,7 +1363,7 @@ window.proof_addition_commutes = [
    95,
    "(S(y))+(x)"
   ],
-  150,
+  96,
   "(((x)+(S(y)))=((S(y))+(x)))=>((S((x)+(S(y))))=(S((S(y))+(x))))"
  ],
  [
@@ -1179,7 +1372,7 @@ window.proof_addition_commutes = [
    96,
    71
   ],
-  151,
+  97,
   "(S((x)+(S(y))))=(S((S(y))+(x)))"
  ],
  [
@@ -1187,7 +1380,7 @@ window.proof_addition_commutes = [
   [
    97
   ],
-  152,
+  97,
   "(S((x)+(S(y))))=(S((S(y))+(x)))"
  ],
  [
@@ -1196,7 +1389,7 @@ window.proof_addition_commutes = [
    11,
    "S(y)"
   ],
-  153,
+  98,
   "Ay0(((S(y))+(S(y0)))=(S((S(y))+(y0))))"
  ],
  [
@@ -1205,7 +1398,7 @@ window.proof_addition_commutes = [
    98,
    "x"
   ],
-  154,
+  99,
   "((S(y))+(S(x)))=(S((S(y))+(x)))"
  ],
  [
@@ -1213,7 +1406,7 @@ window.proof_addition_commutes = [
   [
    99
   ],
-  155,
+  99,
   "((S(y))+(S(x)))=(S((S(y))+(x)))"
  ],
  [
@@ -1221,7 +1414,7 @@ window.proof_addition_commutes = [
   [
    74
   ],
-  156,
+  74,
   "((S(x))+(y))=((y)+(S(x)))"
  ],
  [
@@ -1229,7 +1422,7 @@ window.proof_addition_commutes = [
   [
    75
   ],
-  157,
+  75,
   "Ay0((((S(x))+(y))=(y0))=>((S((S(x))+(y)))=(S(y0))))"
  ],
  [
@@ -1237,7 +1430,7 @@ window.proof_addition_commutes = [
   [
    76
   ],
-  158,
+  76,
   "(((S(x))+(y))=((y)+(S(x))))=>((S((S(x))+(y)))=(S((y)+(S(x)))))"
  ],
  [
@@ -1245,7 +1438,7 @@ window.proof_addition_commutes = [
   [
    78
   ],
-  159,
+  78,
   "Ay0(((y)+(S(y0)))=(S((y)+(y0))))"
  ],
  [
@@ -1253,7 +1446,7 @@ window.proof_addition_commutes = [
   [
    79
   ],
-  160,
+  79,
   "((y)+(S(x)))=(S((y)+(x)))"
  ],
  [
@@ -1261,7 +1454,7 @@ window.proof_addition_commutes = [
   [
    80
   ],
-  161,
+  80,
   "Ay0((((y)+(S(x)))=(y0))=>((S((y)+(S(x))))=(S(y0))))"
  ],
  [
@@ -1269,7 +1462,7 @@ window.proof_addition_commutes = [
   [
    81
   ],
-  162,
+  81,
   "(((y)+(S(x)))=(S((y)+(x))))=>((S((y)+(S(x))))=(S(S((y)+(x)))))"
  ],
  [
@@ -1277,7 +1470,7 @@ window.proof_addition_commutes = [
   [
    83
   ],
-  163,
+  83,
   "((x)+(y))=((y)+(x))"
  ],
  [
@@ -1285,7 +1478,7 @@ window.proof_addition_commutes = [
   [
    84
   ],
-  164,
+  84,
   "Ay0((((x)+(y))=(y0))=>((S((x)+(y)))=(S(y0))))"
  ],
  [
@@ -1293,7 +1486,7 @@ window.proof_addition_commutes = [
   [
    85
   ],
-  165,
+  85,
   "(((x)+(y))=((y)+(x)))=>((S((x)+(y)))=(S((y)+(x))))"
  ],
  [
@@ -1301,7 +1494,7 @@ window.proof_addition_commutes = [
   [
    86
   ],
-  166,
+  86,
   "(S((x)+(y)))=(S((y)+(x)))"
  ],
  [
@@ -1309,7 +1502,7 @@ window.proof_addition_commutes = [
   [
    87
   ],
-  167,
+  87,
   "Ay0(((S((x)+(y)))=(y0))=>((S(S((x)+(y))))=(S(y0))))"
  ],
  [
@@ -1317,7 +1510,7 @@ window.proof_addition_commutes = [
   [
    88
   ],
-  168,
+  88,
   "((S((x)+(y)))=(S((y)+(x))))=>((S(S((x)+(y))))=(S(S((y)+(x)))))"
  ],
  [
@@ -1325,7 +1518,7 @@ window.proof_addition_commutes = [
   [
    90
   ],
-  169,
+  90,
   "Ay(((x)+(S(y)))=(S((x)+(y))))"
  ],
  [
@@ -1333,7 +1526,7 @@ window.proof_addition_commutes = [
   [
    91
   ],
-  170,
+  91,
   "((x)+(S(y)))=(S((x)+(y)))"
  ],
  [
@@ -1341,7 +1534,7 @@ window.proof_addition_commutes = [
   [
    92
   ],
-  171,
+  92,
   "Ay0((((x)+(S(y)))=(y0))=>((S((x)+(S(y))))=(S(y0))))"
  ],
  [
@@ -1349,7 +1542,7 @@ window.proof_addition_commutes = [
   [
    93
   ],
-  172,
+  93,
   "(((x)+(S(y)))=(S((x)+(y))))=>((S((x)+(S(y))))=(S(S((x)+(y)))))"
  ],
  [
@@ -1357,7 +1550,7 @@ window.proof_addition_commutes = [
   [
    95
   ],
-  173,
+  95,
   "Ay0((((x)+(S(y)))=(y0))=>((S((x)+(S(y))))=(S(y0))))"
  ],
  [
@@ -1365,7 +1558,7 @@ window.proof_addition_commutes = [
   [
    96
   ],
-  174,
+  96,
   "(((x)+(S(y)))=((S(y))+(x)))=>((S((x)+(S(y))))=(S((S(y))+(x))))"
  ],
  [
@@ -1373,7 +1566,7 @@ window.proof_addition_commutes = [
   [
    98
   ],
-  175,
+  98,
   "Ay0(((S(y))+(S(y0)))=(S((S(y))+(y0))))"
  ],
  [
@@ -1381,7 +1574,7 @@ window.proof_addition_commutes = [
   [
    70
   ],
-  176,
+  70,
   "((S(y))+(0))=((0)+(S(y)))"
  ],
  [
@@ -1390,7 +1583,7 @@ window.proof_addition_commutes = [
    5,
    "S((S(x))+(y))"
   ],
-  177,
+  100,
   "Ay0(((S((S(x))+(y)))=(y0))=>((P[S((S(x))+(y))])=>(P[y0])))"
  ],
  [
@@ -1399,7 +1592,7 @@ window.proof_addition_commutes = [
    100,
    "S((y)+(S(x)))"
   ],
-  178,
+  101,
   "((S((S(x))+(y)))=(S((y)+(S(x)))))=>((P[S((S(x))+(y))])=>(P[S((y)+(S(x)))]))"
  ],
  [
@@ -1407,7 +1600,7 @@ window.proof_addition_commutes = [
   [
    100
   ],
-  179,
+  100,
   "Ay0(((S((S(x))+(y)))=(y0))=>((P[S((S(x))+(y))])=>(P[y0])))"
  ],
  [
@@ -1417,7 +1610,7 @@ window.proof_addition_commutes = [
    "P",
    "((S(x))+(S(y)))=(@)"
   ],
-  180,
+  102,
   "((S((S(x))+(y)))=(S((y)+(S(x)))))=>((((S(x))+(S(y)))=(S((S(x))+(y))))=>(((S(x))+(S(y)))=(S((y)+(S(x))))))"
  ],
  [
@@ -1425,7 +1618,7 @@ window.proof_addition_commutes = [
   [
    101
   ],
-  181,
+  101,
   "((S((S(x))+(y)))=(S((y)+(S(x)))))=>((P[S((S(x))+(y))])=>(P[S((y)+(S(x)))]))"
  ],
  [
@@ -1434,7 +1627,7 @@ window.proof_addition_commutes = [
    102,
    77
   ],
-  182,
+  103,
   "(((S(x))+(S(y)))=(S((S(x))+(y))))=>(((S(x))+(S(y)))=(S((y)+(S(x)))))"
  ],
  [
@@ -1443,7 +1636,7 @@ window.proof_addition_commutes = [
    103,
    73
   ],
-  183,
+  104,
   "((S(x))+(S(y)))=(S((y)+(S(x))))"
  ],
  [
@@ -1451,7 +1644,7 @@ window.proof_addition_commutes = [
   [
    103
   ],
-  184,
+  103,
   "(((S(x))+(S(y)))=(S((S(x))+(y))))=>(((S(x))+(S(y)))=(S((y)+(S(x)))))"
  ],
  [
@@ -1459,7 +1652,7 @@ window.proof_addition_commutes = [
   [
    102
   ],
-  185,
+  102,
   "((S((S(x))+(y)))=(S((y)+(S(x)))))=>((((S(x))+(S(y)))=(S((S(x))+(y))))=>(((S(x))+(S(y)))=(S((y)+(S(x))))))"
  ],
  [
@@ -1468,7 +1661,7 @@ window.proof_addition_commutes = [
    5,
    "S(S((x)+(y)))"
   ],
-  186,
+  105,
   "Ay0(((S(S((x)+(y))))=(y0))=>((P[S(S((x)+(y)))])=>(P[y0])))"
  ],
  [
@@ -1477,7 +1670,7 @@ window.proof_addition_commutes = [
    105,
    "S(S((y)+(x)))"
   ],
-  187,
+  106,
   "((S(S((x)+(y))))=(S(S((y)+(x)))))=>((P[S(S((x)+(y)))])=>(P[S(S((y)+(x)))]))"
  ],
  [
@@ -1485,7 +1678,7 @@ window.proof_addition_commutes = [
   [
    105
   ],
-  188,
+  105,
   "Ay0(((S(S((x)+(y))))=(y0))=>((P[S(S((x)+(y)))])=>(P[y0])))"
  ],
  [
@@ -1495,7 +1688,7 @@ window.proof_addition_commutes = [
    "P",
    "(@)=(S(S((x)+(y))))"
   ],
-  189,
+  107,
   "((S(S((x)+(y))))=(S(S((y)+(x)))))=>(((S(S((x)+(y))))=(S(S((x)+(y)))))=>((S(S((y)+(x))))=(S(S((x)+(y))))))"
  ],
  [
@@ -1503,7 +1696,7 @@ window.proof_addition_commutes = [
   [
    106
   ],
-  190,
+  106,
   "((S(S((x)+(y))))=(S(S((y)+(x)))))=>((P[S(S((x)+(y)))])=>(P[S(S((y)+(x)))]))"
  ],
  [
@@ -1512,7 +1705,7 @@ window.proof_addition_commutes = [
    4,
    "S(S((x)+(y)))"
   ],
-  191,
+  108,
   "(S(S((x)+(y))))=(S(S((x)+(y))))"
  ],
  [
@@ -1521,7 +1714,7 @@ window.proof_addition_commutes = [
    107,
    89
   ],
-  192,
+  109,
   "((S(S((x)+(y))))=(S(S((x)+(y)))))=>((S(S((y)+(x))))=(S(S((x)+(y)))))"
  ],
  [
@@ -1530,7 +1723,7 @@ window.proof_addition_commutes = [
    109,
    108
   ],
-  193,
+  110,
   "(S(S((y)+(x))))=(S(S((x)+(y))))"
  ],
  [
@@ -1539,7 +1732,7 @@ window.proof_addition_commutes = [
    5,
    "S(S((y)+(x)))"
   ],
-  194,
+  111,
   "Ay0(((S(S((y)+(x))))=(y0))=>((P[S(S((y)+(x)))])=>(P[y0])))"
  ],
  [
@@ -1548,7 +1741,7 @@ window.proof_addition_commutes = [
    111,
    "S(S((x)+(y)))"
   ],
-  195,
+  112,
   "((S(S((y)+(x))))=(S(S((x)+(y)))))=>((P[S(S((y)+(x)))])=>(P[S(S((x)+(y)))]))"
  ],
  [
@@ -1556,7 +1749,7 @@ window.proof_addition_commutes = [
   [
    111
   ],
-  196,
+  111,
   "Ay0(((S(S((y)+(x))))=(y0))=>((P[S(S((y)+(x)))])=>(P[y0])))"
  ],
  [
@@ -1566,7 +1759,7 @@ window.proof_addition_commutes = [
    "P",
    "(S((y)+(S(x))))=(@)"
   ],
-  197,
+  113,
   "((S(S((y)+(x))))=(S(S((x)+(y)))))=>(((S((y)+(S(x))))=(S(S((y)+(x)))))=>((S((y)+(S(x))))=(S(S((x)+(y))))))"
  ],
  [
@@ -1574,7 +1767,7 @@ window.proof_addition_commutes = [
   [
    112
   ],
-  198,
+  112,
   "((S(S((y)+(x))))=(S(S((x)+(y)))))=>((P[S(S((y)+(x)))])=>(P[S(S((x)+(y)))]))"
  ],
  [
@@ -1583,7 +1776,7 @@ window.proof_addition_commutes = [
    113,
    110
   ],
-  199,
+  114,
   "((S((y)+(S(x))))=(S(S((y)+(x)))))=>((S((y)+(S(x))))=(S(S((x)+(y)))))"
  ],
  [
@@ -1592,7 +1785,7 @@ window.proof_addition_commutes = [
    114,
    82
   ],
-  200,
+  115,
   "(S((y)+(S(x))))=(S(S((x)+(y))))"
  ],
  [
@@ -1600,7 +1793,7 @@ window.proof_addition_commutes = [
   [
    107
   ],
-  201,
+  107,
   "((S(S((x)+(y))))=(S(S((y)+(x)))))=>(((S(S((x)+(y))))=(S(S((x)+(y)))))=>((S(S((y)+(x))))=(S(S((x)+(y))))))"
  ],
  [
@@ -1608,7 +1801,7 @@ window.proof_addition_commutes = [
   [
    108
   ],
-  202,
+  108,
   "(S(S((x)+(y))))=(S(S((x)+(y))))"
  ],
  [
@@ -1616,7 +1809,7 @@ window.proof_addition_commutes = [
   [
    109
   ],
-  203,
+  109,
   "((S(S((x)+(y))))=(S(S((x)+(y)))))=>((S(S((y)+(x))))=(S(S((x)+(y)))))"
  ],
  [
@@ -1624,7 +1817,7 @@ window.proof_addition_commutes = [
   [
    110
   ],
-  204,
+  110,
   "(S(S((y)+(x))))=(S(S((x)+(y))))"
  ],
  [
@@ -1632,7 +1825,7 @@ window.proof_addition_commutes = [
   [
    113
   ],
-  205,
+  113,
   "((S(S((y)+(x))))=(S(S((x)+(y)))))=>(((S((y)+(S(x))))=(S(S((y)+(x)))))=>((S((y)+(S(x))))=(S(S((x)+(y))))))"
  ],
  [
@@ -1640,7 +1833,7 @@ window.proof_addition_commutes = [
   [
    114
   ],
-  206,
+  114,
   "((S((y)+(S(x))))=(S(S((y)+(x)))))=>((S((y)+(S(x))))=(S(S((x)+(y)))))"
  ],
  [
@@ -1649,7 +1842,7 @@ window.proof_addition_commutes = [
    5,
    "S((x)+(S(y)))"
   ],
-  207,
+  116,
   "Ay0(((S((x)+(S(y))))=(y0))=>((P[S((x)+(S(y)))])=>(P[y0])))"
  ],
  [
@@ -1658,7 +1851,7 @@ window.proof_addition_commutes = [
    116,
    "S(S((x)+(y)))"
   ],
-  208,
+  117,
   "((S((x)+(S(y))))=(S(S((x)+(y)))))=>((P[S((x)+(S(y)))])=>(P[S(S((x)+(y)))]))"
  ],
  [
@@ -1666,7 +1859,7 @@ window.proof_addition_commutes = [
   [
    116
   ],
-  209,
+  116,
   "Ay0(((S((x)+(S(y))))=(y0))=>((P[S((x)+(S(y)))])=>(P[y0])))"
  ],
  [
@@ -1676,7 +1869,7 @@ window.proof_addition_commutes = [
    "P",
    "(@)=(S((S(y))+(x)))"
   ],
-  210,
+  118,
   "((S((x)+(S(y))))=(S(S((x)+(y)))))=>(((S((x)+(S(y))))=(S((S(y))+(x))))=>((S(S((x)+(y))))=(S((S(y))+(x)))))"
  ],
  [
@@ -1684,7 +1877,7 @@ window.proof_addition_commutes = [
   [
    117
   ],
-  211,
+  117,
   "((S((x)+(S(y))))=(S(S((x)+(y)))))=>((P[S((x)+(S(y)))])=>(P[S(S((x)+(y)))]))"
  ],
  [
@@ -1693,7 +1886,7 @@ window.proof_addition_commutes = [
    118,
    94
   ],
-  212,
+  119,
   "((S((x)+(S(y))))=(S((S(y))+(x))))=>((S(S((x)+(y))))=(S((S(y))+(x))))"
  ],
  [
@@ -1702,7 +1895,7 @@ window.proof_addition_commutes = [
    119,
    97
   ],
-  213,
+  120,
   "(S(S((x)+(y))))=(S((S(y))+(x)))"
  ],
  [
@@ -1710,7 +1903,7 @@ window.proof_addition_commutes = [
   [
    118
   ],
-  214,
+  118,
   "((S((x)+(S(y))))=(S(S((x)+(y)))))=>(((S((x)+(S(y))))=(S((S(y))+(x))))=>((S(S((x)+(y))))=(S((S(y))+(x)))))"
  ],
  [
@@ -1718,7 +1911,7 @@ window.proof_addition_commutes = [
   [
    119
   ],
-  215,
+  119,
   "((S((x)+(S(y))))=(S((S(y))+(x))))=>((S(S((x)+(y))))=(S((S(y))+(x))))"
  ],
  [
@@ -1726,7 +1919,7 @@ window.proof_addition_commutes = [
   [
    104
   ],
-  216,
+  104,
   "((S(x))+(S(y)))=(S((y)+(S(x))))"
  ],
  [
@@ -1734,7 +1927,7 @@ window.proof_addition_commutes = [
   [
    73
   ],
-  217,
+  73,
   "((S(x))+(S(y)))=(S((S(x))+(y)))"
  ],
  [
@@ -1742,7 +1935,7 @@ window.proof_addition_commutes = [
   [
    77
   ],
-  218,
+  77,
   "(S((S(x))+(y)))=(S((y)+(S(x))))"
  ],
  [
@@ -1750,7 +1943,7 @@ window.proof_addition_commutes = [
   [
    115
   ],
-  219,
+  115,
   "(S((y)+(S(x))))=(S(S((x)+(y))))"
  ],
  [
@@ -1758,7 +1951,7 @@ window.proof_addition_commutes = [
   [
    82
   ],
-  220,
+  82,
   "(S((y)+(S(x))))=(S(S((y)+(x))))"
  ],
  [
@@ -1766,7 +1959,7 @@ window.proof_addition_commutes = [
   [
    89
   ],
-  221,
+  89,
   "(S(S((x)+(y))))=(S(S((y)+(x))))"
  ],
  [
@@ -1774,7 +1967,7 @@ window.proof_addition_commutes = [
   [
    120
   ],
-  222,
+  120,
   "(S(S((x)+(y))))=(S((S(y))+(x)))"
  ],
  [
@@ -1782,7 +1975,7 @@ window.proof_addition_commutes = [
   [
    94
   ],
-  223,
+  94,
   "(S((x)+(S(y))))=(S(S((x)+(y))))"
  ],
  [
@@ -1790,7 +1983,7 @@ window.proof_addition_commutes = [
   [
    97
   ],
-  224,
+  97,
   "(S((x)+(S(y))))=(S((S(y))+(x)))"
  ],
  [
@@ -1799,7 +1992,7 @@ window.proof_addition_commutes = [
    5,
    "S(S((x)+(y)))"
   ],
-  225,
+  121,
   "Ay0(((S(S((x)+(y))))=(y0))=>((P[S(S((x)+(y)))])=>(P[y0])))"
  ],
  [
@@ -1808,7 +2001,7 @@ window.proof_addition_commutes = [
    121,
    "S((S(y))+(x))"
   ],
-  226,
+  122,
   "((S(S((x)+(y))))=(S((S(y))+(x))))=>((P[S(S((x)+(y)))])=>(P[S((S(y))+(x))]))"
  ],
  [
@@ -1816,7 +2009,7 @@ window.proof_addition_commutes = [
   [
    121
   ],
-  227,
+  121,
   "Ay0(((S(S((x)+(y))))=(y0))=>((P[S(S((x)+(y)))])=>(P[y0])))"
  ],
  [
@@ -1826,7 +2019,7 @@ window.proof_addition_commutes = [
    "P",
    "(@)=(S(S((x)+(y))))"
   ],
-  228,
+  123,
   "((S(S((x)+(y))))=(S((S(y))+(x))))=>(((S(S((x)+(y))))=(S(S((x)+(y)))))=>((S((S(y))+(x)))=(S(S((x)+(y))))))"
  ],
  [
@@ -1834,7 +2027,7 @@ window.proof_addition_commutes = [
   [
    122
   ],
-  229,
+  122,
   "((S(S((x)+(y))))=(S((S(y))+(x))))=>((P[S(S((x)+(y)))])=>(P[S((S(y))+(x))]))"
  ],
  [
@@ -1843,7 +2036,7 @@ window.proof_addition_commutes = [
    4,
    "S(S((x)+(y)))"
   ],
-  230,
+  124,
   "(S(S((x)+(y))))=(S(S((x)+(y))))"
  ],
  [
@@ -1852,7 +2045,7 @@ window.proof_addition_commutes = [
    123,
    120
   ],
-  231,
+  125,
   "((S(S((x)+(y))))=(S(S((x)+(y)))))=>((S((S(y))+(x)))=(S(S((x)+(y)))))"
  ],
  [
@@ -1861,7 +2054,7 @@ window.proof_addition_commutes = [
    125,
    124
   ],
-  232,
+  126,
   "(S((S(y))+(x)))=(S(S((x)+(y))))"
  ],
  [
@@ -1870,7 +2063,7 @@ window.proof_addition_commutes = [
    5,
    "S((S(y))+(x))"
   ],
-  233,
+  127,
   "Ay0(((S((S(y))+(x)))=(y0))=>((P[S((S(y))+(x))])=>(P[y0])))"
  ],
  [
@@ -1879,7 +2072,7 @@ window.proof_addition_commutes = [
    127,
    "S(S((x)+(y)))"
   ],
-  234,
+  128,
   "((S((S(y))+(x)))=(S(S((x)+(y)))))=>((P[S((S(y))+(x))])=>(P[S(S((x)+(y)))]))"
  ],
  [
@@ -1887,7 +2080,7 @@ window.proof_addition_commutes = [
   [
    127
   ],
-  235,
+  127,
   "Ay0(((S((S(y))+(x)))=(y0))=>((P[S((S(y))+(x))])=>(P[y0])))"
  ],
  [
@@ -1897,7 +2090,7 @@ window.proof_addition_commutes = [
    "P",
    "((S(y))+(S(x)))=(@)"
   ],
-  236,
+  129,
   "((S((S(y))+(x)))=(S(S((x)+(y)))))=>((((S(y))+(S(x)))=(S((S(y))+(x))))=>(((S(y))+(S(x)))=(S(S((x)+(y))))))"
  ],
  [
@@ -1905,7 +2098,7 @@ window.proof_addition_commutes = [
   [
    128
   ],
-  237,
+  128,
   "((S((S(y))+(x)))=(S(S((x)+(y)))))=>((P[S((S(y))+(x))])=>(P[S(S((x)+(y)))]))"
  ],
  [
@@ -1914,7 +2107,7 @@ window.proof_addition_commutes = [
    129,
    126
   ],
-  238,
+  130,
   "(((S(y))+(S(x)))=(S((S(y))+(x))))=>(((S(y))+(S(x)))=(S(S((x)+(y)))))"
  ],
  [
@@ -1923,7 +2116,7 @@ window.proof_addition_commutes = [
    130,
    99
   ],
-  239,
+  131,
   "((S(y))+(S(x)))=(S(S((x)+(y))))"
  ],
  [
@@ -1931,7 +2124,7 @@ window.proof_addition_commutes = [
   [
    123
   ],
-  240,
+  123,
   "((S(S((x)+(y))))=(S((S(y))+(x))))=>(((S(S((x)+(y))))=(S(S((x)+(y)))))=>((S((S(y))+(x)))=(S(S((x)+(y))))))"
  ],
  [
@@ -1939,7 +2132,7 @@ window.proof_addition_commutes = [
   [
    124
   ],
-  241,
+  124,
   "(S(S((x)+(y))))=(S(S((x)+(y))))"
  ],
  [
@@ -1947,7 +2140,7 @@ window.proof_addition_commutes = [
   [
    125
   ],
-  242,
+  125,
   "((S(S((x)+(y))))=(S(S((x)+(y)))))=>((S((S(y))+(x)))=(S(S((x)+(y)))))"
  ],
  [
@@ -1955,7 +2148,7 @@ window.proof_addition_commutes = [
   [
    126
   ],
-  243,
+  126,
   "(S((S(y))+(x)))=(S(S((x)+(y))))"
  ],
  [
@@ -1963,7 +2156,7 @@ window.proof_addition_commutes = [
   [
    129
   ],
-  244,
+  129,
   "((S((S(y))+(x)))=(S(S((x)+(y)))))=>((((S(y))+(S(x)))=(S((S(y))+(x))))=>(((S(y))+(S(x)))=(S(S((x)+(y))))))"
  ],
  [
@@ -1971,7 +2164,7 @@ window.proof_addition_commutes = [
   [
    130
   ],
-  245,
+  130,
   "(((S(y))+(S(x)))=(S((S(y))+(x))))=>(((S(y))+(S(x)))=(S(S((x)+(y)))))"
  ],
  [
@@ -1980,7 +2173,7 @@ window.proof_addition_commutes = [
    5,
    "S((y)+(S(x)))"
   ],
-  246,
+  132,
   "Ay0(((S((y)+(S(x))))=(y0))=>((P[S((y)+(S(x)))])=>(P[y0])))"
  ],
  [
@@ -1989,7 +2182,7 @@ window.proof_addition_commutes = [
    132,
    "S(S((x)+(y)))"
   ],
-  247,
+  133,
   "((S((y)+(S(x))))=(S(S((x)+(y)))))=>((P[S((y)+(S(x)))])=>(P[S(S((x)+(y)))]))"
  ],
  [
@@ -1997,7 +2190,7 @@ window.proof_addition_commutes = [
   [
    132
   ],
-  248,
+  132,
   "Ay0(((S((y)+(S(x))))=(y0))=>((P[S((y)+(S(x)))])=>(P[y0])))"
  ],
  [
@@ -2007,7 +2200,7 @@ window.proof_addition_commutes = [
    "P",
    "((S(x))+(S(y)))=(@)"
   ],
-  249,
+  134,
   "((S((y)+(S(x))))=(S(S((x)+(y)))))=>((((S(x))+(S(y)))=(S((y)+(S(x)))))=>(((S(x))+(S(y)))=(S(S((x)+(y))))))"
  ],
  [
@@ -2015,7 +2208,7 @@ window.proof_addition_commutes = [
   [
    133
   ],
-  250,
+  133,
   "((S((y)+(S(x))))=(S(S((x)+(y)))))=>((P[S((y)+(S(x)))])=>(P[S(S((x)+(y)))]))"
  ],
  [
@@ -2024,7 +2217,7 @@ window.proof_addition_commutes = [
    134,
    115
   ],
-  251,
+  135,
   "(((S(x))+(S(y)))=(S((y)+(S(x)))))=>(((S(x))+(S(y)))=(S(S((x)+(y)))))"
  ],
  [
@@ -2033,7 +2226,7 @@ window.proof_addition_commutes = [
    135,
    104
   ],
-  252,
+  136,
   "((S(x))+(S(y)))=(S(S((x)+(y))))"
  ],
  [
@@ -2041,7 +2234,7 @@ window.proof_addition_commutes = [
   [
    135
   ],
-  253,
+  135,
   "(((S(x))+(S(y)))=(S((y)+(S(x)))))=>(((S(x))+(S(y)))=(S(S((x)+(y)))))"
  ],
  [
@@ -2049,7 +2242,7 @@ window.proof_addition_commutes = [
   [
    134
   ],
-  254,
+  134,
   "((S((y)+(S(x))))=(S(S((x)+(y)))))=>((((S(x))+(S(y)))=(S((y)+(S(x)))))=>(((S(x))+(S(y)))=(S(S((x)+(y))))))"
  ],
  [
@@ -2057,7 +2250,7 @@ window.proof_addition_commutes = [
   [
    131
   ],
-  255,
+  131,
   "((S(y))+(S(x)))=(S(S((x)+(y))))"
  ],
  [
@@ -2065,7 +2258,7 @@ window.proof_addition_commutes = [
   [
    120
   ],
-  256,
+  120,
   "(S(S((x)+(y))))=(S((S(y))+(x)))"
  ],
  [
@@ -2073,7 +2266,7 @@ window.proof_addition_commutes = [
   [
    99
   ],
-  257,
+  99,
   "((S(y))+(S(x)))=(S((S(y))+(x)))"
  ],
  [
@@ -2081,7 +2274,7 @@ window.proof_addition_commutes = [
   [
    136
   ],
-  258,
+  136,
   "((S(x))+(S(y)))=(S(S((x)+(y))))"
  ],
  [
@@ -2089,7 +2282,7 @@ window.proof_addition_commutes = [
   [
    104
   ],
-  259,
+  104,
   "((S(x))+(S(y)))=(S((y)+(S(x))))"
  ],
  [
@@ -2097,7 +2290,7 @@ window.proof_addition_commutes = [
   [
    115
   ],
-  260,
+  115,
   "(S((y)+(S(x))))=(S(S((x)+(y))))"
  ],
  [
@@ -2106,7 +2299,7 @@ window.proof_addition_commutes = [
    5,
    "(S(y))+(S(x))"
   ],
-  261,
+  137,
   "Ay0((((S(y))+(S(x)))=(y0))=>((P[(S(y))+(S(x))])=>(P[y0])))"
  ],
  [
@@ -2115,7 +2308,7 @@ window.proof_addition_commutes = [
    137,
    "S(S((x)+(y)))"
   ],
-  262,
+  138,
   "(((S(y))+(S(x)))=(S(S((x)+(y)))))=>((P[(S(y))+(S(x))])=>(P[S(S((x)+(y)))]))"
  ],
  [
@@ -2123,7 +2316,7 @@ window.proof_addition_commutes = [
   [
    137
   ],
-  263,
+  137,
   "Ay0((((S(y))+(S(x)))=(y0))=>((P[(S(y))+(S(x))])=>(P[y0])))"
  ],
  [
@@ -2133,7 +2326,7 @@ window.proof_addition_commutes = [
    "P",
    "(@)=((S(y))+(S(x)))"
   ],
-  264,
+  139,
   "(((S(y))+(S(x)))=(S(S((x)+(y)))))=>((((S(y))+(S(x)))=((S(y))+(S(x))))=>((S(S((x)+(y))))=((S(y))+(S(x)))))"
  ],
  [
@@ -2141,7 +2334,7 @@ window.proof_addition_commutes = [
   [
    138
   ],
-  265,
+  138,
   "(((S(y))+(S(x)))=(S(S((x)+(y)))))=>((P[(S(y))+(S(x))])=>(P[S(S((x)+(y)))]))"
  ],
  [
@@ -2150,7 +2343,7 @@ window.proof_addition_commutes = [
    4,
    "(S(y))+(S(x))"
   ],
-  266,
+  140,
   "((S(y))+(S(x)))=((S(y))+(S(x)))"
  ],
  [
@@ -2159,7 +2352,7 @@ window.proof_addition_commutes = [
    139,
    131
   ],
-  267,
+  141,
   "(((S(y))+(S(x)))=((S(y))+(S(x))))=>((S(S((x)+(y))))=((S(y))+(S(x))))"
  ],
  [
@@ -2168,7 +2361,7 @@ window.proof_addition_commutes = [
    141,
    140
   ],
-  268,
+  142,
   "(S(S((x)+(y))))=((S(y))+(S(x)))"
  ],
  [
@@ -2177,7 +2370,7 @@ window.proof_addition_commutes = [
    5,
    "S(S((x)+(y)))"
   ],
-  269,
+  143,
   "Ay0(((S(S((x)+(y))))=(y0))=>((P[S(S((x)+(y)))])=>(P[y0])))"
  ],
  [
@@ -2186,7 +2379,7 @@ window.proof_addition_commutes = [
    143,
    "(S(y))+(S(x))"
   ],
-  270,
+  144,
   "((S(S((x)+(y))))=((S(y))+(S(x))))=>((P[S(S((x)+(y)))])=>(P[(S(y))+(S(x))]))"
  ],
  [
@@ -2194,7 +2387,7 @@ window.proof_addition_commutes = [
   [
    143
   ],
-  271,
+  143,
   "Ay0(((S(S((x)+(y))))=(y0))=>((P[S(S((x)+(y)))])=>(P[y0])))"
  ],
  [
@@ -2204,7 +2397,7 @@ window.proof_addition_commutes = [
    "P",
    "((S(x))+(S(y)))=(@)"
   ],
-  272,
+  145,
   "((S(S((x)+(y))))=((S(y))+(S(x))))=>((((S(x))+(S(y)))=(S(S((x)+(y)))))=>(((S(x))+(S(y)))=((S(y))+(S(x)))))"
  ],
  [
@@ -2212,7 +2405,7 @@ window.proof_addition_commutes = [
   [
    144
   ],
-  273,
+  144,
   "((S(S((x)+(y))))=((S(y))+(S(x))))=>((P[S(S((x)+(y)))])=>(P[(S(y))+(S(x))]))"
  ],
  [
@@ -2221,7 +2414,7 @@ window.proof_addition_commutes = [
    145,
    142
   ],
-  274,
+  146,
   "(((S(x))+(S(y)))=(S(S((x)+(y)))))=>(((S(x))+(S(y)))=((S(y))+(S(x))))"
  ],
  [
@@ -2230,7 +2423,7 @@ window.proof_addition_commutes = [
    146,
    136
   ],
-  275,
+  147,
   "((S(x))+(S(y)))=((S(y))+(S(x)))"
  ],
  [
@@ -2238,7 +2431,7 @@ window.proof_addition_commutes = [
   [
    139
   ],
-  276,
+  139,
   "(((S(y))+(S(x)))=(S(S((x)+(y)))))=>((((S(y))+(S(x)))=((S(y))+(S(x))))=>((S(S((x)+(y))))=((S(y))+(S(x)))))"
  ],
  [
@@ -2246,7 +2439,7 @@ window.proof_addition_commutes = [
   [
    140
   ],
-  277,
+  140,
   "((S(y))+(S(x)))=((S(y))+(S(x)))"
  ],
  [
@@ -2254,7 +2447,7 @@ window.proof_addition_commutes = [
   [
    141
   ],
-  278,
+  141,
   "(((S(y))+(S(x)))=((S(y))+(S(x))))=>((S(S((x)+(y))))=((S(y))+(S(x))))"
  ],
  [
@@ -2262,7 +2455,7 @@ window.proof_addition_commutes = [
   [
    142
   ],
-  279,
+  142,
   "(S(S((x)+(y))))=((S(y))+(S(x)))"
  ],
  [
@@ -2270,7 +2463,7 @@ window.proof_addition_commutes = [
   [
    145
   ],
-  280,
+  145,
   "((S(S((x)+(y))))=((S(y))+(S(x))))=>((((S(x))+(S(y)))=(S(S((x)+(y)))))=>(((S(x))+(S(y)))=((S(y))+(S(x)))))"
  ],
  [
@@ -2278,7 +2471,7 @@ window.proof_addition_commutes = [
   [
    146
   ],
-  281,
+  146,
   "(((S(x))+(S(y)))=(S(S((x)+(y)))))=>(((S(x))+(S(y)))=((S(y))+(S(x))))"
  ],
  [
@@ -2286,7 +2479,7 @@ window.proof_addition_commutes = [
   [
    147
   ],
-  282,
+  147,
   "((S(x))+(S(y)))=((S(y))+(S(x)))"
  ],
  [
@@ -2294,7 +2487,7 @@ window.proof_addition_commutes = [
   [
    131
   ],
-  283,
+  131,
   "((S(y))+(S(x)))=(S(S((x)+(y))))"
  ],
  [
@@ -2302,7 +2495,7 @@ window.proof_addition_commutes = [
   [
    136
   ],
-  284,
+  136,
   "((S(x))+(S(y)))=(S(S((x)+(y))))"
  ],
  [
@@ -2311,7 +2504,7 @@ window.proof_addition_commutes = [
    71,
    147
   ],
-  285,
+  148,
   "(((x)+(S(y)))=((S(y))+(x)))=>(((S(x))+(S(y)))=((S(y))+(S(x))))"
  ],
  [
@@ -2320,7 +2513,7 @@ window.proof_addition_commutes = [
    148,
    "x"
   ],
-  286,
+  149,
   "Ax((((x)+(S(y)))=((S(y))+(x)))=>(((S(x))+(S(y)))=((S(y))+(S(x)))))"
  ],
  [
@@ -2329,7 +2522,7 @@ window.proof_addition_commutes = [
    4,
    "(0)+(S(y))"
   ],
-  287,
+  150,
   "((0)+(S(y)))=((0)+(S(y)))"
  ],
  [
@@ -2337,7 +2530,7 @@ window.proof_addition_commutes = [
   [
    150
   ],
-  288,
+  150,
   "((0)+(S(y)))=((0)+(S(y)))"
  ],
  [
@@ -2345,7 +2538,7 @@ window.proof_addition_commutes = [
   [
    70
   ],
-  289,
+  70,
   "((S(y))+(0))=((0)+(S(y)))"
  ],
  [
@@ -2354,7 +2547,7 @@ window.proof_addition_commutes = [
    5,
    "(S(y))+(0)"
   ],
-  290,
+  151,
   "Ay0((((S(y))+(0))=(y0))=>((P[(S(y))+(0)])=>(P[y0])))"
  ],
  [
@@ -2363,7 +2556,7 @@ window.proof_addition_commutes = [
    151,
    "(0)+(S(y))"
   ],
-  291,
+  152,
   "(((S(y))+(0))=((0)+(S(y))))=>((P[(S(y))+(0)])=>(P[(0)+(S(y))]))"
  ],
  [
@@ -2371,7 +2564,7 @@ window.proof_addition_commutes = [
   [
    151
   ],
-  292,
+  151,
   "Ay0((((S(y))+(0))=(y0))=>((P[(S(y))+(0)])=>(P[y0])))"
  ],
  [
@@ -2381,7 +2574,7 @@ window.proof_addition_commutes = [
    "P",
    "(@)=((S(y))+(0))"
   ],
-  293,
+  153,
   "(((S(y))+(0))=((0)+(S(y))))=>((((S(y))+(0))=((S(y))+(0)))=>(((0)+(S(y)))=((S(y))+(0))))"
  ],
  [
@@ -2389,7 +2582,7 @@ window.proof_addition_commutes = [
   [
    152
   ],
-  294,
+  152,
   "(((S(y))+(0))=((0)+(S(y))))=>((P[(S(y))+(0)])=>(P[(0)+(S(y))]))"
  ],
  [
@@ -2398,7 +2591,7 @@ window.proof_addition_commutes = [
    4,
    "(S(y))+(0)"
   ],
-  295,
+  154,
   "((S(y))+(0))=((S(y))+(0))"
  ],
  [
@@ -2407,7 +2600,7 @@ window.proof_addition_commutes = [
    153,
    70
   ],
-  296,
+  155,
   "(((S(y))+(0))=((S(y))+(0)))=>(((0)+(S(y)))=((S(y))+(0)))"
  ],
  [
@@ -2416,7 +2609,7 @@ window.proof_addition_commutes = [
    155,
    154
   ],
-  297,
+  156,
   "((0)+(S(y)))=((S(y))+(0))"
  ],
  [
@@ -2425,7 +2618,7 @@ window.proof_addition_commutes = [
    5,
    "(0)+(S(y))"
   ],
-  298,
+  157,
   "Ay0((((0)+(S(y)))=(y0))=>((P[(0)+(S(y))])=>(P[y0])))"
  ],
  [
@@ -2434,7 +2627,7 @@ window.proof_addition_commutes = [
    157,
    "(S(y))+(0)"
   ],
-  299,
+  158,
   "(((0)+(S(y)))=((S(y))+(0)))=>((P[(0)+(S(y))])=>(P[(S(y))+(0)]))"
  ],
  [
@@ -2442,7 +2635,7 @@ window.proof_addition_commutes = [
   [
    157
   ],
-  300,
+  157,
   "Ay0((((0)+(S(y)))=(y0))=>((P[(0)+(S(y))])=>(P[y0])))"
  ],
  [
@@ -2452,7 +2645,7 @@ window.proof_addition_commutes = [
    "P",
    "((0)+(S(y)))=(@)"
   ],
-  301,
+  159,
   "(((0)+(S(y)))=((S(y))+(0)))=>((((0)+(S(y)))=((0)+(S(y))))=>(((0)+(S(y)))=((S(y))+(0))))"
  ],
  [
@@ -2460,7 +2653,7 @@ window.proof_addition_commutes = [
   [
    158
   ],
-  302,
+  158,
   "(((0)+(S(y)))=((S(y))+(0)))=>((P[(0)+(S(y))])=>(P[(S(y))+(0)]))"
  ],
  [
@@ -2469,7 +2662,7 @@ window.proof_addition_commutes = [
    159,
    156
   ],
-  303,
+  160,
   "(((0)+(S(y)))=((0)+(S(y))))=>(((0)+(S(y)))=((S(y))+(0)))"
  ],
  [
@@ -2478,7 +2671,7 @@ window.proof_addition_commutes = [
    160,
    150
   ],
-  304,
+  161,
   "((0)+(S(y)))=((S(y))+(0))"
  ],
  [
@@ -2486,7 +2679,7 @@ window.proof_addition_commutes = [
   [
    153
   ],
-  305,
+  153,
   "(((S(y))+(0))=((0)+(S(y))))=>((((S(y))+(0))=((S(y))+(0)))=>(((0)+(S(y)))=((S(y))+(0))))"
  ],
  [
@@ -2494,7 +2687,7 @@ window.proof_addition_commutes = [
   [
    154
   ],
-  306,
+  154,
   "((S(y))+(0))=((S(y))+(0))"
  ],
  [
@@ -2502,7 +2695,7 @@ window.proof_addition_commutes = [
   [
    155
   ],
-  307,
+  155,
   "(((S(y))+(0))=((S(y))+(0)))=>(((0)+(S(y)))=((S(y))+(0)))"
  ],
  [
@@ -2510,7 +2703,7 @@ window.proof_addition_commutes = [
   [
    156
   ],
-  308,
+  156,
   "((0)+(S(y)))=((S(y))+(0))"
  ],
  [
@@ -2518,7 +2711,7 @@ window.proof_addition_commutes = [
   [
    159
   ],
-  309,
+  159,
   "(((0)+(S(y)))=((S(y))+(0)))=>((((0)+(S(y)))=((0)+(S(y))))=>(((0)+(S(y)))=((S(y))+(0))))"
  ],
  [
@@ -2526,7 +2719,7 @@ window.proof_addition_commutes = [
   [
    160
   ],
-  310,
+  160,
   "(((0)+(S(y)))=((0)+(S(y))))=>(((0)+(S(y)))=((S(y))+(0)))"
  ],
  [
@@ -2534,7 +2727,7 @@ window.proof_addition_commutes = [
   [
    161
   ],
-  311,
+  161,
   "((0)+(S(y)))=((S(y))+(0))"
  ],
  [
@@ -2542,7 +2735,7 @@ window.proof_addition_commutes = [
   [
    150
   ],
-  312,
+  150,
   "((0)+(S(y)))=((0)+(S(y)))"
  ],
  [
@@ -2550,7 +2743,7 @@ window.proof_addition_commutes = [
   [
    70
   ],
-  313,
+  70,
   "((S(y))+(0))=((0)+(S(y)))"
  ],
  [
@@ -2558,7 +2751,7 @@ window.proof_addition_commutes = [
   [
    149
   ],
-  314,
+  149,
   "Ax((((x)+(S(y)))=((S(y))+(x)))=>(((S(x))+(S(y)))=((S(y))+(S(x)))))"
  ],
  [
@@ -2566,7 +2759,7 @@ window.proof_addition_commutes = [
   [
    147
   ],
-  315,
+  147,
   "((S(x))+(S(y)))=((S(y))+(S(x)))"
  ],
  [
@@ -2574,7 +2767,7 @@ window.proof_addition_commutes = [
   [
    147
   ],
-  316,
+  147,
   "((S(x))+(S(y)))=((S(y))+(S(x)))"
  ],
  [
@@ -2582,7 +2775,7 @@ window.proof_addition_commutes = [
   [
    147
   ],
-  317,
+  147,
   "((S(x))+(S(y)))=((S(y))+(S(x)))"
  ],
  [
@@ -2592,7 +2785,7 @@ window.proof_addition_commutes = [
    "P",
    "((@)+(S(y)))=((S(y))+(@))"
   ],
-  318,
+  162,
   "(((0)+(S(y)))=((S(y))+(0)))=>((Ax((((x)+(S(y)))=((S(y))+(x)))=>(((S(x))+(S(y)))=((S(y))+(S(x))))))=>(Ax(((x)+(S(y)))=((S(y))+(x)))))"
  ],
  [
@@ -2601,7 +2794,7 @@ window.proof_addition_commutes = [
    162,
    161
   ],
-  319,
+  163,
   "(Ax((((x)+(S(y)))=((S(y))+(x)))=>(((S(x))+(S(y)))=((S(y))+(S(x))))))=>(Ax(((x)+(S(y)))=((S(y))+(x))))"
  ],
  [
@@ -2610,7 +2803,7 @@ window.proof_addition_commutes = [
    163,
    149
   ],
-  320,
+  164,
   "Ax(((x)+(S(y)))=((S(y))+(x)))"
  ],
  [
@@ -2619,7 +2812,7 @@ window.proof_addition_commutes = [
    69,
    164
   ],
-  321,
+  165,
   "(Ax(((x)+(y))=((y)+(x))))=>(Ax(((x)+(S(y)))=((S(y))+(x))))"
  ],
  [
@@ -2628,7 +2821,7 @@ window.proof_addition_commutes = [
    68,
    "x"
   ],
-  322,
+  166,
   "((x)+(0))=((0)+(x))"
  ],
  [
@@ -2637,7 +2830,7 @@ window.proof_addition_commutes = [
    166,
    "x"
   ],
-  323,
+  167,
   "Ax(((x)+(0))=((0)+(x)))"
  ],
  [
@@ -2647,7 +2840,7 @@ window.proof_addition_commutes = [
    "P",
    "At(((t)+(@))=((@)+(t)))"
   ],
-  324,
+  168,
   "(At(((t)+(0))=((0)+(t))))=>((Ax((At(((t)+(x))=((x)+(t))))=>(At(((t)+(S(x)))=((S(x))+(t))))))=>(Ax(At(((t)+(x))=((x)+(t))))))"
  ],
  [
@@ -2656,7 +2849,7 @@ window.proof_addition_commutes = [
    167,
    "t"
   ],
-  325,
+  169,
   "((t)+(0))=((0)+(t))"
  ],
  [
@@ -2665,7 +2858,7 @@ window.proof_addition_commutes = [
    169,
    "t"
   ],
-  326,
+  170,
   "At(((t)+(0))=((0)+(t)))"
  ],
  [
@@ -2674,7 +2867,7 @@ window.proof_addition_commutes = [
    168,
    170
   ],
-  327,
+  171,
   "(Ax((At(((t)+(x))=((x)+(t))))=>(At(((t)+(S(x)))=((S(x))+(t))))))=>(Ax(At(((t)+(x))=((x)+(t)))))"
  ],
  [
@@ -2683,7 +2876,7 @@ window.proof_addition_commutes = [
    165,
    "y"
   ],
-  328,
+  172,
   "Ay((Ax(((x)+(y))=((y)+(x))))=>(Ax(((x)+(S(y)))=((S(y))+(x)))))"
  ],
  [
@@ -2692,7 +2885,7 @@ window.proof_addition_commutes = [
    172,
    "x"
   ],
-  329,
+  173,
   "(Ax0(((x0)+(x))=((x)+(x0))))=>(Ax0(((x0)+(S(x)))=((S(x))+(x0))))"
  ],
  [
@@ -2700,7 +2893,7 @@ window.proof_addition_commutes = [
   [
    "At(((t)+(x))=((x)+(t)))"
   ],
-  330,
+  174,
   "At(((t)+(x))=((x)+(t)))"
  ],
  [
@@ -2709,7 +2902,7 @@ window.proof_addition_commutes = [
    174,
    "x0"
   ],
-  331,
+  175,
   "((x0)+(x))=((x)+(x0))"
  ],
  [
@@ -2718,7 +2911,7 @@ window.proof_addition_commutes = [
    175,
    "x0"
   ],
-  332,
+  176,
   "Ax0(((x0)+(x))=((x)+(x0)))"
  ],
  [
@@ -2727,7 +2920,7 @@ window.proof_addition_commutes = [
    173,
    176
   ],
-  333,
+  177,
   "Ax0(((x0)+(S(x)))=((S(x))+(x0)))"
  ],
  [
@@ -2736,7 +2929,7 @@ window.proof_addition_commutes = [
    177,
    "t"
   ],
-  334,
+  178,
   "((t)+(S(x)))=((S(x))+(t))"
  ],
  [
@@ -2745,7 +2938,7 @@ window.proof_addition_commutes = [
    178,
    "t"
   ],
-  335,
+  179,
   "At(((t)+(S(x)))=((S(x))+(t)))"
  ],
  [
@@ -2754,7 +2947,7 @@ window.proof_addition_commutes = [
    174,
    179
   ],
-  336,
+  180,
   "(At(((t)+(x))=((x)+(t))))=>(At(((t)+(S(x)))=((S(x))+(t))))"
  ],
  [
@@ -2763,7 +2956,7 @@ window.proof_addition_commutes = [
    180,
    "x"
   ],
-  337,
+  181,
   "Ax((At(((t)+(x))=((x)+(t))))=>(At(((t)+(S(x)))=((S(x))+(t)))))"
  ],
  [
@@ -2772,7 +2965,7 @@ window.proof_addition_commutes = [
    171,
    181
   ],
-  338,
+  182,
   "Ax(At(((t)+(x))=((x)+(t))))"
  ],
  [
@@ -2780,7 +2973,7 @@ window.proof_addition_commutes = [
   [
    182
   ],
-  339,
+  182,
   "Ax(At(((t)+(x))=((x)+(t))))"
  ],
  [
@@ -2788,7 +2981,7 @@ window.proof_addition_commutes = [
   [
    161
   ],
-  340,
+  161,
   "((0)+(S(y)))=((S(y))+(0))"
  ],
  [
@@ -2796,7 +2989,7 @@ window.proof_addition_commutes = [
   [
    149
   ],
-  341,
+  149,
   "Ax((((x)+(S(y)))=((S(y))+(x)))=>(((S(x))+(S(y)))=((S(y))+(S(x)))))"
  ],
  [
@@ -2804,7 +2997,7 @@ window.proof_addition_commutes = [
   [
    68
   ],
-  342,
+  68,
   "Ax(((x)+(0))=((0)+(x)))"
  ],
  [
@@ -2812,7 +3005,7 @@ window.proof_addition_commutes = [
   [
    69
   ],
-  343,
+  69,
   "Ax(((x)+(y))=((y)+(x)))"
  ],
  [
@@ -2820,7 +3013,7 @@ window.proof_addition_commutes = [
   [
    68
   ],
-  344,
+  68,
   "Ax(((x)+(0))=((0)+(x)))"
  ],
  [
@@ -2828,7 +3021,7 @@ window.proof_addition_commutes = [
   [
    68
   ],
-  345,
+  68,
   "Ax(((x)+(0))=((0)+(x)))"
  ],
  [
@@ -2836,7 +3029,16 @@ window.proof_addition_commutes = [
   [
    11
   ],
-  346,
+  11,
   "Ax(Ay(((x)+(S(y)))=(S((x)+(y)))))"
+ ],
+ [
+  "SetComment",
+  [
+   182,
+   "addition_commutes"
+  ],
+  182,
+  "Ax(At(((t)+(x))=((x)+(t))))"
  ]
 ];

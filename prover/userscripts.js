@@ -5,15 +5,20 @@ function alreadyProved(sentence) {
     }
     return false;
 }
-var DEL = true;
 var userWants = new Map();
-function doTransforms(arr) {
+function doTransforms(arr, DEL=true) {
     var currentStatement = arr[0];
     for (var i = 1; i < arr.length; ++ i) { 
         if (arr[i] == 'SV') {
             var variable = arr[i+1];
             if (variable == 'new') variable = 't85383';
             var temp = globalProver.SV(currentStatement, variable);
+            if (DEL&&i > 1) deleteStatement(currentStatement);
+            currentStatement = temp;
+            i += 1;
+        } else if (arr[i] == 'GE') {
+            var sentence = arr[i+1];
+            var temp = globalProver.GE(currentStatement, sentence);
             if (DEL&&i > 1) deleteStatement(currentStatement);
             currentStatement = temp;
             i += 1;
@@ -30,7 +35,32 @@ function doTransforms(arr) {
             if (DEL&&i > 1) deleteStatement(currentStatement);
             currentStatement = temp;
             i += 2;
-        } else throw new Error('asdfasdfasdfassad');
+        } else if (arr[i] == 'Rewrite') {
+            const claim = arr[i+1];
+            var temp = globalProver.Rewrite(currentStatement, claim);
+            if (DEL&&i > 1) deleteStatement(currentStatement);
+            currentStatement = temp;
+            i += 1;
+        } else if (arr[i] == 'MP') {
+            const next = arr[i+1];
+            const s1 = globalProver.statements.get(currentStatement).p.sentence;
+            const s2 = globalProver.statements.get(next).p.sentence;
+            let longer = currentStatement, shorter = next;
+            if (s1.length < s2.length) {
+                longer = next;
+                shorter = currentStatement;
+            }
+            console.log(s1, s2);
+            var temp = globalProver.MP(longer, shorter);
+            if (DEL && i > 1) deleteStatement(currentStatement);
+            currentStatement = temp;
+            i += 1;
+        } else throw new Error('asdfasdfasdfassad ' + arr[i]);
+        if (currentStatement == 0) {
+            alert(globalProver.currentError);
+            console.log(globalProver.currentError, i);
+            throw new Error();
+        }
     }
     return currentStatement;
 }
@@ -54,6 +84,12 @@ var currentTermIdx;
 function termToRewrite(t) {
     document.getElementById('userTerm').innerHTML = t;
     currentTerm = t;
+}
+function userInputUpdated() {
+    const s = document.getElementById('assumptionInput').value;
+    if (s.startsWith('!')) return;
+    const p = parseSentence(s);
+    document.getElementById('errorLogging').innerHTML = renderParsed(p) + ' ' + (p.error||'');
 }
 window.userModifyInput = function(s) {
     if (s[0] !== '!') return s;
@@ -79,12 +115,76 @@ window.userModifyInput = function(s) {
         termToRewrite(s.slice(8));
         return '';
     }
+    if (s.startsWith('!def ')) {
+        const inputs = s.split(' ');
+        const new_id = +inputs[1];
+        const defVar = inputs[2];
+        const defId = +inputs[3];
+        const defStParent = +inputs[4];
+        const fixedProver = globalProver;
+        if (!globalProver.statements.has(new_id)) return;
+        if (!globalProver.statements.has(defId)) return;
+        const statement = globalProver.statements.get(new_id);
+        const deps = statement.deps;
+        const p = statement.p;
+        // if defId is the id of an assumption of this statement
+        // AND it's the only assumption that mentions #x
+        // AND this new statement doesn't mention #x
+        // then can do it
+        if (!deps.includes(defId)) return;
+        if (p.free.includes(defVar)) return;
+        let included = false;
+        for (const depId of deps) {
+            if (depId == defId) continue;
+            const depSt = fixedProver.statements.get(depId);
+            if (depSt.p.free.includes(defVar)) {
+                included = true;
+            }
+        }
+        if (included) return;
+        console.log('GOT ONE!!!', defVar, p.sentence, defId, new_id);
+        const s1 = fixedProver.DT(defId, new_id);
+        const s2 = fixedProver.G(s1, defVar);
+        const defSt = fixedProver.statements.get(defId)
+        const defStParentSafe = defStParent || defSt.used[0];
+        const t11 = fixedProver.S(7, 'Q', 'Q123');
+        if (fixedProver.currentError) console.log(fixedProver.currentError);
+        const t12 = fixedProver.S(t11, 'P', 'P123[@]');
+        if (fixedProver.currentError) console.log(fixedProver.currentError);
+        const t1 = fixedProver.S(t12, 'Q123', p.sentence);
+        if (fixedProver.currentError) console.log(fixedProver.currentError);
+        const t2 = fixedProver.S(t1, 'P123', renameDisallowed(parseSentence(replaceVariable(defSt.p.sentence, defVar, '@')), p.free)[0].sentence);
+        if (fixedProver.currentError) console.log(fixedProver.currentError);
+        const t3 = fixedProver.MP(t2, defStParentSafe);
+        if (fixedProver.currentError) console.log(fixedProver.currentError);
+        const t4 = fixedProver.MP(t3, s2);
+        if (fixedProver.currentError) console.log(fixedProver.currentError);
+        const t5 = fixedProver.Rewrite(t4, p.sentence);
+        if (fixedProver.currentError) console.log(fixedProver.currentError);
+        console.log(s1, s2, defSt, t1, t2, t3, t4, t5);
+        if (t5 == 0) {
+        updatePage();
+        console.log(fixedProver.statements.get(s1).p.sentence);
+        console.log(fixedProver.statements.get(s2).p.sentence);
+        console.log(fixedProver.statements.get(t1).p.sentence);
+        console.log(fixedProver.statements.get(t2).p.sentence);
+        console.log(fixedProver.statements.get(defStParentSafe).p.sentence);
+        console.log(fixedProver.statements.get(t3).p.sentence);
+        console.log(fixedProver.statements.get(t4).p.sentence);
+        }
+        else {
+            for (const del_id of [s1, s2, t11, t12, t1, t2, t3, t4])
+                fixedProver.DEL(del_id);
+        }
+        updatePage();
+        return '';
+    }
     if (s === '!==') {
         for (const [i,s] of globalProver.statements.entries()) {
             if (s.p.parsed[0] != '=') continue;
             if (s.deleted || !s.highlight) continue;
             const sp = s.p.parsed;
-            const u = sp[1].sentence, v = sp[2].sentence;
+            const u = sp[2][0].sentence, v = sp[2][1].sentence;
             if (u == v) continue;
             var temp = doTransforms([5, 'SV', u, 'SV', v, 'S', 'P', `(@)=(${u})`]);
             var temp2 = globalProver.SV(4, u); // u=u
@@ -111,8 +211,8 @@ window.userModifyInput = function(s) {
             }
             if (sp[0] != '=' || tp[0] != '=') continue;
             // s: V1=V2, t: V2=V3
-            if (sp[2].sentence == tp[1].sentence) {
-                var u = sp[1].sentence, v = sp[2].sentence, w = tp[2].sentence;
+            if (sp[2][1].sentence == tp[2][0].sentence) {
+                var u = sp[2][0].sentence, v = sp[2][1].sentence, w = tp[2][1].sentence;
                 if (u == w) continue;
                 //if (alreadyProved(`(${u})=(${w})`)) continue;
                 var temp6 = doTransforms([5, 'SV', v, 'SV', w, 'S', 'P', `(${u})=(@)`]);
@@ -120,8 +220,8 @@ window.userModifyInput = function(s) {
                 var temp4 = globalProver.MP(temp3, i);
                 deleteStatement(temp3);
                 deleteStatement(temp6);
-            } else if (sp[1].sentence == tp[1].sentence) {
-                var u = sp[1].sentence, v = sp[2].sentence, w = tp[2].sentence;
+            } else if (sp[2][0].sentence == tp[2][0].sentence) {
+                var u = sp[2][0].sentence, v = sp[2][1].sentence, w = tp[2][1].sentence;
                 if (v == w) continue;
                 //if (alreadyProved(`(${v})=(${w})`)) continue;
                 var i5 = doTransforms([5, 'SV', u, 'SV', v, 'S', 'P', `(@)=(${w})`]);
@@ -129,8 +229,8 @@ window.userModifyInput = function(s) {
                 var i7 = globalProver.MP(i6, j);
                 for (var k of [i5, i6])
                     deleteStatement(k);
-            } else if (sp[2].sentence == tp[2].sentence) {
-                var u = sp[1].sentence, v = sp[2].sentence, w = tp[1].sentence;
+            } else if (sp[2][1].sentence == tp[2][1].sentence) {
+                var u = sp[2][0].sentence, v = sp[2][1].sentence, w = tp[2][0].sentence;
                 if (u == w) continue;
                 //if (alreadyProved(`(${u})=(${w})`)) continue;
                 var b1 = doTransforms([5, 'SV', w, 'SV', v, 'S', 'P', `(@)=(${w})`]);
@@ -155,13 +255,97 @@ window.userModifyInput = function(s) {
         updatePage();
         return '';
     }
+    if (s.startsWith('!and ')) {
+        if (!globalProver.filesImported.includes('logic')) {
+            alert('cannot magic the AND, since logic not imported');
+            return '';
+        }
+        const myArgs = s.split(' ');
+        const ai = globalProver.Quote('and_introduction');
+        const x1 = doTransforms([ai, 'S', 'P', 'P123', 'S', 'Q', 'Q123',
+            'S', 'P123', globalProver.statements.get(+myArgs[1]).p.sentence,
+            'S', 'Q123', globalProver.statements.get(+myArgs[2]).p.sentence,
+            'MP', +myArgs[1], 'MP', +myArgs[2]]);
+        for (const k of [ai]) deleteStatement(k);
+        updatePage();
+        return '';
+    }
+    if (s.startsWith('!addfunc ')) {
+        if (!globalProver.filesImported.includes('logic')) {
+            alert('cannot magic the AND, since logic not imported');
+            return '';
+        }
+        const myArgs = s.split(' ');
+        const sentence = myArgs[1];
+        const parsed = parseTerm(sentence);
+        if (parsed.error) return '';
+        const seenAlready = parsed.free.concat(parsed.bound);
+        let newVar = 'y';
+        let count = 0;
+        while (seenAlready.includes(newVar)) {
+            newVar = 'y' + count;
+            count ++;
+        }
+        let newVar1 = 'y' + count;
+        while (seenAlready.includes(newVar1)) {
+            count ++;
+            newVar1 = 'y' + count;
+        }
+        const frees = myArgs[2] ? myArgs[2].split(',') : parsed.free;
+        const revFrees = frees.map(x=>x).reverse();
+        const myGen = myArgs[3] || 'P';
+        const assumption = frees.map(v => 'A'+v+'(').join('') + 'A' + newVar + '((' + myGen + '[' + frees.join(',') + ',' + newVar + '])<>((' + newVar + ')=(' + sentence + ')))' + frees.map(v => ')').join('');
+        console.log(assumption);
+        var def = globalProver.Assume(assumption);
+        const specAssumption = doTransforms([def].concat(frees.flatMap(v => ['SV', v])).concat(['SV', newVar]));
+        var subbed = globalProver.SubConnective(specAssumption, '<>', globalProver.statements.get(specAssumption).p.sentence.indexOf('<>'));
+        const subbedParsed = globalProver.statements.get(subbed).p.parsed;
+        if (subbedParsed[0] != '&&') {
+            alert('Expected &&, got ' + subbedParsed[0]);
+            return '';
+        }
+        const imp1 = subbedParsed[2][0].sentence;
+        const imp2 = subbedParsed[2][1].sentence;
+        const ae1 = globalProver.Quote('and_elimination1');
+        const ae2 = globalProver.Quote('and_elimination2');
+        const temp1 = doTransforms([ae1, 'S', 'P', 'P123', 'S', 'Q', 'Q123', 'S', 'P123', imp1, 'S', 'Q123', imp2]);
+        const temp2 = doTransforms([ae2, 'S', 'P', 'P123', 'S', 'Q', 'Q123', 'S', 'P123', imp1, 'S', 'Q123', imp2]);
+        const fromP = globalProver.MP(temp1, subbed);
+        const toP = globalProver.MP(temp2, subbed);
+        const toPSubbed = doTransforms([toP, 'G', newVar, 'SV', sentence]);
+        console.log(toP, toPSubbed);
+        const x = doTransforms([4, 'SV', sentence, 'MP', toPSubbed, 'GE', 'E' + newVar + '(' + myGen + '[' + frees.join(',') + ',' + newVar + '])']);
+        const x1 = doTransforms([x].concat(revFrees.flatMap(v => ['G', v])));
+        for (const k of [subbed, ae1, ae2, temp1, temp2, toP, toPSubbed, x]) deleteStatement(k);
+        const a1 = globalProver.Assume(myGen + '[' + frees.join(',') + ',' + newVar + ']');
+        const a2 = globalProver.Assume(myGen + '[' + frees.join(',') + ',' + newVar1 + ']');
+        const eq1 = doTransforms([fromP, 'MP', a1]); // y=sentence
+        const eq2 = doTransforms([fromP, 'G', newVar, 'SV', newVar1, 'MP', a2]); // y0=sentence
+        const eq3 = doTransforms([4, 'SV', newVar]); // y=y
+        const eq4 = doTransforms([5, 'S', 'P', '(@)=(' + newVar + ')', 'SV', newVar, 'SV', sentence, 'MP', eq1, 'MP', eq3]); // sentence=y 
+        const i5 = doTransforms([5, 'S', 'P', '(' + newVar1 + ')=(@)', 'SV', sentence, 'SV', newVar, 'MP', eq4, 'MP', eq2]);
+        const x2 = globalProver.DT(a1, i5);
+        const x3 = globalProver.DT(a2, x2);
+        const x4 = doTransforms([x3, 'G', newVar, 'G', newVar1].concat(revFrees.flatMap(v => ['G', v])));
+        for (const k of [a1, a2, eq1, eq2, eq3, eq4, i5, x2, x3, fromP, specAssumption]) deleteStatement(k);
+        const ai = globalProver.Quote('and_introduction');
+        const functionPred = frees.length == 1 ? "func" : ("func" + frees.length);
+        const x5 = doTransforms([ai, 'S', 'P', 'P123', 'S', 'Q', 'Q123',
+            'S', 'P123', globalProver.statements.get(x1).p.sentence,
+            'S', 'Q123', globalProver.statements.get(x4).p.sentence,
+            'MP', x1, 'MP', x4, 'Rewrite', "'" + functionPred + "[" + myGen + ";]"]);
+        const result = globalProver.DT(def, x5);
+        for (const k of [ai, x1, x4, x5, def]) deleteStatement(k);
+        updatePage();
+        return '';
+    }
     if (s.startsWith('!sub ')) {
         var id = +s.slice(5);
         var s = globalProver.statements.get(id);
         if (!s) return '';
         var P = s.p.parsed;
         if (P[0] != '=') return '';
-        const t1 = P[1].sentence, t2 = P[2].sentence;
+        const t1 = P[2][0].sentence, t2 = P[2][1].sentence;
         const toSub = prompt('Term to substitute:');
         if (!toSub) return '';
         var pst = parseTerm(toSub, true);
@@ -206,13 +390,12 @@ window.userModifyInput = function(s) {
         var s = globalProver.statements.get(id);
         if (!s) return '';
         var P = s.p.parsed;
-        console.log(P);
-        if (P[0] == '=>' && P[2].sentence == 'F' && P[1].parsed[0] == '=>' && P[1].parsed[2].sentence == 'F') {
-            var temp1 = doTransforms([3, 'S', 'P', P[1].parsed[1].sentence]);
+        if (P[0] == '=>' && P[2][1].sentence == 'F' && P[2][0].parsed[0] == '=>' && P[2][0].parsed[2][1].sentence == 'F') {
+            var temp1 = doTransforms([3, 'S', 'P', P[2][0].parsed[2][0].sentence]);
             var temp2 = globalProver.MP(temp1, id);
             deleteStatement(temp1);
-        } else if (P[0] == '=>' && P[2].sentence == 'F' && P[1].parsed[0] == '=>') {
-            const a = P[1].parsed[1].sentence, b = P[1].parsed[2].sentence;
+        } else if (P[0] == '=>' && P[2][1].sentence == 'F' && P[2][0].parsed[0] == '=>') {
+            const a = P[2][0].parsed[2][0].sentence, b = P[2][1].parsed[2][1].sentence;
             var notA = globalProver.Assume('('+a+')=>(F)');
             var yesA = globalProver.Assume(a);
             var exp = globalProver.Quote('explosion');
@@ -235,12 +418,12 @@ window.userModifyInput = function(s) {
                 alert('cannot magic the AND, since logic not imported');
                 return '';
             }
-            var s1 = P[1].sentence, s2 = P[2].sentence;
+            var s1 = P[2][0].sentence, s2 = P[2][1].sentence;
             var ae1 = globalProver.Quote('and_elimination1');
             var ae2 = globalProver.Quote('and_elimination2');
-            var temp1 = doTransforms([ae1, 'S', 'P', s1, 'S', 'Q', s2]);
+            var temp1 = doTransforms([ae1, 'S', 'P', 'P123', 'S', 'Q', 'Q123', 'S', 'P123', s1, 'S', 'Q123', s2]);
+            var temp2 = doTransforms([ae2, 'S', 'P', 'P123', 'S', 'Q', 'Q123', 'S', 'P123', s1, 'S', 'Q123', s2]);
             var final1 = globalProver.MP(temp1, id);
-            var temp2 = doTransforms([ae2, 'S', 'P', s1, 'S', 'Q', s2]);
             var final2 = globalProver.MP(temp2, id);
             for (var k of [ae1, ae2, temp1, temp2]) deleteStatement(k);
         } else if (P[0] == '||') {

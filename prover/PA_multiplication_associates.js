@@ -1,5 +1,198 @@
-window.requiredModules_multiplication_associates = ["distributivity"];
+window.exportStatements_multiplication_associates = new Map([["Ax(Ay(Az((((x)*(y))*(z))=((x)*((y)*(z))))))","multiplication_associates"]]);
+
+window.requiredModules_multiplication_associates = ["S_functional","addition_associates","distributivity"];
+
 window.proof_multiplication_associates = [
+ [
+  "AddRelation",
+  [
+   2,
+   "<=",
+   "Ex(((@1)+(x))=(@2))"
+  ],
+  -1,
+  ""
+ ],
+ [
+  "AddRelation",
+  [
+   2,
+   "<",
+   "Ex(((@1)+(S(x)))=(@2))"
+  ],
+  -1,
+  ""
+ ],
+ [
+  "AddRelation",
+  [
+   2,
+   "!<",
+   "((@1)<(@2))=>(F)"
+  ],
+  -1,
+  ""
+ ],
+ [
+  "AddRelation",
+  [
+   2,
+   "!=",
+   "((@1)=(@2))=>(F)"
+  ],
+  -1,
+  ""
+ ],
+ [
+  "AddRelation",
+  [
+   2,
+   "|",
+   "Ex(((@1)*(x))=(@2))"
+  ],
+  -1,
+  ""
+ ],
+ [
+  "AddRelation",
+  [
+   2,
+   "!|",
+   "(Ex(((@1)*(x))=(@2)))=>(F)"
+  ],
+  -1,
+  ""
+ ],
+ [
+  "AddConnective",
+  [
+   2,
+   "||",
+   "((P)=>(F))=>(Q)"
+  ],
+  -1,
+  ""
+ ],
+ [
+  "AddConnective",
+  [
+   2,
+   "&&",
+   "((P)=>((Q)=>(F)))=>(F)"
+  ],
+  -1,
+  ""
+ ],
+ [
+  "AddRelation",
+  [
+   3,
+   "'gcd",
+   "(((@3)|(@1))&&((@3)|(@2)))&&(Ah((((h)|(@1))&&((h)|(@2)))=>((h)|(@3))))"
+  ],
+  -1,
+  ""
+ ],
+ [
+  "AddRelation",
+  [
+   3,
+   "'lcm",
+   "(((@1)|(@3))&&((@2)|(@3)))&&(Az(((@1)|(z))=>(((@2)|(z))=>((@3)|(z)))))"
+  ],
+  -1,
+  ""
+ ],
+ [
+  "AddRelation",
+  [
+   3,
+   "'mod",
+   "((@3)<(@2))&&(En((@1)=(((n)*(@2))+(@3))))"
+  ],
+  -1,
+  ""
+ ],
+ [
+  "AddRelation",
+  [
+   3,
+   "'zmod",
+   "(((@2)=(0))&&((@3)=(0)))||('mod[@1,@2,@3])"
+  ],
+  -1,
+  ""
+ ],
+ [
+  "AddRelation",
+  [
+   3,
+   "'cong",
+   "Ea(('mod[@1,@3,a])&&('mod[@2,@3,a]))"
+  ],
+  -1,
+  ""
+ ],
+ [
+  "AddRelation",
+  [
+   3,
+   "'conga",
+   "Ea(Eb(((@1)+((@3)*(a)))=((@2)+((@3)*(b)))))"
+  ],
+  -1,
+  ""
+ ],
+ [
+  "AddRelation",
+  [
+   2,
+   "'bezoutable",
+   "((@1)!=(0))=>(((@2)!=(0))=>(Eu(Eg(('cong[(u)*(@1),g,@2])&&('gcd[@1,@2,g])))))"
+  ],
+  -1,
+  ""
+ ],
+ [
+  "AddRelation",
+  [
+   2,
+   "'br",
+   "Ea(Eb(Eg(('gcd[@1,@2,g])&&(((a)*(@1))=(((b)*(@2))+(g))))))"
+  ],
+  -1,
+  ""
+ ],
+ [
+  "AddRelation",
+  [
+   2,
+   "'brr",
+   "((@1)!=(0))=>('br[@1,@2])"
+  ],
+  -1,
+  ""
+ ],
+ [
+  "AddRelation",
+  [
+   1,
+   "'prime",
+   "((S(0))<(@1))&&(Aa(((a)<(@1))=>(((a)|(@1))=>((a)=(S(0))))))"
+  ],
+  -1,
+  ""
+ ],
+ [
+  "AddRelation",
+  [
+   2,
+   "'nprod",
+   "((@1)!=(0))&&(Ax(((x)<=(@2))=>(((x)!=(0))=>((x)|(@1)))))"
+  ],
+  -1,
+  ""
+ ],
  [
   "Quote",
   [
@@ -58,7 +251,7 @@ window.proof_multiplication_associates = [
   [
    19
   ],
-  21,
+  19,
   "Ay0((((y)*(0))=(y0))=>((P[(y)*(0)])=>(P[y0])))"
  ],
  [
@@ -68,7 +261,7 @@ window.proof_multiplication_associates = [
    "P",
    "((x)*((y)*(0)))=((x)*(@))"
   ],
-  22,
+  21,
   "(((y)*(0))=(0))=>((((x)*((y)*(0)))=((x)*((y)*(0))))=>(((x)*((y)*(0)))=((x)*(0))))"
  ],
  [
@@ -76,7 +269,7 @@ window.proof_multiplication_associates = [
   [
    20
   ],
-  23,
+  20,
   "(((y)*(0))=(0))=>((P[(y)*(0)])=>(P[0]))"
  ],
  [
@@ -85,7 +278,7 @@ window.proof_multiplication_associates = [
    21,
    17
   ],
-  24,
+  22,
   "(((x)*((y)*(0)))=((x)*((y)*(0))))=>(((x)*((y)*(0)))=((x)*(0)))"
  ],
  [
@@ -94,7 +287,7 @@ window.proof_multiplication_associates = [
    22,
    18
   ],
-  25,
+  23,
   "((x)*((y)*(0)))=((x)*(0))"
  ],
  [
@@ -102,7 +295,7 @@ window.proof_multiplication_associates = [
   [
    18
   ],
-  26,
+  18,
   "((x)*((y)*(0)))=((x)*((y)*(0)))"
  ],
  [
@@ -110,7 +303,7 @@ window.proof_multiplication_associates = [
   [
    21
   ],
-  27,
+  21,
   "(((y)*(0))=(0))=>((((x)*((y)*(0)))=((x)*((y)*(0))))=>(((x)*((y)*(0)))=((x)*(0))))"
  ],
  [
@@ -118,7 +311,7 @@ window.proof_multiplication_associates = [
   [
    22
   ],
-  28,
+  22,
   "(((x)*((y)*(0)))=((x)*((y)*(0))))=>(((x)*((y)*(0)))=((x)*(0)))"
  ],
  [
@@ -127,7 +320,7 @@ window.proof_multiplication_associates = [
    12,
    "x"
   ],
-  29,
+  24,
   "((x)*(0))=(0)"
  ],
  [
@@ -136,7 +329,7 @@ window.proof_multiplication_associates = [
    5,
    "(x)*(0)"
   ],
-  30,
+  25,
   "Ay((((x)*(0))=(y))=>((P[(x)*(0)])=>(P[y])))"
  ],
  [
@@ -145,7 +338,7 @@ window.proof_multiplication_associates = [
    25,
    "0"
   ],
-  31,
+  26,
   "(((x)*(0))=(0))=>((P[(x)*(0)])=>(P[0]))"
  ],
  [
@@ -153,7 +346,7 @@ window.proof_multiplication_associates = [
   [
    25
   ],
-  32,
+  25,
   "Ay((((x)*(0))=(y))=>((P[(x)*(0)])=>(P[y])))"
  ],
  [
@@ -163,7 +356,7 @@ window.proof_multiplication_associates = [
    "P",
    "((x)*((y)*(0)))=(@)"
   ],
-  33,
+  27,
   "(((x)*(0))=(0))=>((((x)*((y)*(0)))=((x)*(0)))=>(((x)*((y)*(0)))=(0)))"
  ],
  [
@@ -171,7 +364,7 @@ window.proof_multiplication_associates = [
   [
    26
   ],
-  34,
+  26,
   "(((x)*(0))=(0))=>((P[(x)*(0)])=>(P[0]))"
  ],
  [
@@ -180,7 +373,7 @@ window.proof_multiplication_associates = [
    27,
    24
   ],
-  35,
+  28,
   "(((x)*((y)*(0)))=((x)*(0)))=>(((x)*((y)*(0)))=(0))"
  ],
  [
@@ -189,7 +382,7 @@ window.proof_multiplication_associates = [
    28,
    23
   ],
-  36,
+  29,
   "((x)*((y)*(0)))=(0)"
  ],
  [
@@ -197,7 +390,7 @@ window.proof_multiplication_associates = [
   [
    28
   ],
-  37,
+  28,
   "(((x)*((y)*(0)))=((x)*(0)))=>(((x)*((y)*(0)))=(0))"
  ],
  [
@@ -205,7 +398,7 @@ window.proof_multiplication_associates = [
   [
    27
   ],
-  38,
+  27,
   "(((x)*(0))=(0))=>((((x)*((y)*(0)))=((x)*(0)))=>(((x)*((y)*(0)))=(0)))"
  ],
  [
@@ -214,7 +407,7 @@ window.proof_multiplication_associates = [
    5,
    "(x)*((y)*(0))"
   ],
-  39,
+  30,
   "Ay0((((x)*((y)*(0)))=(y0))=>((P[(x)*((y)*(0))])=>(P[y0])))"
  ],
  [
@@ -223,7 +416,7 @@ window.proof_multiplication_associates = [
    30,
    "0"
   ],
-  40,
+  31,
   "(((x)*((y)*(0)))=(0))=>((P[(x)*((y)*(0))])=>(P[0]))"
  ],
  [
@@ -231,7 +424,7 @@ window.proof_multiplication_associates = [
   [
    30
   ],
-  41,
+  30,
   "Ay0((((x)*((y)*(0)))=(y0))=>((P[(x)*((y)*(0))])=>(P[y0])))"
  ],
  [
@@ -241,7 +434,7 @@ window.proof_multiplication_associates = [
    "P",
    "(@)=((x)*((y)*(0)))"
   ],
-  42,
+  32,
   "(((x)*((y)*(0)))=(0))=>((((x)*((y)*(0)))=((x)*((y)*(0))))=>((0)=((x)*((y)*(0)))))"
  ],
  [
@@ -249,7 +442,7 @@ window.proof_multiplication_associates = [
   [
    31
   ],
-  43,
+  31,
   "(((x)*((y)*(0)))=(0))=>((P[(x)*((y)*(0))])=>(P[0]))"
  ],
  [
@@ -258,7 +451,7 @@ window.proof_multiplication_associates = [
    4,
    "(x)*((y)*(0))"
   ],
-  44,
+  33,
   "((x)*((y)*(0)))=((x)*((y)*(0)))"
  ],
  [
@@ -267,7 +460,7 @@ window.proof_multiplication_associates = [
    32,
    29
   ],
-  45,
+  34,
   "(((x)*((y)*(0)))=((x)*((y)*(0))))=>((0)=((x)*((y)*(0))))"
  ],
  [
@@ -276,7 +469,7 @@ window.proof_multiplication_associates = [
    34,
    33
   ],
-  46,
+  35,
   "(0)=((x)*((y)*(0)))"
  ],
  [
@@ -285,7 +478,7 @@ window.proof_multiplication_associates = [
    5,
    "0"
   ],
-  47,
+  36,
   "Ay(((0)=(y))=>((P[0])=>(P[y])))"
  ],
  [
@@ -294,7 +487,7 @@ window.proof_multiplication_associates = [
    36,
    "(x)*((y)*(0))"
   ],
-  48,
+  37,
   "((0)=((x)*((y)*(0))))=>((P[0])=>(P[(x)*((y)*(0))]))"
  ],
  [
@@ -302,7 +495,7 @@ window.proof_multiplication_associates = [
   [
    36
   ],
-  49,
+  36,
   "Ay(((0)=(y))=>((P[0])=>(P[y])))"
  ],
  [
@@ -312,7 +505,7 @@ window.proof_multiplication_associates = [
    "P",
    "(((x)*(y))*(0))=(@)"
   ],
-  50,
+  38,
   "((0)=((x)*((y)*(0))))=>(((((x)*(y))*(0))=(0))=>((((x)*(y))*(0))=((x)*((y)*(0)))))"
  ],
  [
@@ -320,7 +513,7 @@ window.proof_multiplication_associates = [
   [
    37
   ],
-  51,
+  37,
   "((0)=((x)*((y)*(0))))=>((P[0])=>(P[(x)*((y)*(0))]))"
  ],
  [
@@ -329,7 +522,7 @@ window.proof_multiplication_associates = [
    38,
    35
   ],
-  52,
+  39,
   "((((x)*(y))*(0))=(0))=>((((x)*(y))*(0))=((x)*((y)*(0))))"
  ],
  [
@@ -338,7 +531,7 @@ window.proof_multiplication_associates = [
    39,
    16
   ],
-  53,
+  40,
   "(((x)*(y))*(0))=((x)*((y)*(0)))"
  ],
  [
@@ -346,7 +539,7 @@ window.proof_multiplication_associates = [
   [
    32
   ],
-  54,
+  32,
   "(((x)*((y)*(0)))=(0))=>((((x)*((y)*(0)))=((x)*((y)*(0))))=>((0)=((x)*((y)*(0)))))"
  ],
  [
@@ -354,7 +547,7 @@ window.proof_multiplication_associates = [
   [
    33
   ],
-  55,
+  33,
   "((x)*((y)*(0)))=((x)*((y)*(0)))"
  ],
  [
@@ -362,7 +555,7 @@ window.proof_multiplication_associates = [
   [
    34
   ],
-  56,
+  34,
   "(((x)*((y)*(0)))=((x)*((y)*(0))))=>((0)=((x)*((y)*(0))))"
  ],
  [
@@ -370,7 +563,7 @@ window.proof_multiplication_associates = [
   [
    35
   ],
-  57,
+  35,
   "(0)=((x)*((y)*(0)))"
  ],
  [
@@ -378,7 +571,7 @@ window.proof_multiplication_associates = [
   [
    38
   ],
-  58,
+  38,
   "((0)=((x)*((y)*(0))))=>(((((x)*(y))*(0))=(0))=>((((x)*(y))*(0))=((x)*((y)*(0)))))"
  ],
  [
@@ -386,7 +579,7 @@ window.proof_multiplication_associates = [
   [
    39
   ],
-  59,
+  39,
   "((((x)*(y))*(0))=(0))=>((((x)*(y))*(0))=((x)*((y)*(0))))"
  ],
  [
@@ -394,7 +587,7 @@ window.proof_multiplication_associates = [
   [
    "(((x)*(y))*(z))=((x)*((y)*(z)))"
   ],
-  60,
+  41,
   "(((x)*(y))*(z))=((x)*((y)*(z)))"
  ],
  [
@@ -403,7 +596,7 @@ window.proof_multiplication_associates = [
    13,
    "(x)*(y)"
   ],
-  61,
+  42,
   "Ay0((((x)*(y))*(S(y0)))=((((x)*(y))*(y0))+((x)*(y))))"
  ],
  [
@@ -412,7 +605,7 @@ window.proof_multiplication_associates = [
    42,
    "z"
   ],
-  62,
+  43,
   "(((x)*(y))*(S(z)))=((((x)*(y))*(z))+((x)*(y)))"
  ],
  [
@@ -421,7 +614,7 @@ window.proof_multiplication_associates = [
    4,
    "(((x)*(y))*(z))+((x)*(y))"
   ],
-  63,
+  44,
   "((((x)*(y))*(z))+((x)*(y)))=((((x)*(y))*(z))+((x)*(y)))"
  ],
  [
@@ -430,7 +623,7 @@ window.proof_multiplication_associates = [
    5,
    "((x)*(y))*(z)"
   ],
-  64,
+  45,
   "Ay0(((((x)*(y))*(z))=(y0))=>((P[((x)*(y))*(z)])=>(P[y0])))"
  ],
  [
@@ -439,7 +632,7 @@ window.proof_multiplication_associates = [
    45,
    "(x)*((y)*(z))"
   ],
-  65,
+  46,
   "((((x)*(y))*(z))=((x)*((y)*(z))))=>((P[((x)*(y))*(z)])=>(P[(x)*((y)*(z))]))"
  ],
  [
@@ -447,7 +640,7 @@ window.proof_multiplication_associates = [
   [
    45
   ],
-  66,
+  45,
   "Ay0(((((x)*(y))*(z))=(y0))=>((P[((x)*(y))*(z)])=>(P[y0])))"
  ],
  [
@@ -457,7 +650,7 @@ window.proof_multiplication_associates = [
    "P",
    "((((x)*(y))*(z))+((x)*(y)))=((@)+((x)*(y)))"
   ],
-  67,
+  47,
   "((((x)*(y))*(z))=((x)*((y)*(z))))=>((((((x)*(y))*(z))+((x)*(y)))=((((x)*(y))*(z))+((x)*(y))))=>(((((x)*(y))*(z))+((x)*(y)))=(((x)*((y)*(z)))+((x)*(y)))))"
  ],
  [
@@ -465,7 +658,7 @@ window.proof_multiplication_associates = [
   [
    46
   ],
-  68,
+  46,
   "((((x)*(y))*(z))=((x)*((y)*(z))))=>((P[((x)*(y))*(z)])=>(P[(x)*((y)*(z))]))"
  ],
  [
@@ -474,7 +667,7 @@ window.proof_multiplication_associates = [
    47,
    41
   ],
-  69,
+  48,
   "(((((x)*(y))*(z))+((x)*(y)))=((((x)*(y))*(z))+((x)*(y))))=>(((((x)*(y))*(z))+((x)*(y)))=(((x)*((y)*(z)))+((x)*(y))))"
  ],
  [
@@ -483,7 +676,7 @@ window.proof_multiplication_associates = [
    48,
    44
   ],
-  70,
+  49,
   "((((x)*(y))*(z))+((x)*(y)))=(((x)*((y)*(z)))+((x)*(y)))"
  ],
  [
@@ -491,7 +684,7 @@ window.proof_multiplication_associates = [
   [
    44
   ],
-  71,
+  44,
   "((((x)*(y))*(z))+((x)*(y)))=((((x)*(y))*(z))+((x)*(y)))"
  ],
  [
@@ -499,7 +692,7 @@ window.proof_multiplication_associates = [
   [
    47
   ],
-  72,
+  47,
   "((((x)*(y))*(z))=((x)*((y)*(z))))=>((((((x)*(y))*(z))+((x)*(y)))=((((x)*(y))*(z))+((x)*(y))))=>(((((x)*(y))*(z))+((x)*(y)))=(((x)*((y)*(z)))+((x)*(y)))))"
  ],
  [
@@ -507,7 +700,7 @@ window.proof_multiplication_associates = [
   [
    48
   ],
-  73,
+  48,
   "(((((x)*(y))*(z))+((x)*(y)))=((((x)*(y))*(z))+((x)*(y))))=>(((((x)*(y))*(z))+((x)*(y)))=(((x)*((y)*(z)))+((x)*(y))))"
  ],
  [
@@ -516,7 +709,7 @@ window.proof_multiplication_associates = [
    15,
    "x"
   ],
-  74,
+  50,
   "Aa(Ab(((x)*((a)+(b)))=(((x)*(a))+((x)*(b)))))"
  ],
  [
@@ -525,7 +718,7 @@ window.proof_multiplication_associates = [
    50,
    "(y)*(z)"
   ],
-  75,
+  51,
   "Ab(((x)*(((y)*(z))+(b)))=(((x)*((y)*(z)))+((x)*(b))))"
  ],
  [
@@ -534,7 +727,7 @@ window.proof_multiplication_associates = [
    51,
    "y"
   ],
-  76,
+  52,
   "((x)*(((y)*(z))+(y)))=(((x)*((y)*(z)))+((x)*(y)))"
  ],
  [
@@ -543,7 +736,7 @@ window.proof_multiplication_associates = [
    5,
    "(((x)*(y))*(z))+((x)*(y))"
   ],
-  77,
+  53,
   "Ay0((((((x)*(y))*(z))+((x)*(y)))=(y0))=>((P[(((x)*(y))*(z))+((x)*(y))])=>(P[y0])))"
  ],
  [
@@ -552,7 +745,7 @@ window.proof_multiplication_associates = [
    53,
    "((x)*((y)*(z)))+((x)*(y))"
   ],
-  78,
+  54,
   "(((((x)*(y))*(z))+((x)*(y)))=(((x)*((y)*(z)))+((x)*(y))))=>((P[(((x)*(y))*(z))+((x)*(y))])=>(P[((x)*((y)*(z)))+((x)*(y))]))"
  ],
  [
@@ -560,7 +753,7 @@ window.proof_multiplication_associates = [
   [
    53
   ],
-  79,
+  53,
   "Ay0((((((x)*(y))*(z))+((x)*(y)))=(y0))=>((P[(((x)*(y))*(z))+((x)*(y))])=>(P[y0])))"
  ],
  [
@@ -570,7 +763,7 @@ window.proof_multiplication_associates = [
    "P",
    "(((x)*(y))*(S(z)))=(@)"
   ],
-  80,
+  55,
   "(((((x)*(y))*(z))+((x)*(y)))=(((x)*((y)*(z)))+((x)*(y))))=>(((((x)*(y))*(S(z)))=((((x)*(y))*(z))+((x)*(y))))=>((((x)*(y))*(S(z)))=(((x)*((y)*(z)))+((x)*(y)))))"
  ],
  [
@@ -578,7 +771,7 @@ window.proof_multiplication_associates = [
   [
    54
   ],
-  81,
+  54,
   "(((((x)*(y))*(z))+((x)*(y)))=(((x)*((y)*(z)))+((x)*(y))))=>((P[(((x)*(y))*(z))+((x)*(y))])=>(P[((x)*((y)*(z)))+((x)*(y))]))"
  ],
  [
@@ -587,7 +780,7 @@ window.proof_multiplication_associates = [
    55,
    49
   ],
-  82,
+  56,
   "((((x)*(y))*(S(z)))=((((x)*(y))*(z))+((x)*(y))))=>((((x)*(y))*(S(z)))=(((x)*((y)*(z)))+((x)*(y))))"
  ],
  [
@@ -596,7 +789,7 @@ window.proof_multiplication_associates = [
    56,
    43
   ],
-  83,
+  57,
   "(((x)*(y))*(S(z)))=(((x)*((y)*(z)))+((x)*(y)))"
  ],
  [
@@ -604,7 +797,7 @@ window.proof_multiplication_associates = [
   [
    56
   ],
-  84,
+  56,
   "((((x)*(y))*(S(z)))=((((x)*(y))*(z))+((x)*(y))))=>((((x)*(y))*(S(z)))=(((x)*((y)*(z)))+((x)*(y))))"
  ],
  [
@@ -612,7 +805,7 @@ window.proof_multiplication_associates = [
   [
    55
   ],
-  85,
+  55,
   "(((((x)*(y))*(z))+((x)*(y)))=(((x)*((y)*(z)))+((x)*(y))))=>(((((x)*(y))*(S(z)))=((((x)*(y))*(z))+((x)*(y))))=>((((x)*(y))*(S(z)))=(((x)*((y)*(z)))+((x)*(y)))))"
  ],
  [
@@ -621,7 +814,7 @@ window.proof_multiplication_associates = [
    5,
    "(x)*(((y)*(z))+(y))"
   ],
-  86,
+  58,
   "Ay0((((x)*(((y)*(z))+(y)))=(y0))=>((P[(x)*(((y)*(z))+(y))])=>(P[y0])))"
  ],
  [
@@ -630,7 +823,7 @@ window.proof_multiplication_associates = [
    58,
    "((x)*((y)*(z)))+((x)*(y))"
   ],
-  87,
+  59,
   "(((x)*(((y)*(z))+(y)))=(((x)*((y)*(z)))+((x)*(y))))=>((P[(x)*(((y)*(z))+(y))])=>(P[((x)*((y)*(z)))+((x)*(y))]))"
  ],
  [
@@ -638,7 +831,7 @@ window.proof_multiplication_associates = [
   [
    58
   ],
-  88,
+  58,
   "Ay0((((x)*(((y)*(z))+(y)))=(y0))=>((P[(x)*(((y)*(z))+(y))])=>(P[y0])))"
  ],
  [
@@ -648,7 +841,7 @@ window.proof_multiplication_associates = [
    "P",
    "(@)=((x)*(((y)*(z))+(y)))"
   ],
-  89,
+  60,
   "(((x)*(((y)*(z))+(y)))=(((x)*((y)*(z)))+((x)*(y))))=>((((x)*(((y)*(z))+(y)))=((x)*(((y)*(z))+(y))))=>((((x)*((y)*(z)))+((x)*(y)))=((x)*(((y)*(z))+(y)))))"
  ],
  [
@@ -656,7 +849,7 @@ window.proof_multiplication_associates = [
   [
    59
   ],
-  90,
+  59,
   "(((x)*(((y)*(z))+(y)))=(((x)*((y)*(z)))+((x)*(y))))=>((P[(x)*(((y)*(z))+(y))])=>(P[((x)*((y)*(z)))+((x)*(y))]))"
  ],
  [
@@ -665,7 +858,7 @@ window.proof_multiplication_associates = [
    4,
    "(x)*(((y)*(z))+(y))"
   ],
-  91,
+  61,
   "((x)*(((y)*(z))+(y)))=((x)*(((y)*(z))+(y)))"
  ],
  [
@@ -674,7 +867,7 @@ window.proof_multiplication_associates = [
    60,
    52
   ],
-  92,
+  62,
   "(((x)*(((y)*(z))+(y)))=((x)*(((y)*(z))+(y))))=>((((x)*((y)*(z)))+((x)*(y)))=((x)*(((y)*(z))+(y))))"
  ],
  [
@@ -683,7 +876,7 @@ window.proof_multiplication_associates = [
    62,
    61
   ],
-  93,
+  63,
   "(((x)*((y)*(z)))+((x)*(y)))=((x)*(((y)*(z))+(y)))"
  ],
  [
@@ -692,7 +885,7 @@ window.proof_multiplication_associates = [
    5,
    "((x)*((y)*(z)))+((x)*(y))"
   ],
-  94,
+  64,
   "Ay0(((((x)*((y)*(z)))+((x)*(y)))=(y0))=>((P[((x)*((y)*(z)))+((x)*(y))])=>(P[y0])))"
  ],
  [
@@ -701,7 +894,7 @@ window.proof_multiplication_associates = [
    64,
    "(x)*(((y)*(z))+(y))"
   ],
-  95,
+  65,
   "((((x)*((y)*(z)))+((x)*(y)))=((x)*(((y)*(z))+(y))))=>((P[((x)*((y)*(z)))+((x)*(y))])=>(P[(x)*(((y)*(z))+(y))]))"
  ],
  [
@@ -709,7 +902,7 @@ window.proof_multiplication_associates = [
   [
    64
   ],
-  96,
+  64,
   "Ay0(((((x)*((y)*(z)))+((x)*(y)))=(y0))=>((P[((x)*((y)*(z)))+((x)*(y))])=>(P[y0])))"
  ],
  [
@@ -719,7 +912,7 @@ window.proof_multiplication_associates = [
    "P",
    "(((x)*(y))*(S(z)))=(@)"
   ],
-  97,
+  66,
   "((((x)*((y)*(z)))+((x)*(y)))=((x)*(((y)*(z))+(y))))=>(((((x)*(y))*(S(z)))=(((x)*((y)*(z)))+((x)*(y))))=>((((x)*(y))*(S(z)))=((x)*(((y)*(z))+(y)))))"
  ],
  [
@@ -727,7 +920,7 @@ window.proof_multiplication_associates = [
   [
    65
   ],
-  98,
+  65,
   "((((x)*((y)*(z)))+((x)*(y)))=((x)*(((y)*(z))+(y))))=>((P[((x)*((y)*(z)))+((x)*(y))])=>(P[(x)*(((y)*(z))+(y))]))"
  ],
  [
@@ -736,7 +929,7 @@ window.proof_multiplication_associates = [
    66,
    63
   ],
-  99,
+  67,
   "((((x)*(y))*(S(z)))=(((x)*((y)*(z)))+((x)*(y))))=>((((x)*(y))*(S(z)))=((x)*(((y)*(z))+(y))))"
  ],
  [
@@ -745,7 +938,7 @@ window.proof_multiplication_associates = [
    67,
    57
   ],
-  100,
+  68,
   "(((x)*(y))*(S(z)))=((x)*(((y)*(z))+(y)))"
  ],
  [
@@ -753,7 +946,7 @@ window.proof_multiplication_associates = [
   [
    60
   ],
-  101,
+  60,
   "(((x)*(((y)*(z))+(y)))=(((x)*((y)*(z)))+((x)*(y))))=>((((x)*(((y)*(z))+(y)))=((x)*(((y)*(z))+(y))))=>((((x)*((y)*(z)))+((x)*(y)))=((x)*(((y)*(z))+(y)))))"
  ],
  [
@@ -761,7 +954,7 @@ window.proof_multiplication_associates = [
   [
    61
   ],
-  102,
+  61,
   "((x)*(((y)*(z))+(y)))=((x)*(((y)*(z))+(y)))"
  ],
  [
@@ -769,7 +962,7 @@ window.proof_multiplication_associates = [
   [
    62
   ],
-  103,
+  62,
   "(((x)*(((y)*(z))+(y)))=((x)*(((y)*(z))+(y))))=>((((x)*((y)*(z)))+((x)*(y)))=((x)*(((y)*(z))+(y))))"
  ],
  [
@@ -777,7 +970,7 @@ window.proof_multiplication_associates = [
   [
    63
   ],
-  104,
+  63,
   "(((x)*((y)*(z)))+((x)*(y)))=((x)*(((y)*(z))+(y)))"
  ],
  [
@@ -785,7 +978,7 @@ window.proof_multiplication_associates = [
   [
    66
   ],
-  105,
+  66,
   "((((x)*((y)*(z)))+((x)*(y)))=((x)*(((y)*(z))+(y))))=>(((((x)*(y))*(S(z)))=(((x)*((y)*(z)))+((x)*(y))))=>((((x)*(y))*(S(z)))=((x)*(((y)*(z))+(y)))))"
  ],
  [
@@ -793,7 +986,7 @@ window.proof_multiplication_associates = [
   [
    67
   ],
-  106,
+  67,
   "((((x)*(y))*(S(z)))=(((x)*((y)*(z)))+((x)*(y))))=>((((x)*(y))*(S(z)))=((x)*(((y)*(z))+(y))))"
  ],
  [
@@ -802,7 +995,7 @@ window.proof_multiplication_associates = [
    13,
    "y"
   ],
-  107,
+  69,
   "Ay0(((y)*(S(y0)))=(((y)*(y0))+(y)))"
  ],
  [
@@ -811,7 +1004,7 @@ window.proof_multiplication_associates = [
    69,
    "z"
   ],
-  108,
+  70,
   "((y)*(S(z)))=(((y)*(z))+(y))"
  ],
  [
@@ -820,7 +1013,7 @@ window.proof_multiplication_associates = [
    4,
    "(x)*((y)*(S(z)))"
   ],
-  109,
+  71,
   "((x)*((y)*(S(z))))=((x)*((y)*(S(z))))"
  ],
  [
@@ -829,7 +1022,7 @@ window.proof_multiplication_associates = [
    5,
    "(y)*(S(z))"
   ],
-  110,
+  72,
   "Ay0((((y)*(S(z)))=(y0))=>((P[(y)*(S(z))])=>(P[y0])))"
  ],
  [
@@ -838,7 +1031,7 @@ window.proof_multiplication_associates = [
    72,
    "((y)*(z))+(y)"
   ],
-  111,
+  73,
   "(((y)*(S(z)))=(((y)*(z))+(y)))=>((P[(y)*(S(z))])=>(P[((y)*(z))+(y)]))"
  ],
  [
@@ -846,7 +1039,7 @@ window.proof_multiplication_associates = [
   [
    72
   ],
-  112,
+  72,
   "Ay0((((y)*(S(z)))=(y0))=>((P[(y)*(S(z))])=>(P[y0])))"
  ],
  [
@@ -856,7 +1049,7 @@ window.proof_multiplication_associates = [
    "P",
    "((x)*((y)*(S(z))))=((x)*(@))"
   ],
-  113,
+  74,
   "(((y)*(S(z)))=(((y)*(z))+(y)))=>((((x)*((y)*(S(z))))=((x)*((y)*(S(z)))))=>(((x)*((y)*(S(z))))=((x)*(((y)*(z))+(y)))))"
  ],
  [
@@ -864,7 +1057,7 @@ window.proof_multiplication_associates = [
   [
    73
   ],
-  114,
+  73,
   "(((y)*(S(z)))=(((y)*(z))+(y)))=>((P[(y)*(S(z))])=>(P[((y)*(z))+(y)]))"
  ],
  [
@@ -873,7 +1066,7 @@ window.proof_multiplication_associates = [
    74,
    70
   ],
-  115,
+  75,
   "(((x)*((y)*(S(z))))=((x)*((y)*(S(z)))))=>(((x)*((y)*(S(z))))=((x)*(((y)*(z))+(y))))"
  ],
  [
@@ -882,7 +1075,7 @@ window.proof_multiplication_associates = [
    75,
    71
   ],
-  116,
+  76,
   "((x)*((y)*(S(z))))=((x)*(((y)*(z))+(y)))"
  ],
  [
@@ -890,7 +1083,7 @@ window.proof_multiplication_associates = [
   [
    71
   ],
-  117,
+  71,
   "((x)*((y)*(S(z))))=((x)*((y)*(S(z))))"
  ],
  [
@@ -898,7 +1091,7 @@ window.proof_multiplication_associates = [
   [
    74
   ],
-  118,
+  74,
   "(((y)*(S(z)))=(((y)*(z))+(y)))=>((((x)*((y)*(S(z))))=((x)*((y)*(S(z)))))=>(((x)*((y)*(S(z))))=((x)*(((y)*(z))+(y)))))"
  ],
  [
@@ -906,7 +1099,7 @@ window.proof_multiplication_associates = [
   [
    75
   ],
-  119,
+  75,
   "(((x)*((y)*(S(z))))=((x)*((y)*(S(z)))))=>(((x)*((y)*(S(z))))=((x)*(((y)*(z))+(y))))"
  ],
  [
@@ -915,7 +1108,7 @@ window.proof_multiplication_associates = [
    5,
    "(x)*((y)*(S(z)))"
   ],
-  120,
+  77,
   "Ay0((((x)*((y)*(S(z))))=(y0))=>((P[(x)*((y)*(S(z)))])=>(P[y0])))"
  ],
  [
@@ -924,7 +1117,7 @@ window.proof_multiplication_associates = [
    77,
    "(x)*(((y)*(z))+(y))"
   ],
-  121,
+  78,
   "(((x)*((y)*(S(z))))=((x)*(((y)*(z))+(y))))=>((P[(x)*((y)*(S(z)))])=>(P[(x)*(((y)*(z))+(y))]))"
  ],
  [
@@ -932,7 +1125,7 @@ window.proof_multiplication_associates = [
   [
    77
   ],
-  122,
+  77,
   "Ay0((((x)*((y)*(S(z))))=(y0))=>((P[(x)*((y)*(S(z)))])=>(P[y0])))"
  ],
  [
@@ -942,7 +1135,7 @@ window.proof_multiplication_associates = [
    "P",
    "(@)=((x)*((y)*(S(z))))"
   ],
-  123,
+  79,
   "(((x)*((y)*(S(z))))=((x)*(((y)*(z))+(y))))=>((((x)*((y)*(S(z))))=((x)*((y)*(S(z)))))=>(((x)*(((y)*(z))+(y)))=((x)*((y)*(S(z))))))"
  ],
  [
@@ -950,7 +1143,7 @@ window.proof_multiplication_associates = [
   [
    78
   ],
-  124,
+  78,
   "(((x)*((y)*(S(z))))=((x)*(((y)*(z))+(y))))=>((P[(x)*((y)*(S(z)))])=>(P[(x)*(((y)*(z))+(y))]))"
  ],
  [
@@ -959,7 +1152,7 @@ window.proof_multiplication_associates = [
    4,
    "(x)*((y)*(S(z)))"
   ],
-  125,
+  80,
   "((x)*((y)*(S(z))))=((x)*((y)*(S(z))))"
  ],
  [
@@ -968,7 +1161,7 @@ window.proof_multiplication_associates = [
    79,
    76
   ],
-  126,
+  81,
   "(((x)*((y)*(S(z))))=((x)*((y)*(S(z)))))=>(((x)*(((y)*(z))+(y)))=((x)*((y)*(S(z)))))"
  ],
  [
@@ -977,7 +1170,7 @@ window.proof_multiplication_associates = [
    81,
    80
   ],
-  127,
+  82,
   "((x)*(((y)*(z))+(y)))=((x)*((y)*(S(z))))"
  ],
  [
@@ -986,7 +1179,7 @@ window.proof_multiplication_associates = [
    5,
    "(x)*(((y)*(z))+(y))"
   ],
-  128,
+  83,
   "Ay0((((x)*(((y)*(z))+(y)))=(y0))=>((P[(x)*(((y)*(z))+(y))])=>(P[y0])))"
  ],
  [
@@ -995,7 +1188,7 @@ window.proof_multiplication_associates = [
    83,
    "(x)*((y)*(S(z)))"
   ],
-  129,
+  84,
   "(((x)*(((y)*(z))+(y)))=((x)*((y)*(S(z)))))=>((P[(x)*(((y)*(z))+(y))])=>(P[(x)*((y)*(S(z)))]))"
  ],
  [
@@ -1003,7 +1196,7 @@ window.proof_multiplication_associates = [
   [
    83
   ],
-  130,
+  83,
   "Ay0((((x)*(((y)*(z))+(y)))=(y0))=>((P[(x)*(((y)*(z))+(y))])=>(P[y0])))"
  ],
  [
@@ -1013,7 +1206,7 @@ window.proof_multiplication_associates = [
    "P",
    "(((x)*(y))*(S(z)))=(@)"
   ],
-  131,
+  85,
   "(((x)*(((y)*(z))+(y)))=((x)*((y)*(S(z)))))=>(((((x)*(y))*(S(z)))=((x)*(((y)*(z))+(y))))=>((((x)*(y))*(S(z)))=((x)*((y)*(S(z))))))"
  ],
  [
@@ -1021,7 +1214,7 @@ window.proof_multiplication_associates = [
   [
    84
   ],
-  132,
+  84,
   "(((x)*(((y)*(z))+(y)))=((x)*((y)*(S(z)))))=>((P[(x)*(((y)*(z))+(y))])=>(P[(x)*((y)*(S(z)))]))"
  ],
  [
@@ -1030,7 +1223,7 @@ window.proof_multiplication_associates = [
    85,
    82
   ],
-  133,
+  86,
   "((((x)*(y))*(S(z)))=((x)*(((y)*(z))+(y))))=>((((x)*(y))*(S(z)))=((x)*((y)*(S(z)))))"
  ],
  [
@@ -1039,7 +1232,7 @@ window.proof_multiplication_associates = [
    86,
    68
   ],
-  134,
+  87,
   "(((x)*(y))*(S(z)))=((x)*((y)*(S(z))))"
  ],
  [
@@ -1047,7 +1240,7 @@ window.proof_multiplication_associates = [
   [
    79
   ],
-  135,
+  79,
   "(((x)*((y)*(S(z))))=((x)*(((y)*(z))+(y))))=>((((x)*((y)*(S(z))))=((x)*((y)*(S(z)))))=>(((x)*(((y)*(z))+(y)))=((x)*((y)*(S(z))))))"
  ],
  [
@@ -1055,7 +1248,7 @@ window.proof_multiplication_associates = [
   [
    80
   ],
-  136,
+  80,
   "((x)*((y)*(S(z))))=((x)*((y)*(S(z))))"
  ],
  [
@@ -1063,7 +1256,7 @@ window.proof_multiplication_associates = [
   [
    81
   ],
-  137,
+  81,
   "(((x)*((y)*(S(z))))=((x)*((y)*(S(z)))))=>(((x)*(((y)*(z))+(y)))=((x)*((y)*(S(z)))))"
  ],
  [
@@ -1071,7 +1264,7 @@ window.proof_multiplication_associates = [
   [
    82
   ],
-  138,
+  82,
   "((x)*(((y)*(z))+(y)))=((x)*((y)*(S(z))))"
  ],
  [
@@ -1079,7 +1272,7 @@ window.proof_multiplication_associates = [
   [
    85
   ],
-  139,
+  85,
   "(((x)*(((y)*(z))+(y)))=((x)*((y)*(S(z)))))=>(((((x)*(y))*(S(z)))=((x)*(((y)*(z))+(y))))=>((((x)*(y))*(S(z)))=((x)*((y)*(S(z))))))"
  ],
  [
@@ -1087,7 +1280,7 @@ window.proof_multiplication_associates = [
   [
    86
   ],
-  140,
+  86,
   "((((x)*(y))*(S(z)))=((x)*(((y)*(z))+(y))))=>((((x)*(y))*(S(z)))=((x)*((y)*(S(z)))))"
  ],
  [
@@ -1096,7 +1289,7 @@ window.proof_multiplication_associates = [
    41,
    87
   ],
-  141,
+  88,
   "((((x)*(y))*(z))=((x)*((y)*(z))))=>((((x)*(y))*(S(z)))=((x)*((y)*(S(z)))))"
  ],
  [
@@ -1105,7 +1298,7 @@ window.proof_multiplication_associates = [
    88,
    "x"
   ],
-  142,
+  89,
   "Ax(((((x)*(y))*(z))=((x)*((y)*(z))))=>((((x)*(y))*(S(z)))=((x)*((y)*(S(z))))))"
  ],
  [
@@ -1114,7 +1307,7 @@ window.proof_multiplication_associates = [
    89,
    "t"
   ],
-  143,
+  90,
   "((((t)*(y))*(z))=((t)*((y)*(z))))=>((((t)*(y))*(S(z)))=((t)*((y)*(S(z)))))"
  ],
  [
@@ -1123,7 +1316,7 @@ window.proof_multiplication_associates = [
    90,
    "z"
   ],
-  144,
+  91,
   "Az(((((t)*(y))*(z))=((t)*((y)*(z))))=>((((t)*(y))*(S(z)))=((t)*((y)*(S(z))))))"
  ],
  [
@@ -1132,7 +1325,7 @@ window.proof_multiplication_associates = [
    91,
    "x"
   ],
-  145,
+  92,
   "((((t)*(y))*(x))=((t)*((y)*(x))))=>((((t)*(y))*(S(x)))=((t)*((y)*(S(x)))))"
  ],
  [
@@ -1141,7 +1334,7 @@ window.proof_multiplication_associates = [
    92,
    "x"
   ],
-  146,
+  93,
   "Ax(((((t)*(y))*(x))=((t)*((y)*(x))))=>((((t)*(y))*(S(x)))=((t)*((y)*(S(x))))))"
  ],
  [
@@ -1150,7 +1343,7 @@ window.proof_multiplication_associates = [
    40,
    "x"
   ],
-  147,
+  94,
   "Ax((((x)*(y))*(0))=((x)*((y)*(0))))"
  ],
  [
@@ -1159,7 +1352,7 @@ window.proof_multiplication_associates = [
    94,
    "t"
   ],
-  148,
+  95,
   "(((t)*(y))*(0))=((t)*((y)*(0)))"
  ],
  [
@@ -1169,7 +1362,7 @@ window.proof_multiplication_associates = [
    "P",
    "(((t)*(y))*(@))=((t)*((y)*(@)))"
   ],
-  149,
+  96,
   "((((t)*(y))*(0))=((t)*((y)*(0))))=>((Ax(((((t)*(y))*(x))=((t)*((y)*(x))))=>((((t)*(y))*(S(x)))=((t)*((y)*(S(x)))))))=>(Ax((((t)*(y))*(x))=((t)*((y)*(x))))))"
  ],
  [
@@ -1178,7 +1371,7 @@ window.proof_multiplication_associates = [
    96,
    95
   ],
-  150,
+  97,
   "(Ax(((((t)*(y))*(x))=((t)*((y)*(x))))=>((((t)*(y))*(S(x)))=((t)*((y)*(S(x)))))))=>(Ax((((t)*(y))*(x))=((t)*((y)*(x)))))"
  ],
  [
@@ -1187,7 +1380,7 @@ window.proof_multiplication_associates = [
    97,
    93
   ],
-  151,
+  98,
   "Ax((((t)*(y))*(x))=((t)*((y)*(x))))"
  ],
  [
@@ -1196,7 +1389,7 @@ window.proof_multiplication_associates = [
    98,
    "z"
   ],
-  152,
+  99,
   "(((t)*(y))*(z))=((t)*((y)*(z)))"
  ],
  [
@@ -1205,7 +1398,7 @@ window.proof_multiplication_associates = [
    99,
    "z"
   ],
-  153,
+  100,
   "Az((((t)*(y))*(z))=((t)*((y)*(z))))"
  ],
  [
@@ -1214,7 +1407,7 @@ window.proof_multiplication_associates = [
    100,
    "y"
   ],
-  154,
+  101,
   "Ay(Az((((t)*(y))*(z))=((t)*((y)*(z)))))"
  ],
  [
@@ -1223,7 +1416,7 @@ window.proof_multiplication_associates = [
    101,
    "t"
   ],
-  155,
+  102,
   "At(Ay(Az((((t)*(y))*(z))=((t)*((y)*(z))))))"
  ],
  [
@@ -1232,7 +1425,7 @@ window.proof_multiplication_associates = [
    102,
    "x"
   ],
-  156,
+  103,
   "Ay(Az((((x)*(y))*(z))=((x)*((y)*(z)))))"
  ],
  [
@@ -1241,7 +1434,24 @@ window.proof_multiplication_associates = [
    103,
    "x"
   ],
-  157,
+  104,
+  "Ax(Ay(Az((((x)*(y))*(z))=((x)*((y)*(z))))))"
+ ],
+ [
+  "Highlight",
+  [
+   104
+  ],
+  104,
+  "Ax(Ay(Az((((x)*(y))*(z))=((x)*((y)*(z))))))"
+ ],
+ [
+  "SetComment",
+  [
+   104,
+   "multiplication_associates"
+  ],
+  104,
   "Ax(Ay(Az((((x)*(y))*(z))=((x)*((y)*(z))))))"
  ]
 ];
