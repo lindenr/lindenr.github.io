@@ -35,11 +35,10 @@ tr:hover {
 #errorLogging { background-color:#ffaaaa; }
 .header {
 border-radius: 10px;
-    background-color: #fe4;
+    background-color: #fe8;
     padding: 20px;
     overflow: hidden;
     margin-bottom: 10px;
-    /*box-shadow: 0px 20px 10px -10px #fe4;*/
 }
 #bodyDisable{
     display:none;
@@ -79,15 +78,17 @@ border-radius: 10px;
 <div id="bodyDisable" onclick="hideMessage()"></div>
 <div id="popup"><div class="header" style="padding-left:10px;font-weight:bold" id="popup-header">&#x1F3B9;&nbsp;&nbsp;How it works</div><p id="popup-body">HELLO</p></div>
 <div class="header">
-<h2>&#x1F3B9; Peano arithmetic</h2>
+<h2><a href="/">&#x1F333; Home</a> | &#x1F3B9; Peano arithmetic</h2>
 <button onclick="showExplanation()">HOW TO USE</button>
 <button onclick="completeReset()">COMPLETE RESET</button>
 <button onclick="doFilterHistory()">FILTER TO HIGHLIGHTED</button>
 <button onclick="importFile()">IMPORT</button>
+<button onclick="importFile(undefined, undefined, true)">IMPORT QUIET</button>
 <button onclick="inspectFile()">OPEN</button>
 <!--<button onclick="addRelation()">ADD A2 RELATION</button>
 <button onclick="addConnective()">ADD A2 CONNECTIVE</button>-->
 <button onclick="saveModule()">SAVE</button>
+<button onclick="undoAndRefresh()">UNDO</button>
 <button onclick="showExtraFeatures()">ADVANCED FEATURES</button>
 <button onclick="showExample1()">EXAMPLE 1</button>
 <button onclick="showExample2()">EXAMPLE 2</button>

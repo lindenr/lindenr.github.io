@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+ <head>
+  <meta charset="utf-8" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2280%22>&#x1F333;</text></svg>">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Villagers: Economy simulator</title>
+  <link href="/style.css" rel="stylesheet" />
+ </head>
+ <body style="display:flex;flex-direction:row;height:100%">
+  <div style="width: 45%; height: 100%">
+   <div class="sidebar">
+    <img src="/img/scenery.jpeg" style="width: 100%"/>
+    <br>
+    <br>
+    <h2 style="text-align: center">Linden's website</h2>
+    <a href="/"><div class="mainLink">&#x1F333; Home</div></a>
+    <a href="/posts.html"><div class="mainLink">&#x1F4DC; Posts</div></a>
+    <a href="/now.html"><div class="mainLink">&#x231A; Now</div></a>
+    <hr>
+    <h3>Current projects</h3>
+      <a href="/papa.html">&#x1F3B9; PAPA</a>: Peano Arithmetic Proof Assistant<br><br>
+      <a href="/villagers.html">&#x1F3E1; Villagers</a>: Economy simulator<br><br>
+      <a href="/pinephone.html">&#x1F4F1; Pinephone</a>: My attempts to use an open-source phone<br><br>
+      <a href="/hiss.html">&#x1F40D; Hiss</a>: Lispy language that targets C<br><br>
+    <hr>
+    <h3>Tags</h3>
+      <a href="/tag-papa.html">papa</a> | <a href="/tag-maths.html">maths</a> | <a href="/tag-chinese.html">chinese</a> | <a href="/tag-hiss.html">hiss</a> | <a href="/tag-pinephone.html">pinephone</a> | <a href="/tag-running.html">running</a> | <a href="/tag-villagers.html">villagers</a>
+    <br><br>
+    <hr>
+    <h3>About me</h3>
+    <p>I like music, maths, programming, NetHack, whisky, badminton, traveling, simulations, Operation Mincemeat (the musical), climbing, ice skating, beer, learning Chinese, coffee, propellers, stories, old buildings, snowboarding, saunas, tennis, Tom Lehrer, cats, Signal, and go.</p>
+    <p>I'm based in London. If you want to chat about anything on this site I'd be happy to buy you a coffee. I'm on Signal at <code>@dax.60</code> or you can <a href="https://github.com/lindenr/lindenr.github.io/issues">open an issue on github</a>.</p>
+    <p style="font-size: 14pt;">This site is artisanal, 100&percnt; made by hand (really! I just love emojis)</p>
+   </div>
+  </div>
+  <div class="content">
+<link rel="stylesheet"
+  href="/katex.min.css"
+  integrity="sha384-R4558gYOUz8mP9YWpZJjofhk+zx0AS11p36HnD2ZKj/6JR5z27gSSULCNHIRReVs"
+  crossorigin="anonymous" />
+
+<style type="text/css">
+    .katex img {
+      object-fit: fill;
+      padding: unset;
+      display: block;
+      position: absolute;
+      width: 100%;
+      height: inherit;
+    }
+</style>
+<h1 id="villagers-economy-simulator">Villagers: Economy simulator</h1>
+<p>[Note: below is a guideline for something I'm thinking about doing. Most of it is not implemented yet.]</p>
+<p>[Another note: this project has nothing to do with LLMs or "modern" AI.]</p>
+<h2 id="intro">Intro</h2>
+<p>One thing that has always bugged me about fantasy map generators is that they don't make sense. The target of this project is to create an environment that has agents that are "living" enough to make their own roads, houses, well, etc; to farm their own land; and to generally change their environment to suit them better, according to some reasonable desires.</p>
+<p>This requires multiple agents working in concert, but also necessarily making choices justified by their own desires. The only way I can think of to implement this is to have agents interacting through a shared economy, and picking tasks to do at each moment that are maximally rewarded by current commodity prices.</p>
+<p>The central efficiency gain the commodity trading provides over each agent acting completely individually is the economy of scale. If each agent would like to eat an onion and sleep under a roof, it is better to split into "onion-gatherers" and "roof-builders", and have the two groups trade with each other, rather than every agent performing both gathering and roof-building. The idea behind this is that doing anything more than once is less costly (in terms of time and effort) than doing it once, per unit produced.</p>
+<p>Instead of bartering between commodities directly, there are auctions for commodity futures, and the prices set by these auctions dictate whether an agent will choose to fulfil an onion-gathering order (thereby lowering the price of onions) or something else.</p>
+<p>Onions are the canonical food source because onion futures trading is <a href="https://en.wikipedia.org/wiki/Onion_Futures_Act">funny</a>.</p>
+<p>The current plan is split into several moving parts.</p>
+<h3 id="world-simulation">World simulation</h3>
+<p>There has to be a world in which the agents can act. It has to at least in theory be possible for agents to separate out tasks for efficiency gains.</p>
+<p>I'm working on a <a href="/hiss.html">hiss</a> version of this now.</p>
+<h3 id="planning">Planning</h3>
+<p>The easy version of this is: given fixed prices <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>p</mi><mtext>commodity</mtext></msub></mrow><annotation encoding="application/x-tex">p_{\text{commodity}}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.7167em;vertical-align:-0.2861em;"></span><span class="mord"><span class="mord mathnormal">p</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord text mtight"><span class="mord mtight">commodity</span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2861em;"><span></span></span></span></span></span></span></span></span></span> for every commodity (or even for every commodity future for every future delivery date), what is the optimal thing for the agent to do? In the onion gathering case above, the agent has to at least be able to pick some number of onions to gather, which may be <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>0</mn></mrow><annotation encoding="application/x-tex">0</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">0</span></span></span></span>. The cost of gathering <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>N</mi></mrow><annotation encoding="application/x-tex">N</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord mathnormal" style="margin-right:0.10903em;">N</span></span></span></span> onions is sublinear (this is the central assumption that allows efficiency gains); but there may not be any <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>N</mi></mrow><annotation encoding="application/x-tex">N</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord mathnormal" style="margin-right:0.10903em;">N</span></span></span></span> for which the total gathering cost is less than <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>N</mi><msub><mi>p</mi><mtext>onion</mtext></msub></mrow><annotation encoding="application/x-tex">Np_{\text{onion}}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8778em;vertical-align:-0.1944em;"></span><span class="mord mathnormal" style="margin-right:0.10903em;">N</span><span class="mord"><span class="mord mathnormal">p</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3175em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord text mtight"><span class="mord mtight">onion</span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span>.</p>
+<p>This is a discrete optimisation problem, and is therefore "hard". It is an open question whether we can find some reasonable heuristics for it.</p>
+<h3 id="trading">Trading</h3>
+<p>Once the agent has decided on a plan, it can submit orders as needed to fulfil the plan. The less trivial part of this is that the agent should also put in orders for unfulfilled plans, to show interest at some price. Initially all order books are empty, so the agent will plan to gather onions themselves; but they will also put in a buy and sell order, at prices at which they would be willing to make that trade instead of their current plan.</p>
+<p>This is slightly finnicky and has lots of edge cases, but I have a python implementation of this.</p>
+<hr>
+<div class="footer">
+<div class="postTags"><h3>See other posts tagged with:</h3>
+<a href="/tag-villagers.html">villagers</a>
+</div><br>
+<p>Last updated June 2026</p>
+</div>
+  </div>
+ </body>
+</html>

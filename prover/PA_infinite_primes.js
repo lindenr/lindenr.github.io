@@ -1,4 +1,4 @@
-window.exportStatements_infinite_primes = new Map([["An(Ep(('prime[p])&&((n)<=(p))))","infinitely many primes"]]);
+window.exportStatements_infinite_primes = new Map([["'inf['prime;]","infinitely many primes"]]);
 
 window.requiredModules_infinite_primes = ["addition","and_introduction","leq","div","lt","primes","lcm_multi"];
 
@@ -238,6 +238,61 @@ window.proof_infinite_primes = [
    "'func2",
    "(Ax1(Ax2(Ey(P1[x1,x2,y]))))&&(Ax1(Ax2(Ay1(Ay2((P1[x1,x2,y1])=>((P1[x1,x2,y2])=>((y1)=(y2))))))))",
    1
+  ],
+  -1,
+  ""
+ ],
+ [
+  "AddRelation",
+  [
+   2,
+   "'next",
+   "(((@1)<(@2))&&(P1[@2]))&&(Az0(((@1)<(z0))=>((P1[z0])=>((@2)<=(z0)))))",
+   1
+  ],
+  -1,
+  ""
+ ],
+ [
+  "AddRelation",
+  [
+   2,
+   "'nextprime",
+   "(((@1)<(@2))&&('prime[@2]))&&(Az0(((z0)<(@2))=>((((@1)<(z0))&&('prime[z0]))=>(F))))",
+   0
+  ],
+  -1,
+  ""
+ ],
+ [
+  "AddRelation",
+  [
+   1,
+   "'test",
+   "(@1)=(0)",
+   1
+  ],
+  -1,
+  ""
+ ],
+ [
+  "AddRelation",
+  [
+   0,
+   "'inf",
+   "An(Em((P1[m])&&((n)<=(m))))",
+   1
+  ],
+  -1,
+  ""
+ ],
+ [
+  "AddRelation",
+  [
+   3,
+   "'multiply",
+   "((@1)*(@2))=(@3)",
+   0
   ],
   -1,
   ""
@@ -2404,5 +2459,39 @@ window.proof_infinite_primes = [
   ],
   103,
   "'prime[#p]"
+ ],
+ [
+  "Rewrite",
+  [
+   162,
+   "'inf['prime;]"
+  ],
+  163,
+  "'inf['prime;]"
+ ],
+ [
+  "Highlight",
+  [
+   162
+  ],
+  162,
+  "An(Ep(('prime[p])&&((n)<=(p))))"
+ ],
+ [
+  "Highlight",
+  [
+   163
+  ],
+  163,
+  "'inf['prime;]"
+ ],
+ [
+  "SetComment",
+  [
+   163,
+   "infinitely many primes"
+  ],
+  163,
+  "'inf['prime;]"
  ]
 ];

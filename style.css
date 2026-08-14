@@ -1,0 +1,141 @@
+h2 {margin-top: 0}
+h4 {margin: 0}
+a { color: blue; text-decoration: none;}
+a:hover {color: #008; }
+* { line-height: 1.2}
+* {
+  box-sizing: border-box;
+}
+
+table {
+    border-collapse:collapse;
+    overflow-x: scroll;
+    width:100%;
+}
+body {
+    background-color: white;
+    padding: 5px;
+    margin: 0;
+    font:    18px "Times New Roman", "Helvetica Neue", Helvetica, Arial, sans-serif;
+
+}
+tr:nth-of-type(odd) {
+    background-color: #eee
+}
+tr:nth-of-type(even) {
+    background-color: #ddd
+}
+tr:hover {
+    background-color: #ccf
+}
+.assumptionRow{
+    background-color:green,
+}
+.assumptionRow:hover{
+    background-color:#afa,
+}
+img {
+    width: 50%;
+}
+#errorLogging { background-color:#ffaaaa; }
+.toc {
+    border-radius: 5px;
+    background: #f4f4f4;
+    border: 1px solid #ddd;
+    border-left: 3px solid #47c;
+    color: #111;
+    padding: 0em 1.5em;
+}
+.sidebar {
+    border-radius: 10px;
+    background-color: #fe8;
+    padding: 40px;
+    padding-bottom: 0;
+    height:100%;
+    width:100%;
+    z-index:1;
+    overflow:auto;
+}
+.mainLink {
+    font-size: 25px;
+    padding: 3px;
+}
+.footer {
+    font-size: 14px;
+    border-radius: 5px;
+    background: #f4f4f4;
+    border: 1px solid #ddd;
+    border-left: 3px solid #47c;
+    color: #111;
+    padding: 0em 1.5em;
+}
+.content {
+    width: 100%;
+    margin-top: 20px;
+    margin-left: 5%;
+    margin-right: 5%;
+}
+.postHeader,blockquote {
+    margin-top: 10px;
+    margin-left: 20px;
+    padding-left: 10px;
+    border-radius: 5px;
+    background: #f4f4f4;
+    border: 1px solid #ddd;
+    border-left: 3px solid #47c;
+    color: #111;
+}
+.postHeader > p {
+    margin: 10px;
+}
+pre {
+    border-radius: 5px;
+    background: #f4f4f4;
+    border: 1px solid #ddd;
+    border-left: 3px solid #47c;
+    color: #111;
+    page-break-inside: avoid;
+    font-family: monospace;
+    font-size: 12px;
+    line-height: 1.6;
+    margin-bottom: 1.6em;
+    max-width: 100%;
+    overflow: auto;
+    padding: 1em 1.5em;
+    display: block;
+    word-wrap: break-word;
+    white-space: pre-wrap;
+}
+code {
+    background: #f4f4f4;
+    color: #111;
+}
+#bodyDisable{
+    display:none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    background: #000;
+    opacity: 0.8;
+    z-index: 998;
+    height: 100%;
+    width: 100%;}
+
+#popup {
+    display:none;
+padding: 10px;
+width: 50%;
+position: absolute;
+z-index: 999;
+left: 50%;
+top: 5%;
+margin-left: -25%;
+background-color:white;
+border-radius: 20px;
+}
+#popup-body {
+margin: 0;
+background-color: #ccc;
+padding: 10px;
+border-radius: 10px;
+}

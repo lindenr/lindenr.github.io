@@ -1,0 +1,401 @@
+window.exportStatements_fta2 = new Map([]);
+
+window.requiredModules_fta2 = ["eval","recursion","recurfunc","func","sets","pow","infinite_primes","pow","sets","infinite_primes","primes"];
+
+window.proof_fta2 = [
+ [
+  "AddRelation",
+  [
+   3,
+   "'reduceaux",
+   "(@3)=('Eval[P1[@1,@2];])",
+   1
+  ],
+  -1,
+  ""
+ ],
+ [
+  "AddRelation",
+  [
+   3,
+   "'multiplyaux",
+   "((@1)*('Eval[P1[@2];]))=(@3)",
+   1
+  ],
+  -1,
+  ""
+ ],
+ [
+  "AddRelation",
+  [
+   3,
+   "'idx",
+   "'val[@1,'Eval['nth['prime;@2];],@3]",
+   0
+  ],
+  -1,
+  ""
+ ],
+ [
+  "AddRelation",
+  [
+   3,
+   "'ftaaux1",
+   "'pow['Eval['nth['prime;'Eval['dec[@2];]];],'Eval['idx[@1,'Eval['dec[@2];]];],@3]",
+   0
+  ],
+  -1,
+  ""
+ ],
+ [
+  "Assume",
+  [
+   "An((Ap(('prime[p])=>(((p)|(n))=>((p)<('Eval['nth['prime;k];])))))=>('recur['multiplyaux['ftaaux1[n];];S(0),k,n]))"
+  ],
+  15,
+  "An((Ap(('prime[p])=>(((p)|(n))=>((p)<('Eval['nth['prime;k];])))))=>('recur['multiplyaux['ftaaux1[n];];S(0),k,n]))"
+ ],
+ [
+  "SetComment",
+  [
+   15,
+   "ind hyp"
+  ],
+  15,
+  "An((Ap(('prime[p])=>(((p)|(n))=>((p)<('Eval['nth['prime;k];])))))=>('recur['multiplyaux['ftaaux1[n];];S(0),k,n]))"
+ ],
+ [
+  "Assume",
+  [
+   "Ap(('prime[p])=>(((p)|(n))=>((p)<('Eval['nth['prime;S(k)];]))))"
+  ],
+  16,
+  "Ap(('prime[p])=>(((p)|(n))=>((p)<('Eval['nth['prime;S(k)];]))))"
+ ],
+ [
+  "Quote",
+  [
+   "power of 0"
+  ],
+  17,
+  "Aa('pow[a,0,S(0)])"
+ ],
+ [
+  "Quote",
+  [
+   "pow is a function"
+  ],
+  18,
+  "'func2['pow;]"
+ ],
+ [
+  "Quote",
+  [
+   "power of nonzero"
+  ],
+  19,
+  "Aa(An(Ay(('pow[a,n,y])=>('pow[a,S(n),(a)*(y)]))))"
+ ],
+ [
+  "Quote",
+  [
+   "power of 1"
+  ],
+  20,
+  "Aa('pow[a,S(0),a])"
+ ],
+ [
+  "Quote",
+  [
+   "power of 2"
+  ],
+  21,
+  "Aa('pow[a,S(S(0)),(a)*(a)])"
+ ],
+ [
+  "Quote",
+  [
+   "power of 3"
+  ],
+  22,
+  "Aa('pow[a,S(S(S(0))),(a)*((a)*(a))])"
+ ],
+ [
+  "Quote",
+  [
+   "pow grows superlinearly"
+  ],
+  23,
+  "An(((S(S(0)))<=(n))=>(Ax(Ey(('pow[n,x,y])&&((x)<(y))))))"
+ ],
+ [
+  "Quote",
+  [
+   "pow is strictly increasing"
+  ],
+  24,
+  "An(((S(S(0)))<=(n))=>(Ax(Ay(((x)<(y))=>(Ea(Eb(('pow[n,x,a])&&(('pow[n,y,b])&&((a)<(b))))))))))"
+ ],
+ [
+  "Quote",
+  [
+   "Inductive definition of Pow"
+  ],
+  25,
+  "Aa(An(('Pow[a,S(n)])=((a)*('Pow[a,n]))))"
+ ],
+ [
+  "Quote",
+  [
+   "Pow of 0"
+  ],
+  26,
+  "Aa(('Pow[a,0])=(S(0)))"
+ ],
+ [
+  "Quote",
+  [
+   "Pow of 1"
+  ],
+  27,
+  "Aa(('Pow[a,S(0)])=(a))"
+ ],
+ [
+  "Quote",
+  [
+   "Pow of 2"
+  ],
+  28,
+  "Aa(('Pow[a,S(S(0))])=((a)*(a)))"
+ ],
+ [
+  "Quote",
+  [
+   "summation of exponents"
+  ],
+  29,
+  "Aa(An(Am(('Pow[a,(n)+(m)])=(('Pow[a,n])*('Pow[a,m])))))"
+ ],
+ [
+  "Quote",
+  [
+   "Pow superlinear"
+  ],
+  30,
+  "Aa(((S(S(0)))<=(a))=>(An((n)<('Pow[a,n]))))"
+ ],
+ [
+  "Quote",
+  [
+   "Pow strictly increasing"
+  ],
+  31,
+  "Aa(((S(S(0)))<=(a))=>(An(Am(((n)<(m))=>(('Pow[a,n])<('Pow[a,m]))))))"
+ ],
+ [
+  "Quote",
+  [
+   "max is unique"
+  ],
+  32,
+  "'unique['max[P;];]"
+ ],
+ [
+  "Quote",
+  [
+   "valuation is const"
+  ],
+  33,
+  "Aa(An(((S(S(0)))<=(a))=>(((n)!=(0))=>('const['val[a,n];]))))"
+ ],
+ [
+  "Assume",
+  [
+   "(S(S(0)))<=(n)"
+  ],
+  34,
+  "(S(S(0)))<=(n)"
+ ],
+ [
+  "SV",
+  [
+   33,
+   "n"
+  ],
+  35,
+  "An0(((S(S(0)))<=(n))=>(((n0)!=(0))=>('const['val[n,n0];])))"
+ ],
+ [
+  "Assume",
+  [
+   "'prime[p]"
+  ],
+  36,
+  "'prime[p]"
+ ],
+ [
+  "Assume",
+  [
+   "(p)<('Eval['nth['prime;S(k)];])"
+  ],
+  37,
+  "(p)<('Eval['nth['prime;S(k)];])"
+ ],
+ [
+  "Quote",
+  [
+   "next of infinite set is function"
+  ],
+  38,
+  "('inf[P;])=>('func['next[P;];])"
+ ],
+ [
+  "Quote",
+  [
+   "infinite implies nonempty"
+  ],
+  39,
+  "('inf[P;])=>('nonempty[P;])"
+ ],
+ [
+  "Quote",
+  [
+   "nonempty has least elt"
+  ],
+  40,
+  "('nonempty[P;])=>(Ex('least[P;x]))"
+ ],
+ [
+  "Quote",
+  [
+   "nonempty implies func0 least"
+  ],
+  41,
+  "('nonempty[P;])=>('func0['least[P;];])"
+ ],
+ [
+  "Quote",
+  [
+   "nth of P is a function"
+  ],
+  42,
+  "('inf[P;])=>('func['nth[P;];])"
+ ],
+ [
+  "Quote",
+  [
+   "nth of P is const1"
+  ],
+  43,
+  "('inf[P;])=>('const1['nth[P;];])"
+ ],
+ [
+  "Quote",
+  [
+   "nth at least n"
+  ],
+  44,
+  "('inf[P;])=>(Ax((x)<=('Eval['nth[P;x];])))"
+ ],
+ [
+  "Quote",
+  [
+   "nth gets all of set"
+  ],
+  45,
+  "('inf[P;])=>(Ax((P[x])=>(Ei('eval['nth[P;i];x]))))"
+ ],
+ [
+  "S",
+  [
+   45,
+   "P",
+   "'prime"
+  ],
+  46,
+  "('inf['prime;])=>(Ax(('prime[x])=>(Ei('eval['nth['prime;i];x]))))"
+ ],
+ [
+  "Quote",
+  [
+   "infinitely many primes"
+  ],
+  47,
+  "'inf['prime;]"
+ ],
+ [
+  "Quote",
+  [
+   "prime factor existence"
+  ],
+  48,
+  "Ax(((S(0))<(x))=>(Ef(((f)|(x))&&('prime[f]))))"
+ ],
+ [
+  "Quote",
+  [
+   "primes coprime to non multiples"
+  ],
+  49,
+  "Ap(Aa(('prime[p])=>((((p)|(a))=>(F))=>('gcd[p,a,S(0)]))))"
+ ],
+ [
+  "Quote",
+  [
+   "multiplicative inverse mod p"
+  ],
+  50,
+  "Ap(Aa(('prime[p])=>((((p)|(a))=>(F))=>(Eu('mod[(u)*(a),p,S(0)])))))"
+ ],
+ [
+  "Quote",
+  [
+   "irreducibles are prime"
+  ],
+  51,
+  "Ap(Aa(Ab(('prime[p])=>((((p)|(a))=>(F))=>((((p)|(b))=>(F))=>(((p)|((a)*(b)))=>(F)))))))"
+ ],
+ [
+  "Quote",
+  [
+   "prime factor existence 1"
+  ],
+  52,
+  "Ax(((S(0))!=(x))=>(Ef(((f)|(x))&&('prime[f]))))"
+ ],
+ [
+  "Quote",
+  [
+   "prime divides product"
+  ],
+  53,
+  "Ap(('prime[p])=>(Aa(Ab(((p)|((a)*(b)))=>(((p)|(a))||((p)|(b)))))))"
+ ],
+ [
+  "MP",
+  [
+   46,
+   47
+  ],
+  54,
+  "Ax(('prime[x])=>(Ei('eval['nth['prime;i];x])))"
+ ],
+ [
+  "SV",
+  [
+   54,
+   "p"
+  ],
+  55,
+  "('prime[p])=>(Ei('eval['nth['prime;i];p]))"
+ ],
+ [
+  "MP",
+  [
+   55,
+   36
+  ],
+  56,
+  "Ei('eval['nth['prime;i];p])"
+ ]
+];

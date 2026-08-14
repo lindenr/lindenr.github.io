@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+ <head>
+  <meta charset="utf-8" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2280%22>&#x1F333;</text></svg>">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Hiss</title>
+  <link href="/style.css" rel="stylesheet" />
+ </head>
+ <body style="display:flex;flex-direction:row;height:100%">
+  <div style="width: 45%; height: 100%">
+   <div class="sidebar">
+    <img src="/img/scenery.jpeg" style="width: 100%"/>
+    <br>
+    <br>
+    <h2 style="text-align: center">Linden's website</h2>
+    <a href="/"><div class="mainLink">&#x1F333; Home</div></a>
+    <a href="/posts.html"><div class="mainLink">&#x1F4DC; Posts</div></a>
+    <a href="/now.html"><div class="mainLink">&#x231A; Now</div></a>
+    <hr>
+    <h3>Current projects</h3>
+      <a href="/papa.html">&#x1F3B9; PAPA</a>: Peano Arithmetic Proof Assistant<br><br>
+      <a href="/villagers.html">&#x1F3E1; Villagers</a>: Economy simulator<br><br>
+      <a href="/pinephone.html">&#x1F4F1; Pinephone</a>: My attempts to use an open-source phone<br><br>
+      <a href="/hiss.html">&#x1F40D; Hiss</a>: Lispy language that targets C<br><br>
+    <hr>
+    <h3>Tags</h3>
+      <a href="/tag-papa.html">papa</a> | <a href="/tag-maths.html">maths</a> | <a href="/tag-chinese.html">chinese</a> | <a href="/tag-hiss.html">hiss</a> | <a href="/tag-pinephone.html">pinephone</a> | <a href="/tag-running.html">running</a> | <a href="/tag-villagers.html">villagers</a>
+    <br><br>
+    <hr>
+    <h3>About me</h3>
+    <p>I like music, maths, programming, NetHack, whisky, badminton, traveling, simulations, Operation Mincemeat (the musical), climbing, ice skating, beer, learning Chinese, coffee, propellers, stories, old buildings, snowboarding, saunas, tennis, Tom Lehrer, cats, Signal, and go.</p>
+    <p>I'm based in London. If you want to chat about anything on this site I'd be happy to buy you a coffee. I'm on Signal at <code>@dax.60</code> or you can <a href="https://github.com/lindenr/lindenr.github.io/issues">open an issue on github</a>.</p>
+    <p style="font-size: 14pt;">This site is artisanal, 100&percnt; made by hand (really! I just love emojis)</p>
+   </div>
+  </div>
+  <div class="content">
+<h1 id="hiss">Hiss</h1>
+<p>This is not mature enough to be open-sourced yet, but hopefully will be in time.</p>
+<div class="postHeader">
+<p>Current future plans, in approximate order:</p>
+<ul>
+<li>fix macros to make them more robust, maybe even make them Turing-complete</li>
+<li>make errors better, particularly within macros</li>
+<li>post-macro compilation should be a bit better at differentiating keyword tokens from things that just "look like that"</li>
+<li>make "modules" a thing: json header data produced from transpiling a file should have all the info needed to include that as a module elsewhere</li>
+<li>get some incremental compilation going</li>
+<li>actually expose the whole type system to the user (currently only partial)</li>
+<li>better string handling than C</li>
+</ul>
+</div>
+<p>Hiss is a language written in S-expressions (or as they should be properly called, "hiss-expressions") that compiles to C, and apart from the S-expression syntax reads very similarly to C.</p>
+<ul>
+<li>Targets a small subset of the C language</li>
+<li>Type-safer than C: almost no implicit casting by default</li>
+<li>User-defined type system: a type is almost any string, and the rules for implicit conversions and static resolution are editable by the user.</li>
+</ul>
+<p>This last property is the main offering of Hiss. For example, you can have a type <code>:Vector</code> and another type <code>:Vector-int</code>, which we will interpret as a vector having int-typed data. These different Hiss-types both have the same underlying C-type, namely <code>struct Vector</code>.</p>
+<p>Then any function that accepts a <code>:Vector</code> should always accept a <code>:Vector-int</code> without complaint, and <code>vec_at</code> (getting the <code>i</code>th element of the vector) should return an object of Hiss-type <code>:int</code>. (Hiss-types always begin with a colon to distinguish them from C-types.)</p>
+<p>We can implement this easily: using the <code>::</code> operator gets the type, which we can split out to get the <code>int</code> part.</p>
+<p>Here is a sample which defines a <code>struct Vector</code>.
+As required, if you declare a <code>(vec_new int)</code> and then try to <code>(vec_push v 0.5)</code> you will get a compile error since a double is not an int (and Hiss doesn't do implicit numerical conversion).</p>
+<pre><code>(include stdlib)
+(include string)
+
+; define a struct with 4 elements
+(struct Vector
+    :void* data
+    :size_t siz
+    :size_t len
+    :size_t mlen
+)
+
+; takes one argument of size_t
+(defn :Vector Vector_new :size_t siz {
+    (struct_Vector (malloc (* siz (:size_t 2))) siz (:size_t 0) (:size_t 2))
+})
+
+(defn :void* Vector_at :Vector* self :size_t i {
+    (-&lt;&gt; self-&gt;data (at (* i self-&gt;siz)) &amp;)
+})
+
+(defn :Vector* Vector_push :Vector* self :void* data {
+    (if (&gt;= self-&gt;len self-&gt;mlen) {
+        (setv self-&gt;mlen (* self-&gt;mlen (:size_t 2))
+              self-&gt;data (realloc self-&gt;data (* self-&gt;mlen self-&gt;siz)))
+    })
+    (memcpy (-&gt;at self self-&gt;len) data self-&gt;siz)
+    (++ self-&gt;len)
+    self
+})
+
+(defmacro vec_new ctype ((## :Vector- ctype) (Vector_new (sizeof (## : ctype)))))
+(defmacro vec_at vec idx (-&lt;&gt; (.at vec (:size_t idx)) ((## : (#get 1 (#split (:: vec) -)) *)) *))
+
+(defmacro vec_push vec value {!
+    (setv (## : (#get 1 (#split (:: vec) -))) vec_push_special value)
+    (.push vec (-&lt;&gt; vec_push_special &amp; :void*))
+})
+
+(defn :int main {
+    (setv : myvector (vec_new int))
+    (vec_push myvector 5) ; okay
+    (vec_push myvector 8.3) ; compile error
+})
+</code></pre>
+<p>This errors as expected:</p>
+<pre><code>ERROR at line 42
+&gt;     (vec_push myvector 8.3) ; compile error
+ in function main in expansion of macro vec_push: Cannot assign to variable of type :int from source of type :double
+</code></pre>
+<p>This code is a bit janky and the syntax could probably be a bit nicer.</p>
+<p>Also the macro kludging is pretty painful: split on <code>-</code>, take the second value, concatenate with <code>:</code> to get the correct inner type.</p>
+<hr>
+<div class="footer">
+<div class="postTags"><h3>See other posts tagged with:</h3>
+<a href="/tag-hiss.html">hiss</a>
+</div><br>
+<p>Last updated June 2026</p>
+</div>
+  </div>
+ </body>
+</html>
