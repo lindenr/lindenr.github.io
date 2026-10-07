@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+ <head>
+  <meta charset="utf-8" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2280%22>&#x1F333;</text></svg>">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Setting up my deebot on my local network</title>
+  <link href="/style.css" rel="stylesheet" />
+ </head>
+ <body>
+  <div class="layout">
+   <aside class="sidebar">
+    <img src="/img/scenery.jpeg" style="width: 100%"/>
+    <br>
+    <br>
+    <h2 style="text-align: center">Linden's website</h2>
+    <a href="/"><div class="mainLink">&#x1F333; Home</div></a>
+    <a href="/posts.html"><div class="mainLink">&#x1F4DC; Posts</div></a>
+    <a href="/now.html"><div class="mainLink">&#x231A; Now</div></a>
+    <hr>
+    <h3>Current projects</h3>
+      <a href="/papa.html">&#x1F3B9; PAPA</a>: Peano Arithmetic Proof Assistant<br><br>
+      <a href="/villagers.html">&#x1F3E1; Villagers</a>: Economy simulator<br><br>
+      <a href="/pinephone.html">&#x1F4F1; Pinephone</a>: My attempts to use an open-source phone<br><br>
+      <a href="/hiss.html">&#x1F40D; Hiss</a>: Lispy language that targets C<br><br>
+    <hr>
+    <h3>Tags</h3>
+      <a href="/tag-papa.html">papa</a> | <a href="/tag-maths.html">maths</a> | <a href="/tag-chinese.html">chinese</a> | <a href="/tag-deebot.html">deebot</a> | <a href="/tag-hiss.html">hiss</a> | <a href="/tag-irc.html">irc</a> | <a href="/tag-networking.html">networking</a> | <a href="/tag-pinephone.html">pinephone</a> | <a href="/tag-running.html">running</a> | <a href="/tag-villagers.html">villagers</a>
+    <br><br>
+    <hr>
+    <h3>About me</h3>
+    <p>I like music, maths, programming, NetHack, whisky, badminton, traveling, simulations, Operation Mincemeat (the musical), climbing, ice skating, beer, learning Chinese, coffee, propellers, stories, old buildings, snowboarding, saunas, tennis, Tom Lehrer, cats, Signal, and go.</p>
+    <p>I'm based in London. If you want to chat about anything on this site I'd be happy to buy you a coffee. I'm on Signal at <code>@dax.60</code> or you can <a href="https://github.com/lindenr/lindenr.github.io/issues">open an issue on github</a>.</p>
+    <p style="font-size: 14pt;">This site is artisanal, 100&percnt; made by hand (really! I just love emojis)</p>
+   </aside>
+   <main class="content">
+<p>Posted on 2026-10-07</p>
+<h1 id="setting-up-my-deebot-on-my-local-network">Setting up my deebot on my local network</h1>
+<p>A few years ago we got a robot vacuum cleaner from Ecovacs, specifically one of their Deebots. It worked well with the app, but we moved house and stopped using it, and I never got around to unpacking it because I wasn't comfortable with the amount of phoning home it was doing. Eventually with the help of AI, I learned it was possible to set it up on a wifi network in our home that wouldn't allow public internet access, but instead route it to my computer which would pretend to be the Ecovacs server and tell it things like "start cleaning", "stop cleaning", etc.</p>
+<h2 id="private-wifi">Private wifi</h2>
+<p>Generally speaking, this went very smoothly. Our wifi comes out of several wireless access points, or WAPs, which are connected via ethernet to a switch which is also connected to our router. I made a new wifi with the same SSID/password as the vacuum expected from our previous place and put it on a separate "network" with a different "VLAN id". This means that all packets being passed around we would know whether they were on the default "public" network or tagged with the private network's VLAN id.</p>
+<p>I also blocked any packets with a VLAN id != 1 from going out to the router. 1 is the default VLAN id, so anything else is restricted to inside the network -- the switch and the WAPs -- only.</p>
+<p>So, the WAPs were now broadcasting both the original home wifi and the private wifi, and things on each network couldn't talk to the other.</p>
+<p>I have a steam machine running 24/7 which I wanted to use as a home server for the vacuum. The steam machine uses ethernet plugged into the switch, so that cable had to have both VLANs (public and private) going over it, which would then be processed differently on the server.</p>
+<p>This was just configuration for the unifi switch, which I did from my laptop with the unifi service. It should have been easy, but it just would not work. After several wall-clock days on this (spread over two months) I tried everything my AI suggested to me: made sure I wasn't accidentally isolating the client devices, the vlan ids were correct, etc.</p>
+<p>Regardless of what opaque-sounding settings I toggled, the private-network packets weren't making it between any two machines (except once when I had two on the private wifi in the same room). I ssh'd into the WAPs themselves and saw with <code>tcpdump</code> that packets were being received by the WAP and sent through to the switch; I mirrored the receiving port and saw the packets arrive, but they weren't coming out the other side.</p>
+<p>To cut a long story short - I factory reset the switch, put the private vlan settings back exactly the same, and what do you know it worked. Shrug.</p>
+<p>Quick aside - the fact that this is working now makes me much more likely to consider wifi-enabled devices in the future, if I can connect them to a home server without them having internet access. There are still tricks they can play like having a cellular modem or connecting to random unsecured wifi networks though, not to mention they might require authenticating the server if they are really anti-consumer... it's never easy! Hopefully my vacuum isn't trying to play these sorts of games.</p>
+<h2 id="network-config-on-the-server">Network config on the server</h2>
+<p>Sadly this isn't the end of the networking story: we have to make sure the steam machine processes packets correctly. Tagged packets we want to go to a separate namespace, which as I understand things is a linux concept which contains a bunch of interfaces (an interface might be a wifi antenna, ethernet, or just loopback which everything has). Any processes you run in the private namespace will only see the private network, and likewise any "normal" programs running in the default namespace won't see the private network at all. I think this is enforced by root, i.e. normal-user programs should be well-isolated by default - obviously the file system is shared so it's not hardened against malware or anything but should be ok for trusted programs.</p>
+<p>One aim of this setup that I still don't fully understand is to guard against a worry the AI had, which is that if something connects to the private network and is configured to use the steam machine as a "gateway", then the steam machine itself might end up forwarding the requests to the public internet which would be bad. I don't really know what this means but the AI seemed to be happy that this couldn't happen with the tagged and untagged packets in separate namespaces.</p>
+<p>So now I could connect devices with static IP addresses to the private network, and they could talk to each other (and the steam machine) and nothing else. Success!</p>
+<p>Lastly the AI walked me through setting up dnsmasq as a service for DHCP (for giving IP addresses to machines on the local network) and DNS (so when the vacuum tries to connect to the internet it is redirected to the server).</p>
+<h2 id="connecting-the-vacuum">Connecting the vacuum</h2>
+<p>Turning on the vacuum and unifi tells me there is a new device! It's on the private network, I can ping its IP address, and dnsmasq logs show it trying to connect to some ecovacs domain - this obviously fails since the requests are redirected to the steam machine but it isn't setup to listen to anything from the vacuum yet.</p>
+<p>So I install <a href="https://github.com/MVladislav/bumper/">bumper</a>, turn it on in a container in the private namespace, and load up the loopback url - but I can't access it, since the loopback in the normal namespace and the loopback in the private namespace can't talk to each other! So I need another service to punch a hole between the namespaces, so connecting to localhost:PORT1 in the public namespace forwards the request through to bumper on PORT2 on the private namespace.</p>
+<p>Success -- bumper lists the vacuum. That's pretty much all it does though -- if you want to actually send and receive data you need to hook up something like <a href="https://github.com/DeebotUniverse/client.py">deebot_client</a> to bumper. So I got AI to make a script that would send start and stop commands (and a few others) using deebot_client, and a server that would listen for web requests and run the script (plus another hole punch so that I could use the AI server from my laptop on the public network).</p>
+<p>So you visit a web page, send a request to the public port, that gets hole punched to the private port where the server is listening, the server says "oh you want to send a vacuum request", runs the deebot_client script with your request which gets translated into deebot language (I think <a href="https://en.wikipedia.org/wiki/MQTT">MQTT</a>), sent to bumper, and then on to the robot. The robot sends data back which gets filtered and translated back into human language, such as "Battery: 98%", and we're golden.</p>
+<p>Inevitably, the web page it came up with was absolutely chock full of nasty AI-isms, so I removed all text from the page that was more than one or two words (like "clean" and "empty"). And it works! It's not password protected, so anyone connected to our local wifi can theoretically tell the vacuum to start cleaning in the middle of the night in what would be quite a nasty DoS (Denial of Sleep) attack :)</p>
+<p>But hopefully our friends are friendly and our neighbours aren't good at guessing passwords.</p>
+<p>That's all on the vacuum for now - I have heard rumours that ecovacs vacuums might be rootable, so maybe improving the mapping algorithm can be the next step!</p>
+<p>PS. One thing I found out was how much the vacuum does locally - I was surprised to find out that mapping and navigation are purely local, and bumper and the ecovacs python library can just talk to it.</p>
+<hr>
+<div class="footer">
+<div class="postTags"><h3>See other posts tagged with:</h3>
+<a href="/tag-networking.html">networking</a> | <a href="/tag-deebot.html">deebot</a>
+</div><br>
+<p>Last updated October 2026</p>
+</div>
+   </main>
+  </div>
+ </body>
+</html>

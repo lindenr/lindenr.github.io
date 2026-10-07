@@ -11,7 +11,7 @@ function splitCommas(s, separate_semicolon=false) {
             cur = i+1;
         }
         else if (s[i] == ';' && depth == 0 && separate_semicolon) {
-            splits.push(s.slice(cur, i));
+            if (cur < i) splits.push(s.slice(cur, i));
             splits.push(';');
             cur = i+1;
         }
@@ -33,14 +33,25 @@ function isRenamingInstanceOf(parsed1, parsed2, mustRename=new Map()) {
     if (p1[0] != p2[0]) {
         return false;
     }
-    if (RELATIONS[2].includes(p1[0]) || CONNECTIVES[2].includes(p1[0]) || FUNCTIONS[2].includes(p1[0])) {
+    if (p1[0][0] == "'") {
+        if (p1[0] != p2[0]) return false;
+        if (p1[1].length != p2[1].length) throw new Error('same operator, different pred arities??');
+        for (var i = 0; i < p1[1].length; ++ i) {
+            if (!isRenamingInstanceOf(p1[1][i], p2[1][i], mustRename)) return false;
+        }
+        if (p1[2].length != p2[2].length) throw new Error('same operator, different arities????');
+        for (var i = 0; i < p1[2].length; ++ i) {
+            if (!isRenamingInstanceOf(p1[2][i], p2[2][i], mustRename)) return false;
+        }
+        return true;
+    } else if (RELATIONS[2].includes(p1[0]) || CONNECTIVES[2].includes(p1[0]) || FUNCTIONS[2].includes(p1[0])) {
         return isRenamingInstanceOf(p1[2][0], p2[2][0], mustRename) && isRenamingInstanceOf(p1[2][1], p2[2][1], mustRename);
     } else if (FUNCTIONS[1].includes(p1[0])) {
         return isRenamingInstanceOf(p1[2][0], p2[2][0], mustRename);
     } else if (FUNCTIONS[0].includes(p1[0])) {
         return true;
     } else if (isGeneric(p1[0])) {
-        const subs1 = p1[1], subs2 = p2[1];
+        const subs1 = p1[2], subs2 = p2[2];
         return subs1.length == subs2.length && subs1.every((x, i) => (isRenamingInstanceOf(x, subs2[i], mustRename)));
     } else if (p1[0] == 'A' || p1[0] == 'E') {
         const newMustRename = new Map(mustRename);
@@ -50,17 +61,13 @@ function isRenamingInstanceOf(parsed1, parsed2, mustRename=new Map()) {
         return true;
     } else if (p1[0] == '0') {
         return true;
-    } else if (p1[0][0] == "'") {
-        if (p1[0] != p2[0]) return false;
-        if (p1[2].length != p2[2].length) throw new Error('same operator, different arities????');
-        for (var i = 0; i < p1[2].length; ++ i) {
-            if (!isRenamingInstanceOf(p1[2][i], p2[2][i], mustRename)) return false;
-        }
-        return true;
     } else {
         alert('errrrrr'+p1[0]);
         throw new Error('should never happen: isRenamingInstanceOf called on invalid strings');
     }
+}
+function isalphanumeric(c) {
+    return ('a' <= c && c <= 'z') || ('A' <= c && c <= 'Z') || ('0' <= c && c <= '9');
 }
 function replaceGeneric(sentenceOrig, gen, replaceOrig) {
     const rop = parseSentence(replaceOrig);
@@ -72,14 +79,19 @@ function replaceGeneric(sentenceOrig, gen, replaceOrig) {
     const isPred = parsePred(replaceOrig, false, true).error === undefined;
     // replacement contains @, @1, @2 etc symbols for the replacements, if any
     for (var i = 0; i < sentence.length; ++ i) {
-        if (sentence.slice(i, i + gen.length) != gen) continue;
+        if (!["'", "P", "Q", "R"].includes(sentence[i])) continue;
+        for (var j = i+1; isalphanumeric(sentence[j]); ++ j){}
+        if (gen != sentence.slice(i, j)) {
+            i = j-1;
+            continue;
+        }
         if (i+gen.length >= sentence.length && i > 0) throw new Error('should never happen: generic at end of sentence with no brackets, and isn\'t the whole thing');
         if (isPred || [')', ';', ',', undefined].includes(sentence[i+gen.length])) {
             sentence = sentence.slice(0, i) + replace + sentence.slice(i+gen.length);
             i += replace.length;
             continue;
         }
-        if (sentence[i+gen.length] != '[') throw new Error('no open square bracket!!!');
+        if (sentence[i+gen.length] != '[') throw new Error('no open square bracket!!! ' + sentenceOrig + ' ' + gen + ' ' + replaceOrig);
         var j = matchingBracket(sentence, i+gen.length);
         if (j == -1) throw new Error('no close square bracket!!!');
         var terms = splitCommas(sentence.slice(i+gen.length+1, j));
@@ -142,7 +154,7 @@ function replaceTokens(sentence, tokMap) { // token here only refers to variable
         sentence = sentence.replace(new RegExp("(?<![#@a-zPQR0-9])"+escapeRegex(k)+"(?![#@a-zPQR0-9])", "g"), '_' + k + '_');
     }
     for (const [k, v] of tokMap.entries()) {
-        sentence = sentence.replace(new RegExp(escapeRegex('_' + k + '_'), "g"), v);
+        sentence = sentence.replace(new RegExp(escapeRegex('_' + k + '_'), "g"), typeof v === 'string' ? v : v.sentence);
     }
     return sentence;
 }
@@ -150,7 +162,7 @@ function searchToken(sentence, tok, start=0) {
     for (var i = start; i < sentence.length; ++ i) {
         if (sentence[i] == "'") {
             i ++;
-            while (i < sentence.length && sentence[i] >= 'a' && sentence[i] <= 'z') ++ i;
+            while (i < sentence.length && isalphanumeric(sentence[i])) ++ i;
             continue;
         }
         if (sentence[i] == '#' && sentence.slice(i, i+tok.length) === tok) return i;

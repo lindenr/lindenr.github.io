@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+ <head>
+  <meta charset="utf-8" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2280%22>&#x1F333;</text></svg>">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>📱 Pinephone</title>
+  <link href="/style.css" rel="stylesheet" />
+ </head>
+ <body>
+  <div class="layout">
+   <aside class="sidebar">
+    <img src="/img/scenery.jpeg" style="width: 100%"/>
+    <br>
+    <br>
+    <h2 style="text-align: center">Linden's website</h2>
+    <a href="/"><div class="mainLink">&#x1F333; Home</div></a>
+    <a href="/posts.html"><div class="mainLink">&#x1F4DC; Posts</div></a>
+    <a href="/now.html"><div class="mainLink">&#x231A; Now</div></a>
+    <hr>
+    <h3>Current projects</h3>
+      <a href="/papa.html">&#x1F3B9; PAPA</a>: Peano Arithmetic Proof Assistant<br><br>
+      <a href="/villagers.html">&#x1F3E1; Villagers</a>: Economy simulator<br><br>
+      <a href="/pinephone.html">&#x1F4F1; Pinephone</a>: My attempts to use an open-source phone<br><br>
+      <a href="/hiss.html">&#x1F40D; Hiss</a>: Lispy language that targets C<br><br>
+    <hr>
+    <h3>Tags</h3>
+      <a href="/tag-papa.html">papa</a> | <a href="/tag-maths.html">maths</a> | <a href="/tag-chinese.html">chinese</a> | <a href="/tag-deebot.html">deebot</a> | <a href="/tag-hiss.html">hiss</a> | <a href="/tag-irc.html">irc</a> | <a href="/tag-networking.html">networking</a> | <a href="/tag-pinephone.html">pinephone</a> | <a href="/tag-running.html">running</a> | <a href="/tag-villagers.html">villagers</a>
+    <br><br>
+    <hr>
+    <h3>About me</h3>
+    <p>I like music, maths, programming, NetHack, whisky, badminton, traveling, simulations, Operation Mincemeat (the musical), climbing, ice skating, beer, learning Chinese, coffee, propellers, stories, old buildings, snowboarding, saunas, tennis, Tom Lehrer, cats, Signal, and go.</p>
+    <p>I'm based in London. If you want to chat about anything on this site I'd be happy to buy you a coffee. I'm on Signal at <code>@dax.60</code> or you can <a href="https://github.com/lindenr/lindenr.github.io/issues">open an issue on github</a>.</p>
+    <p style="font-size: 14pt;">This site is artisanal, 100&percnt; made by hand (really! I just love emojis)</p>
+   </aside>
+   <main class="content">
+<h1 id="pinephone">📱 Pinephone</h1>
+<p>I haven't had a "regular" normal phone for the last ~3 years. Usually I just do without but recently I've been trying to use a pinephone as my daily driver. It isn't going super well; here I list some of my experiences in the hopes that someone can point me in the right direction for how to use this hardware.</p>
+<h2 id="operating-system-and-window-manager">Operating system and window manager</h2>
+<p>I've installed <a href="https://sxmo.org/">SXMO</a> running Arch Linux from an image put together by <a href="https://codeberg.org/DanctNIX/Pine64-Arch">DanctNIX</a>. I really like the ideas here. The usual pinephone woes are hitting me as expected: poor battery life and not very beefy performance.</p>
+<p>One thing that's worked well is keeping the phone awake by sshing into it while the screen goes off. This reduces the heat and power consumption significantly and still lets me use it as a normal device.</p>
+<h2 id="quick-fixes">Quick fixes</h2>
+<p>I should probably report these to the maintainers, they both seem like oversights.</p>
+<h3 id="screen-off-suspend-not-working">Screen off, suspend not working</h3>
+<p>Install package <code>wlopm</code>.</p>
+<h3 id="led-not-working-and-also-wakesuspend-state-changes-taking-a-long-time">LED not working (and also wake/suspend state changes taking a long time)</h3>
+<p>Add your user (probably <code>alarm</code>) to the group <code>feedbackd</code>.</p>
+<h2 id="firefox">Firefox</h2>
+<p>By default firefox has some issue where it won't allow you to make the screen smaller than a certain width, which is awkward because the pinephone's horizontal resolution is only 384px! But it turns out you can install a mobile config for firefox package from the arch repos. This seems to mostly just work, although having the keyboard up partly obscures the url bar (not the keyboard itself, it just causes half of the url bar to turn white).</p>
+<h2 id="calendar">Calendar</h2>
+<p>Finally I can have a calendar that works! (Usually I have a paper calendar in the form of a small notebook but I forgot to buy one this year and things have been a bit hectic.) <code>gnome-calendar</code> is lightweight and snappy enough for me. It has some bugs but nothing terrible, again probably it's not tested with the narrow screen I'm using. I did get my AI to fix one, which was that days with events scheduled wouldn't show any events on the calendar view: you would have to click on each individual day to see any events scheduled for that day!</p>
+<p>Sadly I can't upstream this change even though it was very quick, because <code>gnome-calendar</code> apparently doesn't allow AI contributions. Maybe at some point I will try to understand that part of the code and clean-room my own fix. Possibly it's not even considered a bug for some reason.</p>
+<p>It is not super snappy and there are other minor issues as I've said (sometimes you can't edit or delete some events), so I might in the end try to vibe code a lightweight terminal calendar, maybe using the special dmenu thing sxmo has.</p>
+<h2 id="trusted-vs-untrusted-connections">Trusted vs untrusted connections</h2>
+<p>This is something I've set up on my laptop too: I keep a list of "trusted" network profiles. When connecting to an untrusted profile two things happen: the MAC address randomises, and avahi stops advertising itself over mDNS. When moving back to a trusted profile the MAC resets and avahi starts back up. I'm not a linux or networking expert so I was pretty excited that now with avahi and mDNS I can <code>ssh user@hostname.local</code> instead of having to use the local IP address which might change sometimes anyway.</p>
+<p>I've done a lot of home networking configuration recently (will probably write about that in a different post); I've learned a lot about these things but still feel like I'm hardly scratching the surface.</p>
+<h2 id="minor-complaints">Minor complaints</h2>
+<ul>
+<li>the power button only registers intermittently. E.g. when I press it twice to wake up, about half the time it only wakes into the "touch disabled" state and I have to press the button again to wake it fully.</li>
+<li>the menu UI is a bit inconsistent: two menus looking the same don't necessarily both take control of the physical buttons in the same way (i.e. so that volume up/down move selection up and down, etc). The system menu does, as do the apps and scripts menus, but the binaries menu doesn't for some reason. Also the "back" option in a menu is sometimes at the top, sometimes at the bottom, and sometimes absent; likewise for the "exit" option.</li>
+<li>sluggish: the pinephone is generally slow, but the time from button press -&gt; menu appear feels really long and I don't know why. Likewise for changing between menus: there is quite a long pause between one menu disappearing and another opening.</li>
+<li>other things I can't remember right now</li>
+</ul>
+<h2 id="todo">TODO</h2>
+<p>I haven't tried getting the following things working on it yet:</p>
+<ul>
+<li>Signal messenger</li>
+<li>Chinese flashcards</li>
+<li>Sim card -&gt; voice call/text/roaming internet</li>
+</ul>
+<hr>
+<div class="footer">
+<div class="postTags"><h3>See other posts tagged with:</h3>
+<a href="/tag-pinephone.html">pinephone</a>
+</div><br>
+<p>Last updated October 2026</p>
+</div>
+   </main>
+  </div>
+ </body>
+</html>

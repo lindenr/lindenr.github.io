@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+.row {
+  display: flex;
+}
+
+.column {
+  flex: 50%;
+}
+</style>
+<title>NEW</title>
+<script src="stringManip.js"></script>
+<script src="prover.js"></script>
+<script src="newInterface.js"></script>
+</head>
+<body onload="documentOnLoad()">
+<div class="row">
+  <div class="column">
+<textarea id="textInput" oninput='return later(userInputUpdated)' style="width:90%" rows=100></textArea>
+  </div>
+  <div class="column"><div id="proverOutput"></div></div>
+</div>
+</body>
+</html>
+
